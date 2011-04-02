@@ -27,7 +27,7 @@ span.imgButton .imgButton {
 	cursor: pointer;
 	vertical-align: middle;
 	font-family: Sans-Serif;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: bold;
 	background: #f4f4f4);
 	background: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
@@ -50,23 +50,23 @@ span.imgButton .imgButton:hover {
 	border-color: #999;
 	color: #222;
 }
-span.imgButton .imgButton:hover span { text-decoration: none; color: #222; }
+span.imgButton .imgButton:hover span { text-decoration: none; }
 span.imgButton .imgButton:visited,.imgButton:active,.imgButton:link,.imgButton:hover { text-decoration: none; }
 span.imgButton .imgButton:visited span,span.imgButton .imgButton:active span,span.imgButton .imgButton:link span,span.imgButton .imgButton:hover span { text-decoration: none; }
 span.imgButton .imgButton:link span span,span.imgButton .imgButton:active span span,span.imgButton .imgButton:hover span span,span.imgButton .imgButton:visited span span { border: none; text-decoration: none; }
 span.imgButton .imgButton span img { padding: 0 0 4px 0; position: relative; top: 7px }
-span.imgButton .imgButton span { padding: 0 4px 0 2px; color: #AAAAAA; position: relative; top: -3px;}
+span.imgButton .imgButton span { padding: 0 4px 0 2px; position: relative; top: -3px;}
 
 span.imgButton .imgButton.imgOnly { background-color: transparent; border:none; padding: 0; }
 span.imgButton .imgButton.imgOnly span { padding: 0 0 0 2px; }
 span.imgButton .imgButton.imgOnly:hover { background-color: transparent; border: none;  }
 
-div.toolbar div span.imgButton { line-height: 12px; }
-div.toolbar div span.imgButton .imgButton { background-color: transparent; margin-right: 2px; }
-div.toolbar div span.imgButton .imgButton span img { padding: 0 0 3px 0; position: relative; top: 7px }
+div.toolbar span.imgButton { line-height: 13px; }
+div.toolbar span.imgButton .imgButton { background-color: transparent; margin-right: 2px; }
+div.toolbar span.imgButton .imgButton span img { padding: 0 0 3px 0; position: relative; top: 7px }
 
 div.mochaWindowFooter span.imgButton { line-height:14px; }                                               
 div.mochaWindowFooter span.imgButton .imgButton {background-color: transparent; border: solid 1px #BBBBBB; }
 div.mochaWindowFooter span.imgButton .imgButton span img { padding: 0 0 3px 0; position: relative; top: 6px }
-div.mochaWindowFooter span.imgButton .imgButton span span { color: #BBBBBB; }
+div.mochaWindowFooter span.imgButton .imgButton span span {  }
 /* Image Buttons */
