@@ -67,11 +67,12 @@ textarea.dynamic { resize:none; position:relative; display:block; overflow:hidde
 textarea, input, select { font-family: Arial, Helvetica, sans-serif; font-size: 12px; vertical-align: middle; }
 .input { padding: 2px 0 2px 3px; border: 1px solid #848484; }
 form button { vertical-align: middle; }
-.button { 
+.button {
+	margin: 0;
+	padding: 0;
 	display: inline-block;
 	border: 1px solid #aaa;
 	color: #444;
-	margin-bottom: 0px;
 	min-width: 4em;
 	padding: 2px 9px 0 9px;
 	cursor: pointer;
