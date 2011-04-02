@@ -71,10 +71,9 @@ form button { vertical-align: middle; }
 	display: inline-block;
 	border: 1px solid #aaa;
 	color: #444;
-	font-size: inherit;
 	margin-bottom: 0px;
 	min-width: 4em;
-	padding: 0 9px 0 9px;
+	padding: 2px 9px 0 9px;
 	cursor: pointer;
 	vertical-align: middle;
 	font-family: Sans-Serif;
@@ -101,6 +100,7 @@ form button { vertical-align: middle; }
 	border-color: #999;
 	color: #222;
 }
+.toolbar .button { vertical-align: top; margin-top:0; height:23px; }
 * html .button { padding: 3px 1px; }
 .formRow { margin: 0 0 8px 0; }
 .buttonRow { margin-bottom: 10px; }

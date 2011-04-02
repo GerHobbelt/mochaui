@@ -20,10 +20,9 @@ span.imgButton .imgButton {
 	display: inline-block;
 	border: 1px solid #aaa;
 	color: #444;
-	font-size: inherit;
 	margin-bottom: 0px;
 	min-width: 4em;
-	padding: 0 9px 0 9px;
+	padding: 1px 9px 0 9px;
 	cursor: pointer;
 	vertical-align: middle;
 	font-family: Sans-Serif;
@@ -39,8 +38,8 @@ span.imgButton .imgButton {
     -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 	-webkit-user-select: none;
 	-moz-user-select: none;
+	min-height: 21px;
 }
-span.imgButton .imgButton span span { background-color: transparent; border: none; color: #AAAAAA; position: relative; top: -6px; padding: 0 2px 0 2px;   }
 span.imgButton .imgButton:hover {
 	text-decoration: none;
 	-webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -50,23 +49,17 @@ span.imgButton .imgButton:hover {
 	border-color: #999;
 	color: #222;
 }
-span.imgButton .imgButton:hover span { text-decoration: none; }
-span.imgButton .imgButton:visited,.imgButton:active,.imgButton:link,.imgButton:hover { text-decoration: none; }
-span.imgButton .imgButton:visited span,span.imgButton .imgButton:active span,span.imgButton .imgButton:link span,span.imgButton .imgButton:hover span { text-decoration: none; }
-span.imgButton .imgButton:link span span,span.imgButton .imgButton:active span span,span.imgButton .imgButton:hover span span,span.imgButton .imgButton:visited span span { border: none; text-decoration: none; }
-span.imgButton .imgButton span img { padding: 0 0 4px 0; position: relative; top: 7px }
-span.imgButton .imgButton span { padding: 0 4px 0 2px; position: relative; top: -3px;}
+span.imgButton .imgButton span { display: inline-block; line-height: 11px; margin-right: 4px; position: relative; top: 2px }
+span.imgButton .imgButton span.t { margin: 0; top: -2px; }
+span.imgButton a:visited, span.imgButton a:active, span.imgButton a:link, span.imgButton a:hover { text-decoration: none; }
 
 span.imgButton .imgButton.imgOnly { background-color: transparent; border:none; padding: 0; }
 span.imgButton .imgButton.imgOnly span { padding: 0 0 0 2px; }
 span.imgButton .imgButton.imgOnly:hover { background-color: transparent; border: none;  }
 
-div.toolbar span.imgButton { line-height: 13px; }
-div.toolbar span.imgButton .imgButton { background-color: transparent; margin-right: 2px; }
-div.toolbar span.imgButton .imgButton span img { padding: 0 0 3px 0; position: relative; top: 7px }
+div.toolbar span.imgButton { line-height: 11px; }
+div.toolbar span.imgButton .imgButton { background-color: transparent; margin-right: 2px; min-height: 20px; }
 
 div.mochaWindowFooter span.imgButton { line-height:14px; }                                               
-div.mochaWindowFooter span.imgButton .imgButton {background-color: transparent; border: solid 1px #BBBBBB; }
-div.mochaWindowFooter span.imgButton .imgButton span img { padding: 0 0 3px 0; position: relative; top: 6px }
-div.mochaWindowFooter span.imgButton .imgButton span span {  }
+div.mochaWindowFooter span.imgButton .imgButton { background-color: transparent; border: solid 1px #BBBBBB; }
 /* Image Buttons */
