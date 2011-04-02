@@ -67,7 +67,31 @@ textarea.dynamic { resize:none; position:relative; display:block; overflow:hidde
 textarea, input, select { font-family: Arial, Helvetica, sans-serif; font-size: 12px; vertical-align: middle; }
 .input { padding: 2px 0 2px 3px; border: 1px solid #848484; }
 form button { vertical-align: middle; }
-.button { height: 24px; margin: 0; padding: 3px 6px; background: #f1f1f1 url(../images/bg-panel-header.gif) left bottom repeat-x; font-size: 12px; font-weight: bold; cursor: pointer; vertical-align: middle; border: 1px solid #808080; -moz-border-radius: 3px; border-radius: 3px; }
+.button { 
+	display: inline-block;
+	border: 1px solid #aaa;
+	color: #444;
+	font-size: inherit;
+	margin-bottom: 0px;
+	min-width: 4em;
+	padding: 0 9px 0 9px;
+	cursor: pointer;
+	vertical-align: middle;
+	font-family: Sans-Serif;
+	font-size: 12px;
+	font-weight: bold;
+	background: #f4f4f4);
+	background: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+    background: -moz-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	-webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	cursor: pointer;
+}
 * html .button { padding: 3px 1px; }
 .formRow { margin: 0 0 8px 0; }
 .buttonRow { margin-bottom: 10px; }
