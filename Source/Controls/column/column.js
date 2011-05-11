@@ -597,7 +597,6 @@ MUI.append({
 		panelsExpanded.each(function(panel){
 			MUI.resizeChildren(panel);
 		}.bind(this));
-
 	},
 
 	resizeChildren: function(panel){ // May rename this resizeIframeEl()
