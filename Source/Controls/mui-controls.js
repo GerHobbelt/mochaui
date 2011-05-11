@@ -4,9 +4,9 @@
 
  script: mui-controls.js
 
- description: Root MochaUI Controls - Loads all MochaUI controls.
+ description: Root MochaUI Controls - Loads/Configures all MochaUI controls.
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -29,6 +29,7 @@ Object.append(MUI.controls, {
 	'grid':{'samples':['index'],data:['json'],'description':'Grid','isFtextbox.cssormControl':true,'css':['{theme}css/grid.css']},
 	'panel':{'samples':['demo'],data:['json'],'description':'Panel','isFormControl':true,'childNode':'content','childType':'MUI.Panel','css':['{theme}css/desktop.css']},
 	'selectlist':{'samples':['demo','index'],data:['json','html'],'description':'Grid View','isFormControl':true,'css':['{theme}css/selectlist.css']},
+	'stepper':{'samples':['demo','index'],data:['json'],'description':'Stepper','isFormControl':true,'js':['{control}stepper.js','{control}stepper.iterator.js'],'css':['{theme}css/stepper.css']},
 	'tabs':{'samples':['index'],data:['json','html'],'description':'Tabs','isFormControl':false,'css':['{theme}css/tab.css']},
 	'taskbar':{'samples':['demo'],data:['json'],'description':'Taskbar','isFormControl':false,'css':['{theme}css/taskbar.css']},
 	'textarea':{'samples':['index','demo'],data:['json','html'],'description':'Text Area','isFormControl':true,'css':['{theme}css/textbox.css']},

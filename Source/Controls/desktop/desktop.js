@@ -7,7 +7,7 @@
 
  description: MUI - Creates main desktop control that loads rest of desktop.
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -92,6 +92,8 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 						column.container = this.el.content;
 						column.element = new Element('div', {'id':column.id}).inject(this.el.content);
 						column.control = 'MUI.Column';
+
+						if (section.columns.length > 1) column.element.setStyle('float', 'left');
 
 						// last column we want it to call the this.setDesktopSize
 						MUI.create(column);

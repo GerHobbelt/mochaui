@@ -5,7 +5,7 @@
 
  description: MUI - A Web Applications User Interface Framework.
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -180,8 +180,9 @@ MUI.append({
 		Browser.firefox ? $(iframe).src = src : top.frames[iframe].location.reload(true);
 	},
 
-	notification: function(message){
-		MUI.create({
+	notification: function(message, options){
+		// [i_a] augment the notification window to carry larger messages
+		options = Object.append({
 			control: 'MUI.Window',
 			loadMethod: 'html',
 			closeAfter: 1500,
@@ -193,7 +194,8 @@ MUI.append({
 			y: 53,
 			padding: {top: 10, right: 12, bottom: 10, left: 12},
 			shadowBlur: 5
-		});
+		}, options);
+		MUI.create(options);
 	},
 
 	toggleAdvancedEffects: function(link){

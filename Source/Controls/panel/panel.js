@@ -1,11 +1,13 @@
 /*
  ---
 
+ name: Panel
+
  script: Panel.js
 
- description: Panel is used to create a content area in a column
+ description: MUI.Panel - used to create a content area in a column
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -168,7 +170,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				});
 				headerItems.push({id:options.id + 'headerContent',content:this.el.title,orientation:'left', divider:false});
 			}
-
+			
 			MUI.create({
 				control: 'MUI.Dock',
 				container: this.el.panel,

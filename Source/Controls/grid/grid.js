@@ -5,9 +5,9 @@
 
  script: grid.js
 
- description: MUI - Create a grid list.
+ description: MUI.Grid - Create a grid list.
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -32,7 +32,7 @@
  - MUI
  - MUI.Core
 
- provides: [Grid]
+ provides: [MUI.Grid]
  ...
  */
 
@@ -782,7 +782,7 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 
 					var template = columns.name;
 					if (template.indexOf('{') < 0) template = '{' + template + '}';
-					var val = ''+MUI.replaceFields(template,rowData); 
+					var val = ''+MUI.replaceFields(template,rowData);
 
 					if (columns.itemsType == "checkbox"){
 						var input = new Element('input', {type:"checkbox"});

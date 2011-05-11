@@ -1,11 +1,13 @@
 /*
  ---
 
- script: Column.js
+ name: Column
 
- description: Column control for horizontal layouts.
+ script: column.js
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ description: MUI.Column - Column control for horizontal layouts.
+
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -428,7 +430,7 @@ MUI.append({
 					'cursor': Browser.webkit ? 'row-resize' : 'n-resize'
 				}).removeClass('detached');
 			} else {
-				instance.resize.detach();
+				if(instance.resize) instance.resize.detach();
 				instance.el.handle.setStyles({
 					'display': 'none',
 					'cursor': null

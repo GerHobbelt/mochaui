@@ -26,11 +26,11 @@ License:
 	distribute, sublicense, and/or sell copies of the
 	Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
-	
+
 	The above copyright notice and this permission notice
 	shall be included in all copies or substantial portions of
 	the Software.
-	
+
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
 	KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
@@ -101,8 +101,8 @@ var Notimoo = new Class({
         closeRelocationTransitionTime: 750,
         scrollRelocationTransitionTime: 500,
         notificationOpacity : 0.95 /*,
-        onShow: $empty,
-        onClose: $empty */
+        onShow: function(){},
+        onClose: function(){} */
     },
 
     /**
@@ -120,12 +120,12 @@ var Notimoo = new Class({
 
         // Track scroll in parent element
         this.options.parent.addEvent('scroll', function() {
-            $clear(this.scrollTimeOut);
+			clearTimeout(this.scrollTimeOut);
             this.scrollTimeOut = (function() { manager._relocateActiveNotifications(manager.TYPE_RELOCATE_SCROLL) }).delay(200);
         }, this);
-               
+
         window.addEvent('scroll', function() {
-            $clear(manager.scrollTimeOut);
+			clearTimeout(manager.scrollTimeOut);
             manager.scrollTimeOut = (function() { manager._relocateActiveNotifications(manager.TYPE_RELOCATE_SCROLL) }).delay(200);
         });
 
@@ -192,15 +192,15 @@ var Notimoo = new Class({
      *  @param int width (optional) -> Width fot the notification (in pixels). If this isn't provided, the global one will be used.
      *	@param String customClass (optional) -> Custom class you want to apply to this notification. (It can be a list of classes separated by a blank space)
      */
-    show: function(options) {        
-        
+    show: function(options) {
+
         var manager = this;
-        
+
         // Get the base for the notification
-        var nextBase = this._applyScrollPosition(this.options.locationVBase);        
+        var nextBase = this._applyScrollPosition(this.options.locationVBase);
         var el = this.elements.filter(function(el) {
             var w = el.retrieve('working');
-            if (w) {        
+            if (w) {
                 nextBase = el.getStyle(this.options.locationVType).toInt() + el.getSize().y + this.options.notificationsMargin;
             }
             return !w;
@@ -210,7 +210,7 @@ var Notimoo = new Class({
        if (!el) {
          el = this.createNotificationElement();
          this.elements.push(el);
-       } 
+       }
 
        // Set base and 'working' flag
        el.setStyle(this.options.locationVType, nextBase);
@@ -218,9 +218,9 @@ var Notimoo = new Class({
 
        // Check if a custom width has been provided
        if (options.width) el.setStyle('width', options.width);
-       
+
        // Set notification content
-       // Since title is optional and we're reusing notifications, we need to check 
+       // Since title is optional and we're reusing notifications, we need to check
        el.getElement('span.title').set('html', (options.title) ? options.title : '');
        el.getElement('div.message').set('html', options.message);
 
@@ -229,7 +229,7 @@ var Notimoo = new Class({
 
        // Once the notification is populated, we check to see if there is any link inside so we can
        // configure it in order not to close the notification when it's clicked
-       el.getElements('a').addEvent('click', function(event) {           
+       el.getElements('a').addEvent('click', function(event) {
             event.stopPropagation();
         });
 
@@ -241,17 +241,17 @@ var Notimoo = new Class({
 
        // Show the element with a lot of style
        el.get('tween').start('opacity', this.options.notificationOpacity).chain(function() {
-              	
+
        	// Set close notification with options visibleTime delay
        	if ((options.sticky) ? !options.sticky : true) {
            (function() { manager.close(el); } ).delay((options.visibleTime) ? options.visibleTime : manager.options.visibleTime, manager);
        	}
-       	
+
        	// Fire callback
        	manager.fireEvent('show', el);
-       	
+
        });
-              
+
     },
 
     /**
@@ -260,11 +260,11 @@ var Notimoo = new Class({
      * @param Element element -> element to be removed
      */
     close: function(element) {
-        
+
         // Hide and reset notification. Destroy it when it's not the last one.
         var manager = this;
         var nots = manager.elements;
-        element.get('tween').start('opacity', 0).chain(function() {             
+        element.get('tween').start('opacity', 0).chain(function() {
             if (nots.length > 1) {
                 nots.elements = nots.erase(element);
                 element.destroy();
@@ -277,7 +277,7 @@ var Notimoo = new Class({
             manager.fireEvent('close', element);
 
         });
-        
+
     },
 
     /**
@@ -288,7 +288,7 @@ var Notimoo = new Class({
      *                      2.- scroll moved
      */
     _relocateActiveNotifications: function(sourceEvent) {
-        
+
         var base = this._applyScrollPosition(this.options.locationVBase);
         for (var index = 0; index < this.elements.length; index++) {
             var el = this.elements[index];
@@ -311,7 +311,7 @@ var Notimoo = new Class({
     _checkSize: function(element) {
       var notificationElHeight = element.getStyle('height').toInt();
       var titleHeight = element.getElement('span.title').getSize().y;
-      var messageHeight = element.getElement('div.message').getSize().y;      
+      var messageHeight = element.getElement('div.message').getSize().y;
       if (messageHeight > (notificationElHeight - titleHeight)) {
           element.setStyle('height', notificationElHeight + (messageHeight - (notificationElHeight - titleHeight)));
       }

@@ -5,9 +5,9 @@
 
  script: textbox.js
 
- description: MUI - Creates a maskable textbox control.
+ description: MUI.TextBox - Creates a maskable textbox control.
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -79,8 +79,9 @@ MUI.TextBox = new NamedClass('MUI.TextBox', {
 
 		// add form label/title
 		var lbl = $(o.id + '_label');
+		var tle = '';
 		if (o.hasTitle){  // are we supposed to have a title
-			var tle = this.getFormTitle();
+			tle = this.getFormTitle();
 			lbl = new Element('label', {'id':o.id + '_label'}).inject(fs);
 		} else {
 			if (lbl){  // title not needed so remove it, if it exists

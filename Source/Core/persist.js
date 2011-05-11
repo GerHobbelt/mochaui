@@ -7,7 +7,7 @@
 
  description: MUI - Provides the ability to cache data in the browser
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -316,7 +316,7 @@ MUI.Persist.Providers.WhatWG = new Class({
 	},
 
 	set: function(key, val){
-		var old_val = this.get(key); // get previous value 
+		var old_val = this.get(key); // get previous value
 
 		this._transaction(function(t){
 			t.executeSql(this.options.sql.remove, [key], function(){
@@ -667,7 +667,7 @@ MUI.Persist.Providers.Flash = new Class({
 		} catch (e){
 			// Safari
 			if ((typeof navigator.mimeTypes != 'undefined') && navigator.mimeTypes["application/x-googlegears"]){
-				F = new Element('object', {width:0,height:0,type:'pplication/x-googlegears',styles:{display:'name'}}).inject(document.documentElement);
+				F = new Element('object', {width:0,height:0,type:'application/x-googlegears',styles:{display:'name'}}).inject(document.documentElement);
 			}
 		}
 	}

@@ -1,11 +1,13 @@
 /*
  ---
 
+ name: Window
+
  script: Window.js
 
- description: Build windows.
+ description: MUI.Window - Build windows.
 
- copyright: (c) 2010 Contributors in (/AUTHORS.txt).
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
@@ -183,7 +185,7 @@ MUI.Windows = Object.append((MUI.Windows || {}), {
 	newFromJSON: function(newWindows){
 
 		newWindows.each(function(options){
-			var temp = new Hash(options);
+			var temp = new Object(options);
 
 			temp.each(function(value, key){
 				if (typeOf(value) != 'string') return;
@@ -322,7 +324,7 @@ MUI.Window.implement({
 		// i.e. IE8 Test CSS3 Body
 		if (options.useCSS3 && !this.useCSS3 && !this.options.useCanvas) options.shadowBlur = 0;
 
-		this.draw.delay(50, this); // delay to allow css to finish loading, firefox workaround
+		this.draw(); // .delay(50, this); // delay to allow css to finish loading, firefox workaround  (has side effects)
 
 		// Return window object
 		return this;

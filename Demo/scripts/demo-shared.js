@@ -107,13 +107,13 @@ Object.append(Demo, {
 				{'text': 'Cancel', 'name': 'Cancel', 'image': '{theme}images/cancel.png'}
 			],
 			onItemCommand: function(item, self, cmd){
-				Demo.writeConsole(self.options.id + ' received ' + cmd.name + ' command on item ' + item.value)
+				Demo.writeConsole(self.options.id + ' received ' + cmd.name + ' command on item ' + item.value);
 			},
 			onItemChecked: function(item, self){
-				Demo.writeConsole(self.options.id + ' received onItemChecked command on item ' + item.value)
+				Demo.writeConsole(self.options.id + ' received onItemChecked command on item ' + item.value);
 			},
 			onItemSelected: function(item, self){
-				Demo.writeConsole(self.options.id + ' received onItemSelected command on item ' + item.value)
+				Demo.writeConsole(self.options.id + ' received onItemSelected command on item ' + item.value);
 			}
 		});
 	},
@@ -246,7 +246,7 @@ Object.append(Demo, {
 			canSelect: true,
 			formTitle: 'Select List Control:',
 			onItemSelected: function(item, selected, self){
-				Demo.writeConsole(self.options.id + ' received onItemSelected command on item \'' + item.name + '\', selected=' + selected)
+				Demo.writeConsole(self.options.id + ' received onItemSelected command on item \'' + item.name + '\', selected=' + selected);
 			}
 		});
 	},
@@ -287,6 +287,72 @@ Object.append(Demo, {
 		MUI.create({control: 'MUI.TextArea', container: container, id: node.value + 'textarea2', hasDynamicSize: true});
 	},
 
+	stepperBuilder: function(e, node){
+		var container = Demo.getDemoContainer(node);
+		$(container).empty();
+
+		MUI.create({
+			control: 'MUI.Stepper',
+			container: container,
+			value: 0,
+			id:node.value + 'stepper1',
+			onValidationFailed:function(){
+				alert('Ooops! Please input intergers only!');
+			}
+		});
+		
+		// first load the StepperIterator class
+		new MUI.Require({js: ['{controls}stepper/stepper.iterator.js'],
+			onload: function() {
+				
+				// second, create a custom iterator
+				Demo.TimeIterator = new NamedClass('Demo.TimeIterator', {
+
+					Extends: MUI.StepperIterator,
+
+					set: function(value){
+						var values = value.match(/^(\d{2}):(\d{2})$/);
+						var minutes = values[1].toInt() * 60 + values[2].toInt();
+						return this.parent((minutes / 15).toInt());
+					},
+
+					validate: function(value){
+						if (typeOf(value) !== 'string')
+							return false;
+						return value.test(/^\d{2}:\d{2}$/);
+					},
+
+					current: function(){
+						var minutes = this.parent() * 15;
+						var h = (minutes / 60).toInt();
+						var m = (minutes % 60).toInt();
+						h = h < 10 ? '0' + h : h;
+						m = m < 10 ? '0' + m : m;
+						return h + ':' + m;
+					},
+
+					hasPrevious: function(){
+						return this.index > 0;
+					}
+				});
+				
+				// finally, instantiate the (custom)stepper
+				MUI.create({control: 'MUI.Stepper',
+					container: container,
+					id: node.value + 'stepper2',
+					formTitle: 'Time',
+					value: '00:00',
+					
+					iterator: new Demo.TimeIterator(),
+					
+					onValidationFailed:	function(){
+						alert('Ooops! Please format your input like HH:MM !');
+					}
+				});
+			}
+		});
+	},
+
 	textBoxBuilder: function(e, node){
 		var container = Demo.getDemoContainer(node);
 		$(container).empty();
@@ -315,13 +381,13 @@ Object.append(Demo, {
 			id: node.value + 'tree1',
 			content: {url: 'data/tree-testdata.json'},
 			onNodeExpanded: function(node, isExpanded, self){
-				Demo.writeConsole(self.options.id + ' receieved onNodeExpanded command on node ' + node.value + ', isExpanded=' + isExpanded)
+				Demo.writeConsole(self.options.id + ' receieved onNodeExpanded command on node ' + node.value + ', isExpanded=' + isExpanded);
 			},
 			onNodeChecked: function(node, checked, self){
 				Demo.writeConsole(self.options.id + ' receieved onNodeChecked command on node ' + node.value + ', checked=' + checked);
 			},
 			onNodeSelected: function(node, self){
-				Demo.writeConsole(self.options.id + ' receieved onNodeSelected command on node ' + node.value)
+				Demo.writeConsole(self.options.id + ' receieved onNodeSelected command on node ' + node.value);
 			}
 		});
 	},
@@ -515,7 +581,7 @@ Object.append(Demo, {
 	},
 
 	modalCount: 0,
-	createModal:  function(){
+	createModal:function(){
 		Demo.modalCount++;
 		var content = 'Your modal window content';
 		if (Demo.modalCount < 3) content += '<br/><br/><a id="createModal' + Demo.modalCount + '">Create Another Modal</a>';
@@ -666,7 +732,7 @@ Object.append(Demo, {
 				$('authorsAboutLink').addEvent('click', function(e){
 					e.stop();
 					Demo.authorsWindow();
-				})
+				});
 			}
 		});
 	},
@@ -733,7 +799,7 @@ Object.append(Demo, {
 
 	countResizeEvents: {				// used to for counting resize events for panels
 		mainPanel: 0,
-		panel3: 0
+		panel3:0
 	},
 
 	addResizeElements: function(){		// add resize events to panels
@@ -760,7 +826,7 @@ Object.append(Demo, {
 		Demo.countResizeEvents[this.id]++;
 		if (this.countEvents) this.countEvents.set('text', Demo.countResizeEvents[this.id]);
 		var newSize = this.el.contentWrapper.getStyles(['width', 'height']);
-		if (this.displayWidthEl) this.displayWidthEl.set('text', newSize['width']);
-		if (this.displayHeightEl) this.displayHeightEl.set('text', newSize['height']);
+		if (this.displayWidthEl) this.displayWidthEl.set('text', newSize.width);
+		if (this.displayHeightEl) this.displayHeightEl.set('text', newSize.height);
 	}
 });
