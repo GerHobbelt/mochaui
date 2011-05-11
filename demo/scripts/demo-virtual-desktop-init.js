@@ -1,92 +1,97 @@
 /* 
 
-	In this file we setup our Windows, Columns and Panels,
-	and then inititialize MUI.
-	
-	At the bottom of Core.js you can setup lazy loading for your
-	own plugins.
+ In this file we setup our Windows, Columns and Panels,
+ and then inititialize MUI.
 
-*/
+ At the bottom of Core.js you can see how to setup lazy loading for your
+ own plugins.
+
+ */
 
 /*
-  
-INITIALIZE WINDOWS
 
-	1. Define windows
-	
-		var myWindow = function(){ 
-			new MUI.Window({
-				id: 'mywindow',
-				title: 'My Window',
-				contentURL: 'pages/lipsum.html',
-				width: 340,
-				height: 150
-			});
-		}
+ INITIALIZE WINDOWS
 
-	2. Build windows on onDomReady
-	
-		myWindow();
-	
-	3. Add link events to build future windows
-	
-		if ($('myWindowLink')){
-			$('myWindowLink').addEvent('click', function(e) {
-				new Event(e).stop();
-				jsonWindows();
-			});
-		}
+ 1. Define windows
 
-		Note: If your link is in the top menu, it opens only a single window, and you would
-		like a check mark next to it when it's window is open, format the link name as follows:
+ var myWindow = function(){
+ new MUI.Window({
+ id: 'mywindow',
+ title: 'My Window',
+ content: {url:pages/lipsum.html'},
+ width: 340,
+ height: 150
+ });
+ }
 
-		window.id + LinkCheck, e.g., mywindowLinkCheck
+ 2. Build windows on onDomReady
 
-		Otherwise it is suggested you just use mywindowLink
+ myWindow();
 
-	Associated HTML for link event above:
+ 3. Add link events to build future windows
 
-		<a id="myWindowLink" href="pages/lipsum.html">My Window</a>	
+ if ($('myWindowLink')){
+ $('myWindowLink').addEvent('click', function(e){
+ new Event(e).stop();
+ jsonWindows();
+ });
+ }
+
+ Note: If your link is in the top menu, it opens only a single window, and you would
+ like a check mark next to it when it's window is open, format the link name as follows:
+
+ window.id + LinkCheck, e.g., mywindowLinkCheck
+
+ Otherwise it is suggested you just use mywindowLink
+
+ Associated HTML for link event above:
+
+ <a id="myWindowLink" href="pages/lipsum.html">My Window</a>
 
 
-	Notes:
-		If you need to add link events to links within windows you are creating, do
-		it in the onContentLoaded function of the new window. 
- 
--------------------------------------------------------------------- */
+ Notes:
+ If you need to add link events to links within windows you are creating, do
+ it in the onLoaded function of the new window.
+
+ -------------------------------------------------------------------- */
 
 initializeWindows = function(){
 
+	// change default setting - keep window within inside the main area.
+	MUI.Windows.options.container = 'pageWrapper';
+
 	// Examples
-	MUI.ajaxpageWindow = function(){ 
+	MUI.ajaxpageWindow = function(){
 		new MUI.Window({
 			id: 'ajaxpage',
-			loadMethod: 'xhr',
-			contentURL: 'pages/lipsum.html',
+			content: {
+				url: 'pages/lipsum.html',
+				loadMethod: 'xhr'
+			},
 			width: 340,
 			height: 150
 		});
-	}	
-	if ($('ajaxpageLinkCheck')){ 
-		$('ajaxpageLinkCheck').addEvent('click', function(e){	
-			new Event(e).stop();
+	};
+	if ($('ajaxpageLinkCheck')){
+		$('ajaxpageLinkCheck').addEvent('click', function(e){
+			e.stop();
 			MUI.ajaxpageWindow();
 		});
-	}	
-	
+	}
+
 	MUI.jsonWindows = function(){
 		var url = 'data/json-windows-data.js';
 		var request = new Request.JSON({
 			url: url,
 			method: 'get',
-			onComplete: function(properties) {
-				MUI.newWindowsFromJSON(properties.windows);
+			onComplete: function(properties){
+				MUI.Windows.newFromJSON(properties.windows);
 			}
 		}).send();
-	}
+	};
 	if ($('jsonLink')){
-		$('jsonLink').addEvent('click', function(e) {
-			new Event(e).stop();
+		$('jsonLink').addEvent('click', function(e){
+			e.stop();
 			MUI.jsonWindows();
 		});
 	}
@@ -95,247 +100,243 @@ initializeWindows = function(){
 		new MUI.Window({
 			id: 'youtube',
 			title: 'YouTube in Iframe',
-			loadMethod: 'iframe',
-			contentURL: 'pages/youtube.html',
 			width: 340,
 			height: 280,
-			resizeLimit:  {'x': [330, 2500], 'y': [250, 2000]},
-			toolbar: true,
-			toolbarURL: 'pages/youtube-tabs.html',
-			toolbarOnload: function(){
-				MUI.initializeTabs('youtubeTabs');	
-
-				$('youtube1Link').addEvent('click', function(e){
-					MUI.updateContent({
-						'element':  $('youtube'),
-						'url':      'pages/youtube.html'
-					});
-				});
-	
-				$('youtube2Link').addEvent('click', function(e){
-					MUI.updateContent({
-						'element':  $('youtube'),
-						'url':      'pages/youtube2.html'
-					});
-				});
-	
-				$('youtube3Link').addEvent('click', function(e){
-					MUI.updateContent({
-						'element':  $('youtube'),	
-						'url':      'pages/youtube3.html'
-					});
-				});	
-			}			
+			resizeLimit: {'x': [330, 2500], 'y': [250, 2000]},
+			content: [
+				{
+					url: 'pages/youtube.html',
+					loadMethod: 'iframe'
+				},
+				{
+					'position': 'top',
+					section: 'toolbar',
+					loadMethod:'json',
+					content: [
+						{'text': 'Zero 7', 'url': 'pages/youtube.html', 'title': 'Zero 7'},
+						{'text': 'Fleet Foxes', 'url': 'pages/youtube2.html', 'title': 'Fleet Foxes'},
+						{'text': 'Boards of Canada', 'url': 'pages/youtube3.html', 'title': 'Boards of Canada'}
+					],
+					onLoaded: function(element,uOptions,json){
+						MUI.create({
+							control:'MUI.Tabs',
+							id: 'youtube_toolbar',
+							container: 'youtube',
+							position: 'top',
+							tabs: json,
+							partner: 'youtube',
+							section: 'toolbar'
+						});
+					}
+				}
+			]
 		});
-	}	
-	if ($('youtubeLinkCheck')) {
+	};
+	if ($('youtubeLinkCheck')){
 		$('youtubeLinkCheck').addEvent('click', function(e){
-		new Event(e).stop();
+			e.stop();
 			MUI.youtubeWindow();
 		});
-	}	
+	}
 
-	MUI.clockWindow = function(){	
+	MUI.clockWindow = function(){
 		new MUI.Window({
 			id: 'clock',
 			title: 'Canvas Clock',
-			addClass: 'transparent',
-			loadMethod: 'xhr',
-			contentURL: 'plugins/coolclock/index.html',
+			cssClass: 'transparent',
+			content: {
+				url: '{plugins}coolclock/demo.html',
+				loadMethod: 'xhr',
+				require: {
+					js: ['{plugins}coolclock/scripts/coolclock.js'],
+					onload: function(){
+						if (CoolClock) new CoolClock();
+					}
+				}
+			},
 			shape: 'gauge',
 			headerHeight: 30,
 			width: 160,
 			height: 160,
 			x: 570,
 			y: 152,
-			padding: { top: 0, right: 0, bottom: 0, left: 0 },
-			require: {			
-				js: [MUI.path.plugins + 'coolclock/scripts/coolclock.js'],
-				onload: function(){
-					if (CoolClock) new CoolClock();
-				}	
-			}			
-		});	
-	}
+			padding: {top: 0, right: 0, bottom: 0, left: 0}
+		});
+	};
 	if ($('clockLinkCheck')){
 		$('clockLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
+			e.stop();
 			MUI.clockWindow();
 		});
 	}
-	
-	MUI.parametricsWindow = function(){	
+
+	MUI.parametricsWindow = function(){
 		new MUI.Window({
 			id: 'parametrics',
 			title: 'Window Parametrics',
-			loadMethod: 'xhr',
-			contentURL: 'plugins/parametrics/index.html',
+			content: {
+				url: '{plugins}parametrics/demo.html',
+				loadMethod: 'xhr',
+				require: {
+					js: ['{plugins}parametrics/scripts/parametrics.js'],
+					onload: function(){
+						if (MUI.addRadiusSlider) MUI.addRadiusSlider();
+						if (MUI.addShadowSlider) MUI.addShadowSlider();
+						if (MUI.addOffsetXSlider) MUI.addOffsetXSlider();
+						if (MUI.addOffsetYSlider) MUI.addOffsetYSlider();
+					}
+				}
+			},
 			width: 305,
-			height: 110,
+			height: 210,
 			x: 230,
 			y: 180,
-			padding: { top: 12, right: 12, bottom: 10, left: 12 },
+			padding: {top: 12, right: 12, bottom: 10, left: 12},
 			resizable: false,
 			maximizable: false,
-			require: {
-				css: [MUI.path.plugins + 'parametrics/css/style.css'],
-				js: [MUI.path.plugins + 'parametrics/scripts/parametrics.js'],
-				onload: function(){	
-					if (MUI.addRadiusSlider) MUI.addRadiusSlider();
-					if (MUI.addShadowSlider) MUI.addShadowSlider();
-				}		
-			}			
+			onDragStart: function(instance){
+				if (!Browser.ie) instance.el.windowEl.setStyle('opacity', 0.5);
+				// VML doesn't render opacity nicely on the shadow
+			},
+			onDragComplete: function(instance){
+				if (!Browser.ie) instance.el.windowEl.setStyle('opacity', 1);
+			}
 		});
-	}
+	};
 	if ($('parametricsLinkCheck')){
 		$('parametricsLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
+			e.stop();
 			MUI.parametricsWindow();
 		});
-	}		
+	}
 
 	// Examples > Tests
-	MUI.eventsWindow = function(){	
+	MUI.eventsWindow = function(){
 		new MUI.Window({
 			id: 'windowevents',
 			title: 'Window Events',
 			loadMethod: 'xhr',
-			contentURL: 'pages/events.html',
+			content: {url: 'pages/events.html'},
 			width: 340,
-			height: 250,			
-			onContentLoaded: function(windowEl){
+			height: 250,
+			onLoaded: function(){
 				MUI.notification('Window content was loaded.');
 			},
 			onCloseComplete: function(){
 				MUI.notification('The window is closed.');
 			},
-			onMinimize: function(windowEl){
+			onMinimize: function(){
 				MUI.notification('Window was minimized.');
 			},
-			onMaximize: function(windowEl){
+			onMaximize: function(){
 				MUI.notification('Window was maximized.');
 			},
-			onRestore: function(windowEl){
+			onRestore: function(){
 				MUI.notification('Window was restored.');
 			},
-			onResize: function(windowEl){
+			onResize: function(){
 				MUI.notification('Window was resized.');
 			},
-			onFocus: function(windowEl){
+			onFocus: function(){
 				MUI.notification('Window was focused.');
 			},
-			onBlur: function(windowEl){
+			onBlur: function(){
 				MUI.notification('Window lost focus.');
 			}
 		});
-	}	
+	};
 	if ($('windoweventsLinkCheck')){
 		$('windoweventsLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
+			e.stop();
 			MUI.eventsWindow();
 		});
 	}
 
-	MUI.containertestWindow = function(){ 
+	MUI.containerTestWindow = function(){
 		new MUI.Window({
 			id: 'containertest',
 			title: 'Container Test',
 			loadMethod: 'xhr',
-			contentURL: 'pages/lipsum.html',
+			content: {url: 'pages/lipsum.html'},
 			container: 'pageWrapper',
 			width: 340,
 			height: 150,
 			x: 100,
 			y: 100
 		});
-	}
-	if ($('containertestLinkCheck')){ 
-		$('containertestLinkCheck').addEvent('click', function(e){	
-			new Event(e).stop();
-			MUI.containertestWindow();
+	};
+	if ($('containertestLinkCheck')){
+		$('containertestLinkCheck').addEvent('click', function(e){
+			e.stop();
+			MUI.containerTestWindow();
 		});
 	}
 
-	MUI.iframetestsWindow = function(){
+	MUI.iframeTestsWindow = function(){
 		new MUI.Window({
 			id: 'iframetests',
 			title: 'Iframe Tests',
-			loadMethod: 'iframe',
-			contentURL: 'pages/iframetests.html'
+			content: {
+				url: 'pages/iframetests.html',
+				loadMethod: 'iframe'
+			}
 		});
-	}
-	if ($('iframetestsLinkCheck')) {
-		$('iframetestsLinkCheck').addEvent('click', function(e){
-		new Event(e).stop();
-			MUI.iframetestsWindow();
+	};
+	if ($('iframetestLinkCheck')){
+		$('iframetestLinkCheck').addEvent('click', function(e){
+			e.stop();
+			MUI.iframeTestsWindow();
 		});
 	}
 
-	MUI.accordiantestWindow = function(){
-		var id = 'accordiantest';
+	MUI.accordionTestWindow = function(){
+		var id = 'accordiontest';
 		new MUI.Window({
 			id: id,
-			title: 'Accordian',
-			loadMethod: 'xhr',
-			contentURL: 'pages/accordian-demo.html',
+			title: 'Accordion',
+			content: {
+				url: 'data/accordion-demo.json',
+				loadMethod: 'json',
+				onLoaded: function(el,cOptions,json){
+					MUI.create({
+						control: 'MUI.Accordion',
+						container: id,
+						idField: 'value',
+						panels: json
+					});
+				}
+			},
 			width: 300,
 			height: 200,
 			scrollbars: false,
 			resizable: false,
-			maximizable: false,
-			padding: { top: 0, right: 0, bottom: 0, left: 0 },
-			require: {
-				css: [MUI.path.plugins + 'accordian/css/style.css'],
-				onload: function(){
-					this.windowEl = $(id);				
-					new Accordion('#' + id + ' h3.accordianToggler', "#" + id + ' div.accordianElement',{
-						opacity: false,
-						alwaysHide: true,
-						onActive: function(toggler, element){
-							toggler.addClass('open');
-						},
-						onBackground: function(toggler, element){
-							toggler.removeClass('open');
-						},							
-						onStart: function(toggler, element){
-							this.windowEl.accordianResize = function(){
-								MUI.dynamicResize($(id));
-							}
-							this.windowEl.accordianTimer = this.windowEl.accordianResize.periodical(10);
-						}.bind(this),
-						onComplete: function(){
-							this.windowEl.accordianTimer = $clear(this.windowEl.accordianTimer);
-							MUI.dynamicResize($(id)) // once more for good measure
-						}.bind(this)
-					}, $(id));
-				}	
-			}
+			maximizable: false
 		});
-	}	
-	if ($('accordiantestLinkCheck')){ 
-		$('accordiantestLinkCheck').addEvent('click', function(e){	
-			new Event(e).stop();
-			MUI.accordiantestWindow();
+	};
+	if ($('accordiontestLinkCheck')){
+		$('accordiontestLinkCheck').addEvent('click', function(e){
+			e.stop();
+			MUI.accordionTestWindow();
 		});
 	}
-	
+
 	MUI.noCanvasWindow = function(){
 		new MUI.Window({
 			id: 'nocanvas',
 			title: 'No Canvas',
 			loadMethod: 'xhr',
-			contentURL: 'pages/lipsum.html',
-			addClass: 'no-canvas',
+			content: {url: 'pages/lipsum.html'},
+			cssClass: 'no-canvas',
 			width: 305,
 			height: 175,
 			shadowBlur: 0,
 			resizeLimit: {'x': [275, 2500], 'y': [125, 2000]},
 			useCanvas: false
 		});
-	}
+	};
 	if ($('noCanvasLinkCheck')){
 		$('noCanvasLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
+			e.stop();
 			MUI.noCanvasWindow();
 		});
 	}
@@ -343,58 +344,60 @@ initializeWindows = function(){
 	// View
 	if ($('sidebarLinkCheck')){
 		$('sidebarLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
+			e.stop();
 			MUI.Desktop.sidebarToggle();
 		});
 	}
 
 	if ($('cascadeLink')){
 		$('cascadeLink').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.arrangeCascade();
+			e.stop();
+			MUI.Windows.arrangeCascade();
 		});
 	}
 
 	if ($('tileLink')){
 		$('tileLink').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.arrangeTile();
+			e.stop();
+			MUI.Windows.arrangeTile();
 		});
 	}
 
 	if ($('closeLink')){
 		$('closeLink').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.closeAll();
+			e.stop();
+			MUI.Windows.closeAll();
 		});
 	}
 
 	if ($('minimizeLink')){
 		$('minimizeLink').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.minimizeAll();
+			e.stop();
+			MUI.Windows.minimizeAll();
 		});
 	}
 
 	// Tools
-	MUI.builderWindow = function(){	
+	MUI.builderWindow = function(){
 		new MUI.Window({
 			id: 'builder',
 			title: 'Window Builder',
 			icon: 'images/icons/page.gif',
 			loadMethod: 'xhr',
-			contentURL: 'plugins/windowform/',
+			content: {url: '{plugins}windowform/'},
 			width: 370,
 			height: 410,
 			maximizable: false,
 			resizable: false,
 			scrollbars: false,
-			onBeforeBuild: function(){
+			onDrawBegin: function(){
+/*
 				if ($('builderStyle')) return;
-				new Asset.css('plugins/windowform/css/style.css', {id: 'builderStyle'});
-			},			
-			onContentLoaded: function(){
-				new Asset.javascript('plugins/windowform/scripts/Window-from-form.js', {
+				new Asset.css(MUI.replacePaths('{theme}/css/accordion.css'), {id: 'builderStyle'});
+*/
+			},
+			onLoaded: function(){
+				new Asset.javascript(MUI.replacePaths('{plugins}windowform/scripts/window-from-form.js'), {
 					id: 'builderScript',
 					onload: function(){
 						$('newWindowSubmit').addEvent('click', function(e){
@@ -403,15 +406,15 @@ initializeWindows = function(){
 						});
 					}
 				});
-			}			
+			}
 		});
-	}
+	};
 	if ($('builderLinkCheck')){
-		$('builderLinkCheck').addEvent('click', function(e){	
-			new Event(e).stop();
+		$('builderLinkCheck').addEvent('click', function(e){
+			e.stop();
 			MUI.builderWindow();
 		});
-	}	
+	}
 
 	// Todo: Add menu check mark functionality for workspaces.
 
@@ -419,72 +422,69 @@ initializeWindows = function(){
 
 	if ($('saveWorkspaceLink')){
 		$('saveWorkspaceLink').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.saveWorkspace();
+			e.stop();
+			MUI.Desktop.saveWorkspace();
 		});
 	}
-	
+
 	if ($('loadWorkspaceLink')){
 		$('loadWorkspaceLink').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.loadWorkspace();
+			e.stop();
+			MUI.Desktop.loadWorkspace();
 		});
 	}
-	
-	if ($('toggleEffectsLinkCheck')){
-		$('toggleEffectsLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
-			MUI.toggleEffects($('toggleEffectsLinkCheck'));			
-		});
-		if (MUI.options.useEffects == true) {
-			MUI.toggleEffectsLink = new Element('div', {
-				'class': 'check',
-				'id': 'toggleEffects_check'
-			}).inject($('toggleEffectsLinkCheck'));
-		}
-	}	
 
-	// Help	
+	if ($('toggleStdEffectsLinkCheck')){
+		$('toggleStdEffectsLinkCheck').addEvent('click', function(e){
+			e.stop();
+			MUI.toggleStandardEffects($('toggleStdEffectsLinkCheck'));
+		});
+	}
+
+	if ($('toggleAdvEffectsLinkCheck')){
+		$('toggleAdvEffectsLinkCheck').addEvent('click', function(e){
+			e.stop();
+			MUI.toggleAdvancedEffects($('toggleAdvEffectsLinkCheck'));
+		});
+	}
+
+	// Help
 	MUI.featuresWindow = function(){
 		new MUI.Window({
 			id: 'features',
 			title: 'Features',
-			loadMethod: 'xhr',
-			contentURL: 'pages/features-layout.html',
-			width: 305,
-			height: 175,
+			width: 275,
+			height: 250,
 			resizeLimit: {'x': [275, 2500], 'y': [125, 2000]},
-			toolbar: true,
-			toolbarURL: 'pages/features-tabs.html',
-			toolbarOnload: function(){
-				MUI.initializeTabs('featuresTabs');
-
-				$('featuresLayoutLink').addEvent('click', function(e){
-					MUI.updateContent({
-						'element':  $('features'),
-						'url':       'pages/features-layout.html'
-					});
-				});
-
-				$('featuresWindowsLink').addEvent('click', function(e){
-					MUI.updateContent({
-						'element':  $('features'),
-						'url':       'pages/features-windows.html'
-					});
-				});
-
-				$('featuresGeneralLink').addEvent('click', function(e){
-					MUI.updateContent({
-						'element':  $('features'),
-						'url':       'pages/features-general.html'
-					});
-				});
-			}			
+			content: [
+				{url: 'pages/features-layout.html'},
+				{
+					position: 'top',
+					loadMethod:'json',
+					id: 'features_toolbar',
+					css: 'mochaToolbar',
+					content: [
+						{'text': 'Layout', 'url': 'pages/features-layout.html', 'loadMethod': 'iframe', 'title': 'Features - Layout', 'class': 'first'},
+						{'text': 'Windows', 'url': 'pages/features-windows.html', 'loadMethod': 'iframe', 'title': 'Features - Windows'},
+						{'text': 'General', 'url': 'pages/features-general.html', 'loadMethod': 'iframe', 'title': 'Features - General', 'class': 'last'}
+					],
+					onLoaded: function(element, uOptions, json){
+						MUI.create({
+							control: 'MUI.Tabs',
+							id: 'features_toolbar',
+							container: 'features',
+							position: 'top',
+							tabs: json,
+							partner: 'features'
+						});
+					}
+				}
+			]
 		});
-	}
+	};
 	if ($('featuresLinkCheck')){
 		$('featuresLinkCheck').addEvent('click', function(e){
-			new Event(e).stop();
+			e.stop();
 			MUI.featuresWindow();
 		});
 	}
@@ -492,56 +492,102 @@ initializeWindows = function(){
 	MUI.aboutWindow = function(){
 		new MUI.Modal({
 			id: 'about',
-			addClass: 'about',
+			cssClass: 'about',
 			title: 'MochaUI',
 			loadMethod: 'xhr',
-			contentURL: 'pages/about.html',
+			content: {url: 'pages/about.html'},
 			type: 'modal2',
 			width: 350,
 			height: 195,
-			padding: { top: 43, right: 12, bottom: 10, left: 12 },
-			scrollbars:  false
+			padding: {top: 43, right: 12, bottom: 10, left: 12},
+			scrollbars: false
 		});
-	}
+	};
 	if ($('aboutLink')){
-		$('aboutLink').addEvent('click', function(e){	
-			new Event(e).stop();
+		$('aboutLink').addEvent('click', function(e){
+			e.stop();
 			MUI.aboutWindow();
 		});
 	}
 
-	// Deactivate menu header links
-	$$('a.returnFalse').each(function(el){
-		el.addEvent('click', function(e){
-			new Event(e).stop();
+	// Misc
+	MUI.authorsWindow = function(){
+		new MUI.Modal({
+			id: 'authorsWindow',
+			title: 'AUTHORS.txt',
+			content: {url: 'scripts/AUTHORS.txt'},
+			width: 400,
+			height: 250,
+			scrollbars: true
 		});
+	};
+	if ($('authorsLink')){
+		$('authorsLink').addEvent('click', function(e){
+			new Event(e).stop();
+			MUI.authorsWindow();
+		});
+	}
+
+	MUI.licenseWindow = function(){
+		new MUI.Modal({
+			id: 'License',
+			title: 'MIT-LICENSE.txt',
+			content: {url:'scripts/MIT-LICENSE.txt'},
+			width: 580,
+			height: 350,
+			scrollbars: true
+		});
+	};
+	if ($('licenseLink')){
+		$('licenseLink').addEvent('click', function(e){
+			new Event(e).stop();
+			MUI.licenseWindow();
+		});
+	}
+
+	// Deactivate menu header links
+	$$('a.returnFalse').addEvent('click', function(e){
+		e.stop();
 	});
 
 	// Build windows onLoad
 	MUI.parametricsWindow();
 	MUI.clockWindow();
-	
 	MUI.myChain.callChain();
-	
-}
+};
+
+// Initialize MochaUI options
+MUI.initialize();
 
 // Initialize MochaUI when the DOM is ready
 window.addEvent('load', function(){
 
 	MUI.myChain = new Chain();
 	MUI.myChain.chain(
-		function(){MUI.Desktop.initialize();},
-		function(){MUI.Dock.initialize();},
-		function(){initializeWindows();}		
-	).callChain();
-	
+			function(){
+				MUI.Desktop.initialize();
+			},
+			function(){
+				initializeWindows();
+			},
+			function(){
+				// force checkbox on menu to be in correct state
+				MUI.options.standardEffects = !MUI.options.standardEffects;
+				MUI.toggleStandardEffects($('toggleStdEffectsLinkCheck'));
+
+				// force checkbox on menu to be in correct state
+				MUI.options.advancedEffects = !MUI.options.advancedEffects;
+				MUI.toggleAdvancedEffects($('toggleAdvEffectsLinkCheck'));
+			}
+			).callChain();
+
 	// This is just for the demo. Running it onload gives pngFix time to replace the pngs in IE6.
 	$$('.desktopIcon').addEvent('click', function(){
 		MUI.notification('Do Something');
-	});	
+	});
 
 });
 
 window.addEvent('unload', function(){
-	// This runs when a user leaves your page.	
+	// This runs when a user leaves your page.
 });
