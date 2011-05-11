@@ -782,7 +782,7 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 
 					var template = columns.name;
 					if (template.indexOf('{') < 0) template = '{' + template + '}';
-					var val = ''+MUI.replaceFields(template,rowData); 
+					var val = ''+MUI.replaceFields(template,rowData);
 
 					if (columns.itemsType == "checkbox"){
 						var input = new Element('input', {type:"checkbox"});

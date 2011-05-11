@@ -44,7 +44,7 @@ MUI.Form = new Class({
 		Rules: {},
 		Prefix: '',
 		HasRequired: false
-        
+
 		//onEventHandler: null
 	},
 

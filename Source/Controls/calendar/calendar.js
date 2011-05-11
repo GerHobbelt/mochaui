@@ -333,11 +333,11 @@ MUI.Calendar = new NamedClass('MUI.Calendar', {
 				el.getChildren().each(function(option){ // get options
 					var values = this.unformat(option.value, el.format);
 
-					if (typeOf(values[0]) != 'number' || values[0] == years[0]){				 // if it's a year / month combo for curr year, or simply a month select
+					if (typeOf(values[0]) != 'number' || values[0] == years[0]){ 				// if it's a year / month combo for curr year, or simply a month select
 						if (!months_start.contains(values[1])) months_start.push(values[1]);	// add to months array
 					}
 
-					if (typeOf(values[0]) != 'number' || values[0] == years.getLast()){		 // if it's a year / month combo for curr year, or simply a month select
+					if (typeOf(values[0]) != 'number' || values[0] == years.getLast()){ 		// if it's a year / month combo for curr year, or simply a month select
 						if (!months_end.contains(values[1])) months_end.push(values[1]);		// add to months array
 					}
 				}, this);
