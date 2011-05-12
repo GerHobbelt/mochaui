@@ -1,17 +1,22 @@
 /*
  ---
+
  file: tree.css
 
- description: MUI - Tree css.
+ description: MUI.Tree css.
 
  copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
  license: MIT-style license in (/MIT-LICENSE.txt).
 
- note:
  provides: css for charcoal theme
+
  ...
  */
+
+/* Layout
+---------------------------------------------------------------- */
+
 div.tree { overflow: scroll; overflow-x: auto; font-size: 11px; }
 ul.tree { list-style: none; margin: 0; padding: 0; text-decoration: none; cursor: pointer; }
 ul.tree ul, ul.tree li { list-style: none; margin: 0; padding: 0; text-decoration: none; cursor: pointer; }
