@@ -75,12 +75,13 @@ MUI.Column = new NamedClass('MUI.Column', {
 		else MUI.set(options.id, this);
 
 		var parentInstance = MUI.get(options.container);
-		if(parentInstance && (parentInstance.isTypeOf('MUI.Panel') || parentInstance.isTypeOf('MUI.Window'))) {
+		if(parentInstance && parentInstance.isTypeOf('MUI.Panel')) {
 			// If loading columns into a panel, hide the regular content container.
 			if (parentInstance.el.element.getElement('.pad') != null) parentInstance.el.element.getElement('.pad').hide();
-
+		}
+		else if(parentInstance && parentInstance.isTypeOf('MUI.Window')) {	// [i_a] fix undefined .element for window instance
 			// If loading columns into a window, hide the regular content container.
-			if (parentInstance.el.element.getElement('.mochaContent') != null)  parentInstance.el.element.getElement('.mochaContent').hide();
+			if (parentInstance.el.windowEl.getElement('.mochaContent') != null)  parentInstance.el.windowEl.getElement('.mochaContent').hide();
 		}
 
 		// make or use existing element
@@ -148,6 +149,8 @@ MUI.Column = new NamedClass('MUI.Column', {
 
 		switch (options.placement){
 			case 'left':
+				this.el.column.setStyle('float', 'left'); // [i_a]		fix for nested columns and split windows / panels
+
 				this.el.handle = new Element('div', {
 					'id': options.id + '_handle',
 					'class': 'columnHandle'
@@ -160,7 +163,10 @@ MUI.Column = new NamedClass('MUI.Column', {
 
 				this._addResize(this.el.column, options.resizeLimit[0], options.resizeLimit[1], 'right');
 				break;
+
 			case 'right':
+				this.el.column.setStyle('float', 'right'); // [i_a]		fix for nested columns and split windows / panels
+
 				this.el.handle = new Element('div', {
 					'id': options.id + '_handle',
 					'class': 'columnHandle'
@@ -430,7 +436,8 @@ MUI.append({
 					'cursor': Browser.webkit ? 'row-resize' : 'n-resize'
 				}).removeClass('detached');
 			} else {
-				if(instance.resize) instance.resize.detach();
+				if(instance.resize)
+					instance.resize.detach();
 				instance.el.handle.setStyles({
 					'display': 'none',
 					'cursor': null
