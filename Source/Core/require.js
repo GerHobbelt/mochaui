@@ -159,7 +159,10 @@ Object.append(Asset, {
 					'type': 'text/css',
 					'href': source
 				}).inject(document.head);
-				properties.onload();
+// Partikule
+				if (typeOf(properties.onload) == 'function')
+					properties.onload();
+// /Partikule
 			}.bind(this),
 			onFailure: function(){
 			},
