@@ -1,4 +1,4 @@
-/* 
+/*
 
  In this file we setup our Windows, Columns and Panels,
  and then initialize MochaUI.

@@ -10,10 +10,10 @@
 	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/core.css"/>
 
 	<!--[if IE]>
-	<script type="text/javascript" src="scripts/excanvas_r43.js"></script>
+	<script type="text/javascript" src="../Demo/scripts/excanvas.js"></script>
 	<![endif]-->
-	<script type="text/javascript" src="scripts/mootools-1.3.0-core-nocompat.js"></script>
-	<script type="text/javascript" src="scripts/mootools-1.3.0-more.js"></script>
+	<script type="text/javascript" src="../Demo/scripts/mootools-core.js"></script>
+	<script type="text/javascript" src="../Demo/scripts/mootools-more.js"></script>
 
 	<!--MOCHAUI-->
 	<script type="text/javascript" src="../Source/Core/core.js"></script>
@@ -24,6 +24,65 @@
 	<script type="text/javascript" src="../Source/Core/persist.js"></script>
 	<script type="text/javascript" src="../Source/Core/themes.js"></script>
 	<!--MOCHAUI-->
+
+	<!-- 
+	     MOCHAUI lazyloader override: since the lazyloader in mochaUI is crappy, we force the load of these scripts here: no more 'undefined' classes in mochaUI;
+         we also load modal.js as part of the demo needs that one, while otherwise it wouldn't get loaded AT ALL! ('Modal Window' item  in left pane)
+		 
+require.js:113MUI.getAsset: loading:   scripts/demo-shared.js
+create.js:32MUI.loadPluginGroups: queueing   {controls}mui-controls.js
+create.js:32MUI.loadPluginGroups: queueing   {plugins}mui-plugins.js
+require.js:113MUI.getAsset: loading:   {controls}mui-controls.js
+require.js:113MUI.getAsset: loading:   {plugins}mui-plugins.js
+require.js:113MUI.getAsset: loading:   {controls}menu/menu.js
+require.js:113MUI.getAsset: loading:   {controls}spinner/spinner.js
+require.js:113MUI.getAsset: loading:   {controls}themechange/themechange.js
+require.js:113MUI.getAsset: loading:   {controls}dockhtml/dockhtml.js
+require.js:113MUI.getAsset: loading:   {controls}dock/dock.js
+require.js:113MUI.getAsset: loading:   {controls}panel/panel.js
+require.js:113MUI.getAsset: loading:   {controls}column/column.js
+require.js:113MUI.getAsset: loading:   {controls}toolbar/toolbar.js
+require.js:113MUI.getAsset: loading:   {controls}tabs/tabs.js
+require.js:113MUI.getAsset: loading:   {controls}taskbar/taskbar.js
+require.js:113MUI.getAsset: loading:   {controls}desktop/desktop.js
+require.js:113MUI.getAsset: loading:   {controls}tree/tree.js
+require.js:113MUI.getAsset: loading:   {controls}window/window.js
+require.js:113MUI.getAsset: loading:   {controls}imagebutton/imagebutton.js
+require.js:113MUI.getAsset: loading:   {controls}accordion/accordion.js
+require.js:113MUI.getAsset: loading:   {controls}list/list.js
+require.js:113MUI.getAsset: loading:   {controls}calendar/calendar.js
+require.js:113MUI.getAsset: loading:   {controls}checkboxgrid/checkboxgrid.js
+require.js:113MUI.getAsset: loading:   {controls}grid/grid.js
+require.js:113MUI.getAsset: loading:   {controls}selectlist/selectlist.js
+require.js:113MUI.getAsset: loading:   {controls}stepper/stepper.js
+require.js:113MUI.getAsset: loading:   {controls}textarea/textarea.js
+require.js:113MUI.getAsset: loading:   {controls}textbox/textbox.js
+require.js:113MUI.getAsset: loading:   {controls}textbox/mask.js
+require.js:113MUI.getAsset: loading:   {controls}textbox/passshark.js
+require.js:113MUI.getAsset: loading:   {controls}textbox/mask.reverse.js
+require.js:113MUI.getAsset: loading:   {controls}textbox/mask.regexp.js
+require.js:113MUI.getAsset: loading:   {controls}textbox/mask.fixed.js
+    -->
+<!--
+	<script type="text/javascript" src="../Source/Controls/mui-controls.js"></script>
+	<script type="text/javascript" src="../Source/Plugins/mui-plugins.js"></script>
+-->
+	
+	<script type="text/javascript" src="../Source/Controls/dock/dock.js"></script>
+	<script type="text/javascript" src="../Source/Controls/panel/panel.js"></script>
+	<script type="text/javascript" src="../Source/Controls/column/column.js"></script>
+	<script type="text/javascript" src="../Source/Controls/toolbar/toolbar.js"></script>
+	<script type="text/javascript" src="../Source/Controls/tabs/tabs.js"></script>
+	<script type="text/javascript" src="../Source/Controls/taskbar/taskbar.js"></script>
+	<script type="text/javascript" src="../Source/Controls/desktop/desktop.js"></script>
+	<script type="text/javascript" src="../Source/Controls/window/window.js"></script>
+	<script type="text/javascript" src="../Source/Controls/window/modal.js"></script>
+
+	<script type="text/javascript" src="../Source/Plugins/coolclock/coolclock.js"></script>
+	<script type="text/javascript" src="../Source/Plugins/coolclock/moreskins.js"></script>
+	<script type="text/javascript" src="../Source/Plugins/coolclock/muiclock.js"></script>
+
+	<script type="text/javascript" src="../Source/Plugins/parametrics/parametrics.js"></script>
 
 	<script type="text/javascript" src="scripts/demo-application.js"></script>
 </head>
