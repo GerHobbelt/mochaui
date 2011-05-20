@@ -424,7 +424,7 @@ Object.append(Demo, {
 			resizeLimit: {'x': [450, 2500], 'y': [300, 2000]},
 			scrollbars: false, // Could make this automatic if a 'panel' method were created
 			content: '',
-			onLoaded: function(){
+			onDrawEnd /* onLoaded */: function(win){
 
 				new MUI.Column({
 					container: 'splitWindow_contentWrapper',
@@ -446,7 +446,7 @@ Object.append(Demo, {
 					header: false,
 					id: 'splitWindow_panel1',
 					content: {url: 'license.html'},
-					column: 'splitWindow_mainColumn',
+					container: 'splitWindow_mainColumn',
 					panelBackground: '#fff'
 				});
 
@@ -455,7 +455,7 @@ Object.append(Demo, {
 					id: 'splitWindow_panel2',
 					cssClass: 'panelAlt',
 					content: {url: 'pages/lipsum.html'},
-					column: 'splitWindow_sideColumn'
+					container: 'splitWindow_sideColumn'
 				});
 
 			}
