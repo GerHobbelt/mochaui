@@ -18,7 +18,7 @@
  - More/Hash
  - More/Assets
 
- provides: [MUI, MochaUI, MUI.Require, NamedClass]
+ provides: [MUI, MochaUI, NamedClass]
 
  ...
  */
@@ -76,6 +76,12 @@ MUI.append({
 		}
 		Object.each(MUI.options.pluginGroups, MUI.addPluginGroup);
 		MUI.initialized = true;
+// Partikule
+		if(Browser.ie9)
+		{
+			this.ieSupport = '';
+		}
+// / Partikule
 	},
 
 	replaceFields: function(str, values){
