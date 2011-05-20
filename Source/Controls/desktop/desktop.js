@@ -565,10 +565,17 @@ MUI.append({
 		remainingHeight = column.offsetHeight.toInt() - this.height;
 
 		if (remainingHeight != 0 && tallestPanelHeight > 0){
+// Partikule height correction
+			var newHeight = tallestPanel.getStyle('height').toInt() + remainingHeight;
+			if (newHeight > 0)
+				tallestPanel.setStyle('height', newHeight);
+/*
 			tallestPanel.setStyle('height', tallestPanel.getStyle('height').toInt() + remainingHeight);
 			if (tallestPanel.getStyle('height') < 1){
 				tallestPanel.setStyle('height', 0);
 			}
+*/
+// /Partikule
 		}
 
 		parent.getChildren('.columnHandle').each(function(handle){
