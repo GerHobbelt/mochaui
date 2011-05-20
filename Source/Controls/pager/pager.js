@@ -59,7 +59,7 @@ MUI.Pager = new NamedClass('MUI.Pager', {
 		//,onPrev:			null		// User Event: User clicked previous record button
 		//,onNext:			null		// User Event: User clicked next record button
 		//,onLast:			null		// User Event: User clicked last record button
-		//,onReload:		null		// User Event: User clicked reload records button 
+		//,onReload:		null		// User Event: User clicked reload records button
 	},
 
 	initialize: function(options){
@@ -212,3 +212,8 @@ MUI.Pager = new NamedClass('MUI.Pager', {
 	}
 
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}pager/pager.js'] = 'loaded'; }
+

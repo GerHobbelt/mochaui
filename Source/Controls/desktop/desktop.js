@@ -736,3 +736,8 @@ MUI.Windows = Object.append((MUI.Windows || {}), {
 		}.bind(this));
 	}
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}desktop/desktop.js'] = 'loaded'; }
+

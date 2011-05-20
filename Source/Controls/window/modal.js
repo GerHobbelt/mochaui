@@ -57,7 +57,7 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 			var instance = MUI.get(MUI.currentModal.id);
 			if (instance.options.modalOverlayClose) MUI.currentModal.close();
 		});
-		
+
 		if (Browser.ie6){
 			var modalFix = new Element('iframe', {
 				'id': 'modalFix',
@@ -91,3 +91,8 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 	}
 
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}window/modal.js'] = 'loaded'; }
+

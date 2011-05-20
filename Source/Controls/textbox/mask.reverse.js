@@ -47,7 +47,7 @@ MUI.Mask.Reverse = new Class({
 		this.reCleanup = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
 		this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
 	},
-	
+
 	link: function(element){
 		this.parent(element);
 		if (this.options.alignText) this.element.setStyle('text-align', 'right');
@@ -81,13 +81,13 @@ MUI.Mask.Reverse = new Class({
 	keypress: function(e, o){
 		if (this.ignore) return true;
 		e.preventDefault();
-		
+
 		var state = this.getCurrentState(e, o), elementValue = state.value;
-		
+
 		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
 		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
-		
+
 		return this.parent();
 	},
 
@@ -135,7 +135,7 @@ MUI.Mask.Reverse = new Class({
 	unmask: function(str){
 		return this.toNumber(this.getValue(str));
 	},
-	
+
 	toNumber: function(str){
 		str = str.replace(this.reRemoveNonNumbers, '');
 		if (!isFinite(str)){
@@ -177,3 +177,8 @@ MUI.Mask.createMasks('Reverse', {
 	'Reais'			: {symbol: 'R$ ' },
 	'Dollar'		: {symbol: 'US$ ', thousands: ',', decimal: '.'}
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}textbox/mask.reverse.js'] = 'loaded'; }
+

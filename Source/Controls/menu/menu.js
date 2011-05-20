@@ -24,16 +24,16 @@
  */
 
 MUI.MenuController = new NamedClass('MUI.MenuController', {
-    
+
     $active:		false,
     $visibles:	  [],
     $focused:	   [],
     $groupedItems:  {},
-    
+
     menuIsActivated: function(){
         return this.$activated;
     },
-    
+
     checkActivated: function(item){
 		if(this.$focused.length === 1){
 			this.$focused.pop().setActive(false);
@@ -51,7 +51,7 @@ MUI.MenuController = new NamedClass('MUI.MenuController', {
 			this.$activated = true;
 		}
     },
-    
+
     onItemFocus: function(item){
 		if(this.$activated){
 			var focused = [];
@@ -63,29 +63,29 @@ MUI.MenuController = new NamedClass('MUI.MenuController', {
 	                item2.setActive(false);
 	        }
 	        this.$focused = focused;
-				
+
 			item.setActive(true);
 			this.$focused.push(item);
-		}	
+		}
     },
-    
+
     onItemBlur: function(item){
-	
+
     },
-    
+
     addVisibleMenu: function(menu){
         if(menu.isVisible())
             this.$visibles.push(menu);
         return this;
     },
-    
+
     hideVisibleMenus: function(){
         while(this.$visibles.length > 0){
             this.$visibles.pop().hide();
         }
         return this;
     },
-    
+
     hideVisibleMenusExceptParents: function(fromMenu){
         var visibles = [];
         while(this.$visibles.length > 0){
@@ -98,7 +98,7 @@ MUI.MenuController = new NamedClass('MUI.MenuController', {
         this.$visibles = visibles;
         return this;
     },
-    
+
     hideVisibleMenusExceptThisAndParents: function(fromMenu){
         var visibles = [];
         while(this.$visibles.length > 0){
@@ -111,20 +111,20 @@ MUI.MenuController = new NamedClass('MUI.MenuController', {
         this.$visibles = visibles;
         return this;
     },
-    
+
     addItemToGroup: function(groupName, item){
 		if(!this.$groupedItems.groupName)
 			this.$groupedItems.groupName = [];
 		this.$groupedItems.groupName.push(item);
     },
-    
+
     removeItemFromGroup: function(groupName, item){
 		if(!this.$groupedItems.groupName) return;
 		var i = this.$groupedItems.indexOf(item);
 		if(i > -1)
 			delete this.$groupedItems[i];
     },
-    
+
     getGroupedItems: function(groupName){
 		if(!this.$groupedItems.groupName) return [];
 		return this.$groupedItems.groupName;
@@ -134,53 +134,53 @@ MUI.MenuController = new NamedClass('MUI.MenuController', {
 MUI.MenuItemContainer = new NamedClass('MUI.MenuItemContainer', {
 
     Implements: [Events, Options],
-	
+
 	options: {
 		drawOnInit:  true,
 		cssClass:    '',      // css tag to add to control
 		container:   document.body
 	},
-	
+
 	el:          {},
     $controller: null,
     $dottedId:   '',
 	items:       [],
 	$items:      [],
 	$visible:    false,
-	
+
 	initialize: function(controller, items, parentDdottedId, options){
 		this.setOptions(options);
         this.$controller = controller;
         this.$dottedId = (parentDdottedId || '') + String.uniqueID() + '.';
-		
+
 		this.items.combine(items);
 
 		if (this.options.drawOnInit) this.draw();
 	},
-	
+
 	draw: function(){
 		this.fireEvent('drawBegin', [this]);
 		var options = this.options;
-		
+
 		this.el.container = new Element('div', {
 			'class': options.cssClass + ' mui-menu depth-' + this.getDepth()
 		}).fade('hide').set('tween', { duration: 200 }).inject(options.container);
-	    
+
 		this.drawItems({
 			cssClass: options.cssClass
 		});
-		
+
 		this.attachEvents();
-		
+
 		this.fireEvent('drawEnd', [this]);
 	},
-	
+
 	drawItems: function(options){
 		this.items.each(function(item){
 			var mItem = null;
 			if(!!item.type){
 				if(item.type == 'divider'){
-					mItem = new MUI.MenuItemDivider(this.$controller, this, this.$dottedId, Object.merge(item, options));	
+					mItem = new MUI.MenuItemDivider(this.$controller, this, this.$dottedId, Object.merge(item, options));
 				}
 				else if(item.type == 'radio'){
 					mItem = new MUI.RadiogroupMenuItem(this.$controller, this, this.$dottedId, Object.merge(item, options));
@@ -209,16 +209,16 @@ MUI.MenuItemContainer = new NamedClass('MUI.MenuItemContainer', {
 					'blur':     this.onItemBlur.bind(this),
 					'blurred':  this.onItemBlurred.bind(this)
 				});
-	            
+
 				this.$items.push(mItem);
 			}
 		}, this);
 	},
-    
+
     toElement: function(){
         return this.el.container;
     },
-	
+
 	attachEvents: function(){
 		var self = this;
 		document.body.addEvent('click', function(e){
@@ -227,80 +227,80 @@ MUI.MenuItemContainer = new NamedClass('MUI.MenuItemContainer', {
 			self.$controller.checkActivated();
 		});
 	},
-	
+
 	toggle: function(coordinates){
 		if(this.isVisible())
 			return this.hide();
 		return this.show(coordinates);
 	},
-	
+
 	show: function(coordinates){
 		this.fireEvent('beforeShow', [this]);
-		
+
         this.$controller.hideVisibleMenusExceptParents(this);
 		this.el.container.setPosition(coordinates).fade('show');
         this.$visible = true;
         this.$controller.addVisibleMenu(this);
-		
+
 		this.fireEvent('show', [this]);
 		return this;
 	},
-	
+
 	hide: function(){
 		this.fireEvent('beforeHide', [this]);
-		
+
 		this.el.container.fade('hide');
         this.$visible = false;
-		
+
 		this.fireEvent('hide', [this]);
 		return this;
 	},
-	
+
 	isVisible: function(){
 		return this.$visible;
 	},
-	
+
 	getDottedId: function(){
 		return this.$dottedId;
 	},
-    
+
     isParentOf: function(item){
         return item.getDottedId().contains(this.getDottedId());
     },
-    
+
     getDepth: function(){
 		var da = this.getDottedId().split('.');
 		return (da.length + 1) / 2;
     },
-	
+
 	onItemClick: function(item, e){
 		this.fireEvent('itemClick', [this, item, e]);
 	},
-	
+
 	onItemClicked: function(item, e){
 		this.fireEvent('itemClicked', [this, item, e]);
 	},
-	
+
 	onItemFocus: function(item, e){
 		this.fireEvent('itemFocus', [this, item, e]);
 	},
-	
+
 	onItemFocused: function(item, e){
 		this.fireEvent('itemFocused', [this, item, e]);
 	},
-	
+
 	onItemBlur: function(item, e){
 		this.fireEvent('itemBlur', [this, item, e]);
 	},
-	
+
 	onItemBlurred: function(item, e){
 		this.fireEvent('itemBlurred', [this, item, e]);
 	}
-	
+
 });
 
 MUI.Menu = new NamedClass('MUI.Menu', {
-    
+
     Extends: MUI.MenuItemContainer,
 
 	options: {
@@ -358,7 +358,7 @@ MUI.Menu = new NamedClass('MUI.Menu', {
 		if (o.orientation) div.addClass(o.orientation);
 
 		this.el.container = div.store('instance', this);
-		
+
 		this.items = o.items;
 		this.drawItems({
 			cssClass: o.cssClass,
@@ -376,14 +376,14 @@ MUI.Menu = new NamedClass('MUI.Menu', {
 
 		return this;
 	}
-    
+
 });
 
 
 MUI.MenuItem = new NamedClass('MUI.MenuItem', {
 
 	Implements: [Events, Options],
-	
+
 	options: {
 		drawOnInit:    true,
 		cssClass:      '',      // css tag to add to control
@@ -397,53 +397,53 @@ MUI.MenuItem = new NamedClass('MUI.MenuItem', {
 		partner:       '',
 		partnerMethod: 'xhr'
 	},
-	
+
 	el:          {},
     $dottedId:   '',
     $controller: null,
     $container:  null,
-	
+
 	initialize: function(controller, container, parentDdottedId, options){
 		this.setOptions(options);
         this.$controller = controller;
         this.$container = container;
         this.$dottedId = (parentDdottedId || '') + String.uniqueID() + '.';
-		
+
 		this.el.container = container.toElement();
-		
+
 		if (this.options.drawOnInit) this.draw();
 	},
-	
+
 	draw: function(){
 		this.fireEvent('drawBegin', [this]);
 		var options = this.options;
-		
+
 		this.el.item = new Element('div', {
 			'class': options.cssClass + ' mui-menu-item depth-' + this.getDepth(),
 			text: options.text
 		}).inject(this.el.container);
-		
+
 		if(!!options.id)
 			this.el.item.set('id', options.id);
-		
+
 		this.attachEvents();
-		
+
 		this.fireEvent('drawEnd', [this]);
 	},
-	
+
 	getDottedId: function(){
 		return this.$dottedId;
 	},
-    
+
     isParentOf: function(item){
         return item.getDottedId().contains(this.getDottedId());
     },
-    
+
     getDepth: function(){
 		var da = this.getDottedId().split('.');
 		return da.length / 2;
     },
-	
+
 	attachEvents: function(){
 		var self = this,
 			options = this.options;
@@ -451,9 +451,9 @@ MUI.MenuItem = new NamedClass('MUI.MenuItem', {
 			'click': function(e){
 				self.fireEvent('click', [self, e]);
 				if(!self.isLink()) e.stop();
-				
+
 				self.$controller.checkActivated(self);
-				
+
 				// determine partner settings
 				var partner = options.partner,
 					partnerMethod = options.partnerMethod,
@@ -474,17 +474,17 @@ MUI.MenuItem = new NamedClass('MUI.MenuItem', {
 				else {
 					document.location.href = url;
 				}
-				
+
 				if(hide)
 					self.$controller.checkActivated();
-                
+
 				self.fireEvent('clicked', [self, e]);
 			},
 			'mouseenter': function(e){
 				self.fireEvent('focus', [self, e]);
-				
+
 				self.$controller.onItemFocus(self);
-                
+
 				self.fireEvent('focused', [self, e]);
 			},
 			'mouseleave': function(e){
@@ -494,75 +494,75 @@ MUI.MenuItem = new NamedClass('MUI.MenuItem', {
 			}
 		});
 	},
-	
+
 	isLink: function(){
 		return this.options.url !== '';
 	},
-	
+
 	setActive: function(state){
 		if(!!state)
 			this.el.item.addClass('active');
 		else
 			this.el.item.removeClass('active');
 	}
-	
+
 });
 
 MUI.MenuItemDivider = new NamedClass('MUI.MenuItemDivider', {
-	
+
 	Extends: MUI.MenuItem,
-	
+
 	draw: function(){
 		this.fireEvent('drawBegin', [this]);
 		var options = this.options;
-		
+
 		this.el.item = new Element('div', {
 			'class': options.cssClass + ' mui-menu-item-divider depth-' + this.getDepth()
 		}).inject(this.el.container);
-		
+
 		if(!!options.id)
 			this.el.item.set('id', options.id);
-		
+
 		this.fireEvent('drawEnd', [this]);
 	}
 });
 
 MUI.SubmenuMenuItem = new NamedClass('MUI.SubmenuMenuItem', {
-	
+
 	Extends: MUI.MenuItem,
-	
+
 	initialize: function(controller, container, parentDdottedId, options){
 		options = Object.merge({
 			subMenuAlign: { top: -5, right: 0 }
 		}, options);
 		this.parent(controller, container, parentDdottedId, options);
 	},
-	
+
 	$subMenu:    null,
-	
+
 	draw: function(){
 		this.fireEvent('drawBegin', [this]);
 		var options = this.options;
-		
+
 		this.el.item = new Element('div', {
 			'class': options.cssClass + ' mui-menu-item depth-' + this.getDepth()
 		}).inject(this.el.container);
-		
+
 		new Element('div', {
 			'class': 'arrow-right',
 			text: options.text
 		}).inject(this.el.item);
-		
+
 		if(!!options.id)
 			this.el.item.set('id', options.id);
-		
+
 		if(options.items.length > 0){
 			this.el.item.addClass('more');
-            
+
 			this.$subMenu = new MUI.MenuItemContainer(this.$controller, options.items, this.$dottedId, {
 				cssClass: options.cssClass
 			});
-			
+
 			this.$subMenu.addEvents({
 				'itemClick': function(item, e){
 					this.fireEvent('click', [item, e]);
@@ -584,12 +584,12 @@ MUI.SubmenuMenuItem = new NamedClass('MUI.SubmenuMenuItem', {
 				}
 			});
 		}
-		
+
 		this.attachEvents();
-		
+
 		this.fireEvent('drawEnd', [this]);
 	},
-	
+
 	attachEvents: function(){
 		var self = this;
 		this.el.item.addEvents({
@@ -597,80 +597,80 @@ MUI.SubmenuMenuItem = new NamedClass('MUI.SubmenuMenuItem', {
                 if(this.hasClass('more')){
                     var coords = { x: 0, y: 0 },
 						itemCoords = this.getCoordinates();
-					
+
 					Object.each(self.options.subMenuAlign, function(margin, align){
 						switch(align){
 							case 'top':
 							case 'bottom':
 								coords.y = itemCoords[align] + margin;
 								break;
-								
+
 							case 'left':
 							case 'right':
 								coords.x = itemCoords[align] + margin;
 								break;
 						}
 					});
-					
+
 					self.$subMenu.toggle(coords);
 				}
 			},
 			'mouseenter': function(e){
                 self.$controller.hideVisibleMenusExceptThisAndParents(self.$container);
-                
+
 				if(self.$controller.menuIsActivated() && this.hasClass('more')){
 					var coords = { x: 0, y: 0 },
 						itemCoords = this.getCoordinates();
-					
+
 					Object.each(self.options.subMenuAlign, function(margin, align){
 						switch(align){
 							case 'top':
 							case 'bottom':
 								coords.y = itemCoords[align] + margin;
 								break;
-								
+
 							case 'left':
 							case 'right':
 								coords.x = itemCoords[align] + margin;
 								break;
 						}
 					});
-					
+
 					self.$subMenu.show(coords);
 				}
 			}
 		});
-		
+
 		this.parent();
 	}
 });
 
 MUI.CheckboxMenuItem = new NamedClass('MUI.CheckboxMenuItem', {
-	
+
 	Extends: MUI.MenuItem,
-	
+
 	$selected: false,
-	
+
 	initialize: function(controller, container, parentDdottedId, options){
 		options = Object.merge({
 			selected: false
 		}, options);
 		this.parent(controller, container, parentDdottedId, options);
 	},
-	
+
 	draw: function(){
 		this.parent();
-		
+
 		new Element('span', {
 			'class': 'checkicon'
 		}).inject(this.el.item, 'top');
-	
+
 		this.el.item.addClass('checkbox');
-		
+
 		if(this.options.selected)
 			this.setSelected(true);
 	},
-	
+
 	attachEvents: function(){
 		var self = this;
 		this.el.item.addEvent('click', function(e){
@@ -679,11 +679,11 @@ MUI.CheckboxMenuItem = new NamedClass('MUI.CheckboxMenuItem', {
 		});
 		this.parent();
 	},
-	
+
 	isSelected: function(){
 		return this.el.item.hasClass('selected');
 	},
-	
+
 	setSelected: function(value){
 		if(value === this.$selected) return;
 		this.$selected = !!value;
@@ -696,11 +696,11 @@ MUI.CheckboxMenuItem = new NamedClass('MUI.CheckboxMenuItem', {
 });
 
 MUI.RadiogroupMenuItem = new NamedClass('MUI.SelectboxMenuItem', {
-	
+
 	Extends: MUI.MenuItem,
-	
+
 	$selected: false,
-	
+
 	initialize: function(controller, container, parentDdottedId, options){
 		options = Object.merge({
 			selected: false,
@@ -708,22 +708,22 @@ MUI.RadiogroupMenuItem = new NamedClass('MUI.SelectboxMenuItem', {
 		}, options);
 		this.parent(controller, container, parentDdottedId, options);
 	},
-	
+
 	draw: function(){
 		this.parent();
-		
+
 		new Element('span', {
 			'class': 'radioicon'
 		}).inject(this.el.item, 'top');
-		
+
 		this.el.item.addClass('radiogroup');
-		
+
 		if(this.options.selected)
 			this.setSelected(true);
-			
+
 		this.$controller.addItemToGroup(this.options.group, this);
 	},
-	
+
 	attachEvents: function(){
 		var self = this;
 		this.el.item.addEvent('click', function(e){
@@ -736,11 +736,11 @@ MUI.RadiogroupMenuItem = new NamedClass('MUI.SelectboxMenuItem', {
 		});
 		this.parent();
 	},
-	
+
 	isSelected: function(){
 		return this.el.item.hasClass('selected');
 	},
-	
+
 	setSelected: function(value){
 		if(value === this.$selected) return;
 		this.$selected = !!value;
@@ -754,14 +754,19 @@ MUI.RadiogroupMenuItem = new NamedClass('MUI.SelectboxMenuItem', {
 
 /*
 MUI.ImageMenuItem = new NamedClass('MUI.ImageMenuItem',  {
-	
+
 	Extends: MUI.MenuItem,
 
 	draw: function(){
 		this.parent();
-		
+
 		this.el.item.addClass('image');
 	}
 });
 */
+
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}menu/menu.js'] = 'loaded'; }
 

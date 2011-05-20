@@ -40,7 +40,7 @@ MUI.Mask.Fixed = new Class({
 		}, this);
 		this.createUnmaskRegex();
 	},
-	
+
 	link: function(element){
 		this.parent(element);
 		var elementValue = this.element.get('value');
@@ -48,7 +48,7 @@ MUI.Mask.Fixed = new Class({
 		if (this.options.autoSetSize) this.setSize();
 		return this;
 	},
-	
+
 	focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''));
 		if (this.options.selectOnFocus && this.element.select) this.element.select();
@@ -68,7 +68,7 @@ MUI.Mask.Fixed = new Class({
 		if (this.options.removeInvalidTrailingChars) this.element.set('value', this.removeInvalidTrailingChars(elementValue));
 		return true;
 	},
-    
+
 	keypress: function(e, o){
 		if (this.ignore) return true;
 		e.preventDefault();
@@ -91,16 +91,16 @@ MUI.Mask.Fixed = new Class({
 				} while (start == -1 && o.range.start < maskArray.length);
 				finalRangePosition = (start == -1) ? this.maskMoldArray.length : this.validIndexes[start + 1];
 			}
-			
+
 			i = this.validIndexes[start];
 			if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
 			if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
-			
+
 			var newCarretPosition = (finalRangePosition == null) ? this.maskMoldArray.length : finalRangePosition;
 			this.element.set('value', this.maskMoldArray.join(''))
 				.setCaretPosition(newCarretPosition);
-		
+
 		} else {
 
 			var rstart = o.range.start,
@@ -117,7 +117,7 @@ MUI.Mask.Fixed = new Class({
 
             // if  you select a fixed char it will ignore your input
 			if (!(end - start)) return true;
-			
+
 			// removes all the chars into the range
 			for (i=rstart; i<rend; i++){
 				this.maskMoldArray[i] = this.maskMold.charAt(i);
@@ -130,13 +130,13 @@ MUI.Mask.Fixed = new Class({
 				this.maskMoldArray[i] = c;
 				start++;
 			}
-			
+
 			this.element.set('value', this.maskMoldArray.join(''));
 			this.element.setCaretPosition(this.validIndexes[start]);
 		}
 		return this.parent();
 	},
-    
+
 	paste: function(e, o){
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
@@ -166,7 +166,7 @@ MUI.Mask.Fixed = new Class({
 		}
 		return elementValue.substring(0, truncateIndex);
     },
-	
+
 	testEvents: function(index, _char, code, isRemoveKey){
 		var maskArray = this.maskArray,
 			rule = MUI.Mask.rules[maskArray[index]],
@@ -181,17 +181,17 @@ MUI.Mask.Fixed = new Class({
 		}
 		return (returnFromTestEntry != null) ? returnFromTestEntry : true;
 	},
-	
+
 	shouldFocusNext: function(){
 		return this.unmask(this.element.get('value')).length >= this.validIndexes.length;
 	},
-	
+
 	createUnmaskRegex: function(){
 		var fixedCharsArray = [].combine(this.options.mask.replace(MUI.Mask.rulesRegex, '').split(''));
 		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp();
 		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
 	},
-	
+
 	testEntry: function(str, index, _char){
 		var maskArray = this.maskArray,
 			rule = MUI.Mask.rules[maskArray[index]],
@@ -206,7 +206,7 @@ MUI.Mask.Fixed = new Class({
 			rules = MUI.Mask.rules,
 			eli = 0,
 			returnFromTestEntry;
-		
+
 		while (eli < maskMold.length){
 			if (!strArray[eli]){
 				strArray[eli] = maskMold[eli];
@@ -228,7 +228,7 @@ MUI.Mask.Fixed = new Class({
 
 		return {value: strArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
 	},
-	
+
 	mask: function(str){
 		str = this.applyMask(str).value.join('');
 		if (this.options.removeInvalidTrailingChars) str = this.removeInvalidTrailingChars(str);
@@ -238,7 +238,7 @@ MUI.Mask.Fixed = new Class({
 	unmask: function(str){
 		return this.unmaskRegex ? str.replace(this.unmaskRegex, '') : str;
 	}
-	
+
 });
 
 
@@ -253,3 +253,8 @@ MUI.Mask.createMasks('Fixed', {
 	'Time'		: {mask: '2h:59'},
 	'Cc'		: {mask: '9999 9999 9999 9999'}
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}textbox/mask.fixed.js'] = 'loaded'; }
+

@@ -169,7 +169,7 @@ MUI.Taskbar.implement({
 			'title': titleText
 		}).inject($(this.options.id + 'Clear'), 'before');
 
-		instance._taskBar = this; 
+		instance._taskBar = this;
 		taskbarTab.addEvent('mousedown', function(e){
 			new Event(e).stop();
 			this.timeDown = Date.now();
@@ -443,3 +443,8 @@ MUI.Window.implement({
 	}
 
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}taskbar/taskbar.js'] = 'loaded'; }
+

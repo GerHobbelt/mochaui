@@ -52,7 +52,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		// Other:
 		collapsible:			true,			// can the panel be collapsed
 		isCollapsed:			false,			// is the panel collapsed
-		collapseFooter:			true			// collapse footer when panel is collapsed 
+		collapseFooter:			true			// collapse footer when panel is collapsed
 
 		// Events
 		//onLoaded:				null, // called every time content is loaded using MUI.Content
@@ -170,7 +170,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				});
 				headerItems.push({id:options.id + 'headerContent',content:this.el.title,orientation:'left', divider:false});
 			}
-			
+
 			MUI.create({
 				control: 'MUI.Dock',
 				container: this.el.panel,
@@ -468,3 +468,8 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 	}
 
 }).implement(MUI.WindowPanelShared);
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}panel/panel.js'] = 'loaded'; }
+

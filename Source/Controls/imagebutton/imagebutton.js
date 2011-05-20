@@ -113,3 +113,8 @@ MUI.ImageButton = new NamedClass('MUI.ImageButton', {
 		return disabled;
 	}
 });
+
+
+// [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
+if (window.MUI && window.MUI.files) { MUI.files['{controls}imagebutton/imagebutton.js'] = 'loaded'; }
+
