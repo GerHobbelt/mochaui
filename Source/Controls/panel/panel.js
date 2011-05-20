@@ -312,10 +312,15 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		var parent = MUI.get($(options.container));
 		if (parent.isTypeOf('MUI.Column')){
 			if (expandedSiblings.length == 0 && parent.options.placement != 'main'){
+				if (0)
+				{
 				parent.collapse();  // [i_a] more aptly named than .toggle()
-				return;
+				}
+				if (parent.options.keep_one_panel_expanded)
+					return;
 			} else if (expandedSiblings.length == 0 && parent.options.placement == 'main'){
-				return;
+				if (parent.options.keep_one_panel_expanded)
+					return;
 			}
 		}
 

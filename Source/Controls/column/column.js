@@ -31,6 +31,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 		drawOnInit:		true,
 
 		placement:		null,
+		keep_one_panel_expanded: false,		// TRUE: at least one panel in this column is forced to remain expanded; FALSE: no panel in this column is kept in an expended state when all the others are collapsed.
 		width:			null,
 		resizeLimit:	[],
 		sortable:		true,
