@@ -281,6 +281,8 @@ Demo.initializeDesktop = function(){
 			{name:'footer',content:'<div class="copyright">&copy; 2011 <a target="_blank" href="scripts/AUTHORS.txt" id="authorsLink">Various Contributors</a> - <a target="_blank" href="license.html" id="licenseLink">MIT License</a></div>',cssClass:'desktopFooter'}
 		],
 		'onDrawEnd':function(){
+			if (typeof Parametrics !== 'object' && window.console && window.console.warn)
+				window.console.warn('MUI.demo::onDrawEnd: Parametrics is undefined (not loaded yet!)');
 			Parametrics.createwindow();
 		}
 	});
@@ -292,7 +294,10 @@ Demo.initialize = function(){
 		'onload':function(){
 			// Initialize MochaUI options
 			MUI.initialize({path:{demo:''}});
-			MUI.load(['Parametrics','famfamfam','CoolClock']);
+			MUI.load(['Parametrics','famfamfam','CoolClock'], function(load_options) {
+				if (window.console && window.console.log)
+					window.console.log('MUI.load event: ', load_options, ', arguments (', arguments.length, '): ', arguments);
+			});
 			MUI.register('Demo', Demo);
 			MUI.register('MUI.Windows', MUI.Windows);
 			Demo.initializeDesktop();

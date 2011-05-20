@@ -145,7 +145,10 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 			}
 			var id = options.id + '_' + (section.name || 'section' + (snum++));
 			if (!section.control) section.control = 'MUI.DockHtml';
-			if (!section.id) section.id = id;
+			if (!section.id) {
+				section.id = id;
+				console.log('MUI.panel::draw assigned section id: ', section.id);
+			}
 			section.partner = this.id;
 			if (section.position == 'header') headerItems.unshift(section);
 			if (section.position == 'footer') footerItems.unshift(section);
@@ -283,12 +286,27 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		panelWrapper.getAllPrevious('.panelWrapper').each(function(sibling){
 			var panel = sibling.getElement('.panel');
 			if (!panel) return;
-			if (!MUI.get(panel.id).isCollapsed) expandedSiblings.push(panel.id);
+			var p_id = panel.getAttributeNode('id');
+			if (typeof panel == 'undefined' || !panel.id)
+				console.warn("MUI.collapse: no panel.id for panel ", panel, p_id);
+			var instance = MUI.get(panel.id);
+			if (typeof instance == 'undefined' || !instance || !panel.id)
+				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
+			if (!MUI.get(panel.id).isCollapsed)
+				expandedSiblings.push(panel.id);
 		});
 
 		panelWrapper.getAllNext('.panelWrapper').each(function(sibling){
-			if (!MUI.get(sibling.getElement('.panel').id).isCollapsed)
-				expandedSiblings.push(sibling.getElement('.panel').id);
+			var panel = sibling.getElement('.panel');
+			if (!panel) return;
+			var p_id = panel.getAttributeNode('id');
+			if (typeof panel == 'undefined' || !panel.id)
+				console.warn("MUI.collapse: no panel.id for panel ", panel, p_id);
+			var instance = MUI.get(panel.id);
+			if (typeof instance == 'undefined' || !instance || !panel.id)
+				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
+			if (!MUI.get(panel.id).isCollapsed)
+				expandedSiblings.push(panel.id);
 		});
 
 		var parent = MUI.get($(options.container));

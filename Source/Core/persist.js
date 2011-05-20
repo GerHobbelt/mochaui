@@ -490,6 +490,7 @@ MUI.Persist.Providers.IE = new Class({
 
 		// create element to store keys in
 		this.id = this.options.prefix + this._safeKey(this.options.name);
+		console.log('MUI.Persist assigned id: ', this.id);
 		this.el = new Element('div', {'id': this.id, styles: {'display': 'none'}}).inject(document.body);
 	},
 

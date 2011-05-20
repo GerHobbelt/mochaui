@@ -135,7 +135,10 @@ MUI.Form = new Class({
 		else {
 			this.options.Prefix = prefix;
 		}
-		if (this.options.id) this.DOM.id = this.options.id;
+		if (this.options.id) {
+			this.DOM.id = this.options.id;
+			console.log('MUI.form assigned DOM id: ', this.DOM.id);
+		}
 	},
 
 	fromJSON: function(json, buildIt, prefix){
@@ -326,6 +329,7 @@ MUI.Form = new Class({
 			//            item.AltRequired=o.PrefixFields(item.AltRequired);
 			//            item.RequiredIf=o.PrefixFields(item.RequiredIf);
 			item.id = id;
+			console.log('MUI.buildForm assigned item id: ', item.id);
 
 			switch ('' + item.Type){
 				case 'systempanel':
@@ -482,6 +486,7 @@ MUI.Form = new Class({
 
 		var sform = new mochaForm();
 		sform.options.id = item.id + '_SubForm';
+		console.log('MUI.addSystemPanel assigned form id: ', sform.options.id);
 		sform.options.Padding = item.Padding;
 		sform.buildForm(item);
 

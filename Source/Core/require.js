@@ -90,6 +90,7 @@ MUI.Require = new Class({
 
 	getAsset: function(source, onload){
 		// If the asset is loaded, fire the onload function.
+		console.log("MUI.getAsset: checking  ", source);
 		if (MUI.files[source] == 'loaded'){
 			if (typeof onload == 'function'){
 				onload();
@@ -110,6 +111,7 @@ MUI.Require = new Class({
 				}
 			}).periodical(50);
 		} else {  // If the asset is not yet loaded or loading, start loading the asset.
+			console.log("MUI.getAsset: loading:  ", source);
 			MUI.files[source] = 'loading';
 
 			properties = {

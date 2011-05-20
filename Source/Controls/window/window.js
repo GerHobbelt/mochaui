@@ -437,11 +437,13 @@ MUI.Window.implement({
 		this._setColors();
 
 		// load/build all of the additional  content sections
-		if (this.sections) this.sections.each(function(section){
-			if (section.onLoaded) section.onLoaded = section.onLoaded.bind(this);
-			section.instance = this;
-			MUI.Content.update(section);
-		}, this);
+		if (this.sections) {
+				this.sections.each(function(section){
+				if (section.onLoaded) section.onLoaded = section.onLoaded.bind(this);
+				section.instance = this;
+				MUI.Content.update(section);
+			}, this);
+		}
 
 		this.redraw();
 
@@ -1165,7 +1167,10 @@ MUI.Window.implement({
 			var id = options.id + '_' + (section.name || 'section' + (snum++));
 			if (!section.control) section.control = 'MUI.DockHtml';
 			if (section.control == 'MUI.Toolbar' && section.divider == null) section.divider = false;
-			if (!section.id) section.id = id;
+			if (!section.id) {
+				section.id = id;
+				console.log('MUI.window::insertWindowElements assigned section id: ', section.id);
+			}
 			section.partner = this.id;
 			if (section.position == 'header') section.container = cache.titleBar;
 			else if (section.position == 'footer') section.container = cache.footer;
@@ -1238,8 +1243,8 @@ MUI.Window.implement({
 				}).inject(this.overlay, 'after');
 			}.bind(cache));
 		}
-		Object.append(this.el, cache);
 
+		Object.append(this.el, cache);
 	},
 
 	_showNewWindow: function(){

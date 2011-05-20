@@ -58,6 +58,7 @@ MUI.SelectList.implement({
 		var inp = rw.getElement('input');
 		if (inp){
 			item.id = inp.id;
+			console.log('MUI.itemFromHTML assigned item id: ', item.id);
 			item.name = inp.name;
 			item.value = inp.value;
 			item.isSelected = inp.checked;

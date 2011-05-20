@@ -154,7 +154,10 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 		var div = self.el.element;
 		self.buttonCount++;
 		if (!button.name) button.name = 'button' + self.buttonCount;
-		if (!button.id) button.id = this.options.id + '_' + button.name;
+		if (!button.id) {
+			button.id = this.options.id + '_' + button.name;
+			console.log('MUI.toolbar::buildButton assigned button id: ', button.id);
+		}
 		var css = button.cssClass;
 		var where = Browser.ie ? 'top' : 'bottom';
 		var onclick = function(e){

@@ -113,6 +113,7 @@ MUI.Themes = {
 		});
 
 		this.newSheets.each(function(sheet){
+			console.log("MUI.updateThemeStyleSheets: marking:  ", sheet.get('href'));
 			MUI.files[sheet.get('href')] = 'loaded';		// [i_a]
 			sheet.inject(document.head);
 		});

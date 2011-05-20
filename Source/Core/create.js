@@ -27,8 +27,10 @@ MUI.append({
 	loadPluginGroups:function(onload){
 		var js = [];
 		Object.each(MUI.options.pluginGroups, function(group, name){
+			console.log("MUI.loadPluginGroups: checking for  ", '{' + name + '}mui-' + name + '.js');
 			if (MUI.files['{' + name + '}mui-' + name + '.js'] != 'loaded'){
 				MUI[name] = [];
+				console.log("MUI.loadPluginGroups: queueing  ", '{' + name + '}mui-' + name + '.js');
 				js = js.append(['{' + name + '}mui-' + name + '.js']);			// [i_a] Object.append() applied to an ARRAY is utter FAIL: 'key' [0] will be continuously overwritten with each append, thus REPLACING instead of APPENDING.
 			}
 		});
@@ -136,6 +138,8 @@ MUI.append({
 			config = MUI.getControlAssets(controls[i], r.js, r.css, r.traversed).config;
 		}
 
+		console.log("MUI.create: gathered assets:  ", r);
+
 		// if only one control was requested and it is loaded then return it
 		if (controls.length == 1 && r.js.length > 0 && MUI.files[r.js[0]] == 'loaded'){
 			if ((config && config.loadOnly) || options.loadOnly) return null;
@@ -156,9 +160,14 @@ MUI.append({
 				if (control.onload) control.onload(control);
 				var name = control.control.replace(/(^MUI\.)/i, '');
 				var klass = MUI[name];
-				var obj = new klass(control);
-				if (control.onNew) control.onNew(obj);
-				if (control.fromHTML && obj.fromHTML) obj.fromHTML();
+				if (typeof klass == 'undefined' || !klass) {
+					console.warn("MUI.create: MUI addon/class has not been included apparently: ", name);
+				}
+				else {
+					var obj = new klass(control);
+					if (control.onNew) control.onNew(obj);
+					if (control.fromHTML && obj.fromHTML) obj.fromHTML();
+				}
 			}.bind(this));
 
 		}.bind(options);
