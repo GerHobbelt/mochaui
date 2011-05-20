@@ -357,7 +357,14 @@ MUI.append({
 		// Get column panels
 		var panels = [];
 		column.getChildren('.panelWrapper').each(function(panelWrapper){
-			panels.push(panelWrapper.getElement('.panel'));
+			var panel = panelWrapper.getElement('.panel');
+			var p_id = panel.getAttributeNode('id');
+			if (typeof panel == 'undefined' || !panel.id)
+				console.warn("MUI: no panel.id for panel ", panel, p_id);
+			var instance = MUI.get(panel.id);
+			if (typeof instance == 'undefined' || !instance || !panel.id)
+				console.warn("MUI: no instance / panel.id for panel ", panel);
+			panels.push(panel);
 		}.bind(this));
 
 		// Get expanded column panels
@@ -366,7 +373,9 @@ MUI.append({
 			panelsExpanded.push(panelWrapper.getElement('.panel'));
 		}.bind(this));
 
-		// makes sure at least one panel is expanded for the
+		if (0)  // this logic already exists in panel.js: .collapse() method, ~ line 315
+		{
+		// makes sure at least one panel is expanded for the action == 'all'
 		if (action == 'all' && panelsExpanded.length == 0 && panels.length > 0){
 			MUI.get(panels[0]).expand();
 
@@ -375,6 +384,7 @@ MUI.append({
 			if (columnInstance.options.position != 'main'){
 				columnInstance.collapse();
 			}
+		}
 		}
 
 		// All the panels in the column whose height will be effected.
@@ -389,7 +399,15 @@ MUI.append({
 
 		// Set panel resize partners
 		panels.each(function(panel){
+			var p_id = panel.getAttributeNode('id');
+			if (typeof panel == 'undefined' || !panel.id)
+				console.warn("MUI.panelHeight2: no panel.id for panel ", panel, p_id);
 			var instance = MUI.get(panel.id);
+			if (typeof instance == 'undefined' || !instance || !panel.id)
+				console.warn("MUI.panelHeight2: no instance / panel.id for panel ", panel);
+			if (!instance && window.console && window.console.warn)
+				window.console.warn('MUI.panelHeight2::panel.id unknown: ', panel.id, ', panel: ', panel, ' --> ', MUI.get(panel.id));
+
 			if (panel.getParent().hasClass('expanded') && panel.getParent().getNext('.expanded')){
 				instance.partner = panel.getParent().getNext('.expanded').getElement('.panel');
 				instance.resize.attach();
@@ -398,7 +416,8 @@ MUI.append({
 					'cursor': Browser.webkit ? 'row-resize' : 'n-resize'
 				}).removeClass('detached');
 			} else {
-				instance.resize.detach();
+				if(instance.resize)
+					instance.resize.detach();
 				instance.el.handle.setStyles({
 					'display': 'none',
 					'cursor': null
@@ -508,6 +527,7 @@ MUI.append({
 
 		// Get the remaining height
 		var remainingHeight = column.offsetHeight.toInt() - this.height;
+
 		this.height = 0;
 
 		// Get height of all the column's children
@@ -587,9 +607,10 @@ MUI.append({
 	},
 
 	rWidth: function(container){ // Remaining Width
-		if (container == null){
-			container = MUI.desktop.el.element;
-		}
+		if (container == null)
+			container = MUI.Desktop.desktop;
+		if (container == null)
+			return;
 		container.getElements('.rWidth').each(function(column){
 			var currentWidth = column.offsetWidth.toInt();
 			currentWidth -= column.getStyle('border-left').toInt();
@@ -618,6 +639,7 @@ MUI.append({
 			}, this);
 
 			column.getElements('.panel').each(function(panel){
+				//panel.setStyle('width', newWidth - panel.getStyle('border-left').toInt() - panel.getStyle('border-right').toInt());
 				MUI.resizeChildren(panel);
 			}.bind(this));
 		});

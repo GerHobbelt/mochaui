@@ -394,7 +394,7 @@ MUI.append({
 			MUI.panelHeight2($(column), changing, action);
 		} else {
 			$$('.column').each(function(column){
-				MUI.panelHeight2(column);
+				MUI.panelHeight2(column, null, action);
 			}.bind(this));
 		}
 	},
@@ -410,7 +410,14 @@ MUI.append({
 		// Get column panels
 		var panels = [];
 		column.getChildren('.panelWrapper').each(function(panelWrapper){
-			panels.push(panelWrapper.getElement('.panel'));
+			var panel = panelWrapper.getElement('.panel');
+			var p_id = panel.getAttributeNode('id');
+			if (typeof panel == 'undefined' || !panel.id)
+				console.warn("MUI: no panel.id for panel ", panel, p_id);
+			var instance = MUI.get(panel.id);
+			if (typeof instance == 'undefined' || !instance || !panel.id)
+				console.warn("MUI: no instance / panel.id for panel ", panel);
+			panels.push(panel);
 		}.bind(this));
 
 		// Get expanded column panels
@@ -418,6 +425,20 @@ MUI.append({
 		column.getChildren('.expanded').each(function(panelWrapper){
 			panelsExpanded.push(panelWrapper.getElement('.panel'));
 		}.bind(this));
+
+		if (0)  // this logic already exists in panel.js: .collapse() method, ~ line 315
+		{
+		// makes sure at least one panel is expanded for the action == 'all'
+		if (action == 'all' && panelsExpanded.length == 0 && panels.length > 0){
+			MUI.get(panels[0]).expand();
+
+			// if this is not the main column than we can collapse the column to get desired effect
+			var columnInstance = MUI.get(column);
+			if (columnInstance.options.position != 'main'){
+				columnInstance.collapse();
+			}
+		}
+		}
 
 		// All the panels in the column whose height will be effected.
 		var panelsToResize = [];
@@ -431,7 +452,15 @@ MUI.append({
 
 		// Set panel resize partners
 		panels.each(function(panel){
+			var p_id = panel.getAttributeNode('id');
+			if (typeof panel == 'undefined' || !panel.id)
+				console.warn("MUI.panelHeight2: no panel.id for panel ", panel, p_id);
 			var instance = MUI.get(panel.id);
+			if (typeof instance == 'undefined' || !instance || !panel.id)
+				console.warn("MUI.panelHeight2: no instance / panel.id for panel ", panel);
+			if (!instance && window.console && window.console.warn)
+				window.console.warn('MUI.panelHeight2::panel.id unknown: ', panel.id, ', panel: ', panel, ' --> ', MUI.get(panel.id));
+
 			if (panel.getParent().hasClass('expanded') && panel.getParent().getNext('.expanded')){
 				instance.partner = panel.getParent().getNext('.expanded').getElement('.panel');
 				instance.resize.attach();
@@ -615,29 +644,26 @@ MUI.append({
 		var contentWrapper = instance.el.contentWrapper;
 
 		if (instance.el.iframe){
+			// The following hack is to get IE8 RC1 IE8 Standards Mode to properly resize an iframe
+			// when only the vertical dimension is changed.
 			if (!Browser.ie){
 				instance.el.iframe.setStyles({
 					'height': contentWrapper.getStyle('height'),
 					'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
 				});
 			} else {
-				// The following hack is to get IE8 RC1 IE8 Standards Mode to properly resize an iframe
-				// when only the vertical dimension is changed.
-				instance.el.iframe.setStyles({
-					'height': contentWrapper.getStyle('height'),
-					'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt() - 1
-				});
 				instance.el.iframe.setStyles({
 					'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
 				});
 			}
 		}
-
 	},
 
 	rWidth: function(container){ // Remaining Width
-		if (container == null) container = MUI.Desktop.desktop;
-		if (container == null) return;
+		if (container == null)
+			container = MUI.Desktop.desktop;
+		if (container == null)
+			return;
 		container.getElements('.rWidth').each(function(column){
 			var currentWidth = column.offsetWidth.toInt();
 			currentWidth -= column.getStyle('border-left').toInt();
@@ -666,7 +692,7 @@ MUI.append({
 			}, this);
 
 			column.getElements('.panel').each(function(panel){
-				panel.setStyle('width', newWidth - panel.getStyle('border-left').toInt() - panel.getStyle('border-right').toInt());
+				//panel.setStyle('width', newWidth - panel.getStyle('border-left').toInt() - panel.getStyle('border-right').toInt());
 				MUI.resizeChildren(panel);
 			}.bind(this));
 
