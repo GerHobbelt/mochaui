@@ -180,7 +180,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 				break;
 		}
 
-		if (options.isCollapsed && this.options.placement != 'main') this.toggle();
+		if (options.isCollapsed && this.options.placement != 'main') this.expand(); // [i_a] more aptly named than .toggle()
 
 		if (this.el.handle != null){
 			this.el.handle.addEvent('dblclick', function(){
@@ -260,8 +260,10 @@ MUI.Column = new NamedClass('MUI.Column', {
 	},
 
 	toggle: function(){
-		if (!this.isCollapsed) this.collapse();
-		else this.expand();
+		if (!this.isCollapsed)
+			this.collapse();
+		else
+			this.expand();
 		return this;
 	},
 
