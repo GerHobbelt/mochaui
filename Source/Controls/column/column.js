@@ -196,6 +196,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 
 				if (!panel.id) {
 					panel.id = options.id + 'Panel' + i;
+					console.log('MUI: assigned panel ID: ', panel.id);
 				}
 				panel.container = this.el.column;
 				panel.column = options.id;

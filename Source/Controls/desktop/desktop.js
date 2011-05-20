@@ -75,9 +75,12 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 		for (var idx = 0; idx < this.options.content.length; idx++){
 			var section = this.options.content[idx];
 			if (!section.name) section.name = 'section' + idx;
-			if (!section.id) section.id = this.id + section.name.replace(/(\w)(\w*)/g, function (_, i, r){
-				return i.toUpperCase() + (r != null ? r : "");
-			});
+			if (!section.id) {
+				section.id = this.id + section.name.replace(/(\w)(\w*)/g, function (_, i, r){
+					return i.toUpperCase() + (r != null ? r : "");
+				});
+				console.log('MUI.draw assigned section id: ', section.id);
+			}
 
 			if (section.name == 'content'){
 				// add content element
@@ -88,7 +91,10 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 					for (var i = 0; i < section.columns.length; i++){
 						var column = section.columns[i];
 
-						if (!column.id) column.id = o.id + 'Column' + i;
+						if (!column.id) {
+							column.id = o.id + 'Column' + i;
+							console.log('MUI.draw assigned column id: ', column.id);
+						}
 						column.container = this.el.content;
 						column.element = new Element('div', {'id':column.id}).inject(this.el.content);
 						column.control = 'MUI.Column';
