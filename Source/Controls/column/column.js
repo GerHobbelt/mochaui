@@ -493,7 +493,7 @@ MUI.append({
 					var instance = MUI.get(el.id);
 
 					// Are any next siblings Expanded?
-					anyNextSiblingsExpanded = function(el){
+					var anyNextSiblingsExpanded = function(el){
 						var test;
 						el.getParent().getAllNext('.panelWrapper').each(function(sibling){
 							var siblingInstance = MUI.get(sibling.getElement('.panel').id);
