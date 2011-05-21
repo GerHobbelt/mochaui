@@ -59,5 +59,5 @@ MUI.Tabs.implement({
 
 
 // [i_a] mochaUI lazyloading is crappy; this provides a way around it, when you provide your own load sequence / lazy loader
-if (window.MUI && window.MUI.files) { MUI.files['{controls}tabs/tabshtml.js'] = 'loaded'; }
+if (window.MUI && window.MUI.files) { MUI.files['{controls}tabs/tabs_html.js'] = 'loaded'; }
 
