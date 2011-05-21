@@ -135,7 +135,12 @@ MUI.append({
 	get: function(el){
 		var id = this.getID(el);
 		el = $(id);
-		if (el && el.retrieve('instance')) return el.retrieve('instance');
+		if (el && el.retrieve('instance')) {
+			return el.retrieve('instance');
+		}
+		if (el && el.getParent() && el.getParent().retrieve('instance')) {
+			return el.getParent().retrieve('instance');
+		}
 		return this.instances[id];
 	},
 
