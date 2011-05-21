@@ -27,7 +27,7 @@ MUI.append({
 	loadPluginGroups:function(onload){
 		var js = [];
 		Object.each(MUI.options.pluginGroups, function(group, name){
-			console.log("MUI.loadPluginGroups: checking for  ", '{' + name + '}mui-' + name + '.js');
+			console.log("MUI.loadPluginGroups: checking for  ", '{' + name + '}mui-' + name + '.js', '-->', MUI.files['{' + name + '}mui-' + name + '.js']);
 			if (MUI.files['{' + name + '}mui-' + name + '.js'] != 'loaded'){
 				MUI[name] = [];
 				console.log("MUI.loadPluginGroups: queueing  ", '{' + name + '}mui-' + name + '.js');
@@ -136,9 +136,14 @@ MUI.append({
 		for (var i = 0; i < controls.length; i++){
 			if (!controls[i].control) return;
 			config = MUI.getControlAssets(controls[i], r.js, r.css, r.traversed).config;
+			console.log("MUI.create: gathered assets so far:  ", controls[i], i, controls[i].control, r);
 		}
 
 		console.log("MUI.create: gathered assets:  ", r);
+		if (r.css[0] == "{theme}css/window.css")
+		{
+			//debugger;
+		}
 
 		// if only one control was requested and it is loaded then return it
 		if (controls.length == 1 && r.js.length > 0 && MUI.files[r.js[0]] == 'loaded'){
