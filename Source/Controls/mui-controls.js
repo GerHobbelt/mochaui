@@ -15,6 +15,8 @@
  ...
  */
 
+window.MUI.controls = (window.MUI.controls || {});
+
 Object.append(MUI.controls, {
 
 	'accordion':{'samples':[,'demo','index'],data:['json','html'],'description':'Accordion','isFormControl':false,'css':['{theme}css/accordion.css']},

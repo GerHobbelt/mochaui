@@ -14,6 +14,8 @@
  ...
  */
 
+window.MUI.plugins = (window.MUI.plugins || {});
+
 Object.append(MUI.plugins, {
 
 	'coolclock':{'samples':['demo'],'description':'Cool Clock Plugin','js':['{plugin}coolclock.js','{plugin}moreskins.js','{plugin}muiclock.js'],'loadOnly':true},
