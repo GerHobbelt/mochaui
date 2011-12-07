@@ -418,8 +418,7 @@ MUI.append({
 			panelsExpanded.push(panelWrapper.getElement('.mui-panel'));
 		}.bind(this));
 
-		if (0)  // this logic already exists in panel.js: .collapse() method, ~ line 315
-		{
+		// if (0)  // this logic already exists in panel.js: .collapse() method, ~ line 315
 		// makes sure at least one panel is expanded for the action == 'all'
 		if (action == 'all' && panelsExpanded.length == 0 && panels.length > 0){
 			MUI.get(panels[0]).expand();
@@ -429,7 +428,6 @@ MUI.append({
 			if (columnInstance.options.position != 'main'){
 				columnInstance.collapse();
 			}
-		}
 		}
 
 		// All the panels in the column whose height will be effected.
@@ -604,20 +602,14 @@ MUI.append({
 		}.bind(this));
 
 		remainingHeight = column.offsetHeight.toInt() - this.height;
-		if (remainingHeight < 0) remainingHeight = 10;
+		//if (remainingHeight < 0) remainingHeight = 10;
 
-		if (remainingHeight > 0 && tallestPanelHeight > 0){
-// Partikule height correction
+		if (remainingHeight != 0 && tallestPanelHeight > 0){
+			// Partikule / [i_a]: height correction as negative height values can result in 'newHeight':
 			var newHeight = tallestPanel.getStyle('height').toInt() + remainingHeight;
-			if (newHeight > 0)
+			if (newHeight > 0){
 				tallestPanel.setStyle('height', newHeight);
-/*
-			tallestPanel.setStyle('height', tallestPanel.getStyle('height').toInt() + remainingHeight);
-			if (tallestPanel.getStyle('height') < 1){
-				tallestPanel.setStyle('height', 0);
 			}
-*/
-// /Partikule
 		}
 
 		parent.getChildren('.mui-columnHandle').each(function(handle){
@@ -637,34 +629,33 @@ MUI.append({
 
 	resizeChildren: function(panel){ // May rename this resizeIframeEl()
 
-// Partikule Plaster
-// if (panel.id)
-//
-if (panel.id)
-{
-		var instance = MUI.get(panel.id);
-		var contentWrapper = instance.el.contentWrapper;
+		// Partikule Plaster
+		if (panel.id)
+		{
+			var instance = MUI.get(panel.id);
+			var contentWrapper = instance.el.contentWrapper;
 
-		if (instance.el.iframe){
-			// The following hack is to get IE8 RC1 IE8 Standards Mode to properly resize an iframe
-			// when only the vertical dimension is changed.
-			if (!Browser.ie){
-				instance.el.iframe.setStyles({
-					'height': contentWrapper.getStyle('height'),
-					'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
-				});
-			} else {
-				instance.el.iframe.setStyles({
-					'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
-				});
+			if (instance.el.iframe){
+				// The following hack is to get IE8 RC1 IE8 Standards Mode to properly resize an iframe
+				// when only the vertical dimension is changed.
+				if (!Browser.ie){
+					instance.el.iframe.setStyles({
+						'height': contentWrapper.getStyle('height'),
+						'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
+					});
+				} else {
+					instance.el.iframe.setStyles({
+						'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
+					});
+				}
 			}
 		}
-}
 	},
 
 	rWidth: function(container){ // Remaining Width
-		if (container == null)
-			container = MUI.Desktop.desktop;
+		if (container == null){
+			container = MUI.desktop.el.element;
+			// container = MUI.Desktop.desktop;
 		if (container == null)
 			return;
 		container.getElements('.rWidth').each(function(column){

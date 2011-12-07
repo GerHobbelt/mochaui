@@ -290,8 +290,10 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				return;
 			}
 			var instance = MUI.get(panel.id);
-			if (typeof instance == 'undefined' || !instance)
+			if (typeof instance == 'undefined' || !instance) {
 				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
+				return;
+			}
 			if (!instance.isCollapsed)
 				expandedSiblings.push(panel.id);
 		});
@@ -303,8 +305,10 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				return;
 			}
 			var instance = MUI.get(panel.id);
-			if (typeof instance == 'undefined' || !instance)
+			if (typeof instance == 'undefined' || !instance) {
 				console.warn("MUI.collapse: no instance for panel ", panel, panel.id);
+				return;
+			}
 			if (!instance.isCollapsed)
 				expandedSiblings.push(panel.id);
 		});

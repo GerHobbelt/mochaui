@@ -5,7 +5,7 @@
 
  script: menu.js
 
- description: MUI - Creates a menu control.
+ description: MUI.Menu - Creates a toolbar dock control.
 
  copyright: (c) 2011 Contributors in (/AUTHORS.txt).
 
@@ -23,117 +23,9 @@
  ...
  */
 
-MUI.MenuController = new NamedClass('MUI.MenuController', {
+MUI.Menu = new NamedClass('MUI.Menu', {
 
-    $active:		false,
-    $visibles:	  [],
-    $focused:	   [],
-    $groupedItems:  {},
-
-    menuIsActivated: function(){
-        return this.$activated;
-    },
-
-    checkActivated: function(item){
-		if(this.$focused.length === 1){
-			this.$focused.pop().setActive(false);
-			this.$activated = false;
-		}
-		else if(!item){
-			this.hideVisibleMenus();
-			while(this.$focused.length > 0)
-	            this.$focused.pop().setActive(false);
-			this.$activated = false;
-		}
-		else {
-			item.setActive(true);
-			this.$focused.push(item);
-			this.$activated = true;
-		}
-    },
-
-    onItemFocus: function(item){
-		if(this.$activated){
-			var focused = [];
-	        while(this.$focused.length > 0){
-	            var item2 = this.$focused.pop();
-	            if(!item || item2.isParentOf(item))
-	                focused.push(item2);
-	            else
-	                item2.setActive(false);
-	        }
-	        this.$focused = focused;
-
-			item.setActive(true);
-			this.$focused.push(item);
-		}
-    },
-
-    onItemBlur: function(item){
-
-    },
-
-    addVisibleMenu: function(menu){
-        if(menu.isVisible())
-            this.$visibles.push(menu);
-        return this;
-    },
-
-    hideVisibleMenus: function(){
-        while(this.$visibles.length > 0){
-            this.$visibles.pop().hide();
-        }
-        return this;
-    },
-
-    hideVisibleMenusExceptParents: function(fromMenu){
-        var visibles = [];
-        while(this.$visibles.length > 0){
-            var menu = this.$visibles.pop();
-            if(!menu.isParentOf(fromMenu))
-                menu.hide();
-            else
-                visibles.push(menu);
-        }
-        this.$visibles = visibles;
-        return this;
-    },
-
-    hideVisibleMenusExceptThisAndParents: function(fromMenu){
-        var visibles = [];
-        while(this.$visibles.length > 0){
-            var menu = this.$visibles.pop();
-            if(!menu.isParentOf(fromMenu) && menu !== fromMenu)
-                menu.hide();
-            else
-                visibles.push(menu);
-        }
-        this.$visibles = visibles;
-        return this;
-    },
-
-    addItemToGroup: function(groupName, item){
-		if(!this.$groupedItems.groupName)
-			this.$groupedItems.groupName = [];
-		this.$groupedItems.groupName.push(item);
-    },
-
-    removeItemFromGroup: function(groupName, item){
-		if(!this.$groupedItems.groupName) return;
-		var i = this.$groupedItems.indexOf(item);
-		if(i > -1)
-			delete this.$groupedItems[i];
-    },
-
-    getGroupedItems: function(groupName){
-		if(!this.$groupedItems.groupName) return [];
-		return this.$groupedItems.groupName;
-    }
-});
-
-MUI.MenuItemContainer = new NamedClass('MUI.MenuItemContainer', {
-
-    Implements: [Events, Options],
+	Implements: [Events, Options],
 
 	options: {
 		id:				'',				// id of the primary element, and id os control that is registered with mocha
@@ -143,83 +35,25 @@ MUI.MenuItemContainer = new NamedClass('MUI.MenuItemContainer', {
 		partnerMethod:	'xhr',			// default loadMethod when sending content to partner
 		fromHTML:		false,			// default false, true to load menu from html
 
-		this.fireEvent('hide', [this]);
-		return this;
-	},
+		content:		false,			// used to load content
+		items:			{},				// menu items for the menu to draw
 
-	isVisible: function(){
-		return this.$visible;
-	},
+		cssClass:		'mui-menu',		// css tag to add to control
+		divider:		true,			// true if this toolbar has a divider
+		orientation:	'left'			// left or right side of dock.  default is left
 
-	getDottedId: function(){
-		return this.$dottedId;
-	},
-
-    isParentOf: function(item){
-        return item.getDottedId().contains(this.getDottedId());
-    },
-
-    getDepth: function(){
-		var da = this.getDottedId().split('.');
-		return (da.length + 1) / 2;
-    },
-
-	onItemClick: function(item, e){
-		this.fireEvent('itemClick', [this, item, e]);
-	},
-
-	onItemClicked: function(item, e){
-		this.fireEvent('itemClicked', [this, item, e]);
-	},
-
-	onItemFocus: function(item, e){
-		this.fireEvent('itemFocus', [this, item, e]);
-	},
-
-	onItemFocused: function(item, e){
-		this.fireEvent('itemFocused', [this, item, e]);
-	},
-
-	onItemBlur: function(item, e){
-		this.fireEvent('itemBlur', [this, item, e]);
-	},
-
-	onItemBlurred: function(item, e){
-		this.fireEvent('itemBlurred', [this, item, e]);
-	}
-
-});
-
-MUI.Menu = new NamedClass('MUI.Menu', {
-
-    Extends: MUI.MenuItemContainer,
-
-	options: {
-		id:               '',              // id of the primary element, and id os control that is registered with mocha
-		container:        null,            // the parent control in the document to add the control to
-		drawOnInit:       true,            // true to add tree to container when control is initialized
-		partner:          false,           // default partner element to send content to
-		partnerMethod:    'xhr',           // default loadMethod when sending content to partner
-
-		content:          false,           // used to load content
-		items:            {},              // menu items for the menu to draw
-
-		cssClass:         'toolMenu',      // css tag to add to control
-		divider:          true,            // true if this toolbar has a divider
-		orientation:      'left'           // left or right side of dock.  default is left
-
-		//onDrawBegin:null                 // event: called when menu is just starting to be drawn
-		//onDrawEnd:null                   // event: called when menu is has just finished drawing
-		//onItemDrawBegin:null             // event: called when menu item is just starting to be drawn
-		//onItemDrawEnd:null               // event: called when menu item is has just finished drawing
-		//onItemClicked:null               // event: when a menu item is clicked
-		//onItemFocused:null               // event: when a menu gains focus
-		//onItemBlurred:null               // event: when a menu losses focus
+		//onDrawBegin:null				// event: called when menu is just starting to be drawn
+		//onDrawEnd:null				// event: called when menu is has just finished drawing
+		//onItemDrawBegin:null			// event: called when menu item is just starting to be drawn
+		//onItemDrawEnd:null			// event: called when menu item is has just finished drawing
+		//onItemClicked:null			// event: when a menu item is clicked
+		//onItemFocused:null			// event: when a menu gains focus
+		//onItemBlurred:null			// event: when a menu losses focus
 	},
 
 	initialize: function(options){
 		this.setOptions(options);
-        this.$controller = new MUI.MenuController();
+		this.el = {};
 
 		// If menu has no ID, give it one.
 		var id = this.id = this.options.id = this.options.id || 'menu' + (++MUI.idCount);
@@ -237,7 +71,7 @@ MUI.Menu = new NamedClass('MUI.Menu', {
 	draw: function(container){
 		this.fireEvent('drawBegin', [this]);
 		var o = this.options;
-		container = container || o.container;
+		if (!container) container = o.container;
 
 		// determine element for this control
 		var isNew = false;
@@ -253,45 +87,21 @@ MUI.Menu = new NamedClass('MUI.Menu', {
 		if (o.divider) div.addClass('mui-divider');
 		if (o.orientation) div.addClass(o.orientation);
 
-		this.el.container = div.store('instance', this);
+		this.el.element = div.store('instance', this);
+		var ul = new Element('ul').inject(div);
 
-		this.items = o.items;
-		this.drawItems({
-			cssClass: o.cssClass,
-			subMenuAlign: { bottom: 3, left: 0 }
-		});
+		this._buildItems(ul, o.items, false);
 
 		// add to container
 		var addToContainer = function(){
 			if (typeOf(container) == 'string') container = $(container);
-			if (div.getParent() === null) div.inject(container);
+			if (div.getParent() == null) div.inject(container);
 			this.fireEvent('drawEnd', [this]);
 		}.bind(this);
 		if (!isNew || typeOf(container) == 'element') addToContainer();
 		else window.addEvent('domready', addToContainer);
 
 		return this;
-	}
-
-});
-
-
-MUI.MenuItem = new NamedClass('MUI.MenuItem', {
-
-	Implements: [Events, Options],
-
-	options: {
-		drawOnInit:    true,
-		cssClass:      '',      // css tag to add to control
-		items:         [],
-		text:          '',
-		id:            '',
-		registered:    '',
-		url:           '',
-		target:        '_blank',
-		type:          '',      // 'check', 'radio', 'image' or leave blnak for default
-		partner:       '',
-		partnerMethod: 'xhr'
 	},
 
 	_buildItems:function(ul, items, addArrow){
@@ -334,218 +144,27 @@ MUI.MenuItem = new NamedClass('MUI.MenuItem', {
 				this.removeClass('hover');
 			});
 
-		this.el.container = container.toElement();
-
-		if (this.options.drawOnInit) this.draw();
-	},
-
-	draw: function(){
-		this.fireEvent('drawBegin', [this]);
-		var options = this.options;
-
-		this.el.item = new Element('div', {
-			'class': options.cssClass + ' mui-menu-item depth-' + this.getDepth(),
-			text: options.text
-		}).inject(this.el.container);
-
-		if(!!options.id)
-			this.el.item.set('id', options.id);
-
-		this.attachEvents();
-
-		this.fireEvent('drawEnd', [this]);
-	},
-
-	getDottedId: function(){
-		return this.$dottedId;
-	},
-
-    isParentOf: function(item){
-        return item.getDottedId().contains(this.getDottedId());
-    },
-
-    getDepth: function(){
-		var da = this.getDottedId().split('.');
-		return da.length / 2;
-    },
-
-	attachEvents: function(){
-		var self = this,
-			options = this.options;
-		this.el.item.addEvents({
-			'click': function(e){
-				self.fireEvent('click', [self, e]);
-				if(!self.isLink()) e.stop();
-
-				self.$controller.checkActivated(self);
-
-				// determine partner settings
-				var partner = options.partner,
-					partnerMethod = options.partnerMethod,
-					registered = options.registered,
-					url = MUI.replacePaths(options.url),
-					hide = false;
-				if(!url || registered){
-					url = '#';
-					if(registered && registered !== ''){
-						MUI.getRegistered(self, registered, [self.options])(e);
-						hide = true;
-					}
-				}
-				else if(partner){
-					MUI.sendContentToPartner(self, url, partner, partnerMethod)(e);
-					hide = true;
-				}
-				else {
-					document.location.href = url;
-				}
-
-				if(hide)
-					self.$controller.checkActivated();
-
-				self.fireEvent('clicked', [self, e]);
-			},
-			'mouseenter': function(e){
-				self.fireEvent('focus', [self, e]);
-
-				self.$controller.onItemFocus(self);
-
-				self.fireEvent('focused', [self, e]);
-			},
-			'mouseleave': function(e){
-				self.fireEvent('blur', [self, e]);
-				self.$controller.onItemBlur(self);
-				self.fireEvent('blurred', [self, e]);
+			if (item.items && item.items.length > 0){
+				if (addArrow) a.addClass('arrow-right');
+				var ul2 = new Element('ul').inject(li);
+				this._buildItems(ul2, item.items, true);
 			}
-		});
-	},
-
-	isLink: function(){
-		return this.options.url !== '';
-	},
-
-	setActive: function(state){
-		if(!!state)
-			this.el.item.addClass('active');
-		else
-			this.el.item.removeClass('active');
-	}
-
-});
-
-MUI.MenuItemDivider = new NamedClass('MUI.MenuItemDivider', {
-
-	Extends: MUI.MenuItem,
-
-	draw: function(){
-		this.fireEvent('drawBegin', [this]);
-		var options = this.options;
-
-		this.el.item = new Element('div', {
-			'class': options.cssClass + ' mui-menu-item-divider depth-' + this.getDepth()
-		}).inject(this.el.container);
-
-		if(!!options.id)
-			this.el.item.set('id', options.id);
 
 			if (item.id) a.setAttribute('id', item.id);
 
 			this.fireEvent('itemDrawEnd', [this, item]);
 		}
-
-		this.attachEvents();
-
-		this.fireEvent('drawEnd', [this]);
 	},
 
-	attachEvents: function(){
-		var self = this;
-		this.el.item.addEvents({
-			'click': function(e){
-                if(this.hasClass('more')){
-                    var coords = { x: 0, y: 0 },
-						itemCoords = this.getCoordinates();
-
-					Object.each(self.options.subMenuAlign, function(margin, align){
-						switch(align){
-							case 'top':
-							case 'bottom':
-								coords.y = itemCoords[align] + margin;
-								break;
-
-							case 'left':
-							case 'right':
-								coords.x = itemCoords[align] + margin;
-								break;
-						}
-					});
-
-					self.$subMenu.toggle(coords);
-				}
-			},
-			'mouseenter': function(e){
-                self.$controller.hideVisibleMenusExceptThisAndParents(self.$container);
-
-				if(self.$controller.menuIsActivated() && this.hasClass('more')){
-					var coords = { x: 0, y: 0 },
-						itemCoords = this.getCoordinates();
-
-					Object.each(self.options.subMenuAlign, function(margin, align){
-						switch(align){
-							case 'top':
-							case 'bottom':
-								coords.y = itemCoords[align] + margin;
-								break;
-
-							case 'left':
-							case 'right':
-								coords.x = itemCoords[align] + margin;
-								break;
-						}
-					});
-
-					self.$subMenu.show(coords);
-				}
-			}
-		});
-
-		this.parent();
-	}
-});
-
-MUI.CheckboxMenuItem = new NamedClass('MUI.CheckboxMenuItem', {
-
-	Extends: MUI.MenuItem,
-
-	$selected: false,
-
-	initialize: function(controller, container, parentDdottedId, options){
-		options = Object.merge({
-			selected: false
-		}, options);
-		this.parent(controller, container, parentDdottedId, options);
+	onItemClick: function(e, item){
+		if (!item.target) e = new Event(e).stop();
+		self.fireEvent('itemClicked', [this, item, e]);
+		return true;
 	},
 
-	draw: function(){
-		this.parent();
-
-		new Element('span', {
-			'class': 'checkicon'
-		}).inject(this.el.item, 'top');
-
-		this.el.item.addClass('checkbox');
-
-		if(this.options.selected)
-			this.setSelected(true);
-	},
-
-	attachEvents: function(){
-		var self = this;
-		this.el.item.addEvent('click', function(e){
-			this.toggleClass('checkbox');
-			self.fireEvent('changed', [self]);
-		});
-		this.parent();
+	onItemFocus: function(e, item){
+		self.fireEvent('itemFocused', [this, item, e]);
+		return true;
 	},
 
 	onItemBlur: function(e, item){
@@ -590,18 +209,6 @@ MUI.CheckboxMenuItem = new NamedClass('MUI.CheckboxMenuItem', {
 	}
 });
 
-/*
-MUI.ImageMenuItem = new NamedClass('MUI.ImageMenuItem',  {
-
-	Extends: MUI.MenuItem,
-
-	draw: function(){
-		this.parent();
-
-		this.el.item.addClass('image');
-	}
-});
-*/
 
 
 

@@ -64,11 +64,9 @@ MUI.Stepper = new NamedClass('MUI.Stepper', {
 		MUI.set(this.id, this);
 
 		// defaults to numeric stepper iterator
-		if (!options.iterator)
-			options.iterator = 'numeric';
+		if (!options.iterator) options.iterator = 'numeric';
 
-		if (options.drawOnInit)
-			this.draw();
+		if (options.drawOnInit)	this.draw();
 	},
 
 	draw: function(container){

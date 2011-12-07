@@ -79,7 +79,7 @@ MUI.append({
 // Partikule
 		if(Browser.ie9)
 		{
-			this.ieSupport = '';
+//			this.ieSupport = '';
 		}
 // / Partikule
 	},
