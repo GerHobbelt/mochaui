@@ -660,6 +660,7 @@ MUI.Persist.Providers.Flash = new Class({
 	} else {
 		// IE
 		try{
+			throw 'x';		// blow away Gears usage - overhere it's a copious meal of b0rkb0rkb0rk
 			F = new ActiveXObject('Gears.Factory');
 			// privateSetGlobalObject is only required and supported on WinCE.
 			if (F.getBuildInfo().indexOf('ie_mobile') != -1){
