@@ -285,27 +285,27 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 		panelWrapper.getAllPrevious('.panelWrapper').each(function(sibling){
 			var panel = sibling.getElement('.panel');
-			if (!panel) return;
-			var p_id = panel.getAttributeNode('id');
-			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI.collapse: no panel.id for panel ", panel, p_id);
+			if (typeof panel == 'undefined' || !panel.id) {
+				console.warn("MUI.collapse: no panel.id for panel ", panel, (typeof panel == 'undefined' ? '???' : panel.getAttributeNode('id')));
+				return;
+			}
 			var instance = MUI.get(panel.id);
 			if (typeof instance == 'undefined' || !instance || !panel.id)
 				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
-			if (!MUI.get(panel.id).isCollapsed)
+			if (!instance.isCollapsed)
 				expandedSiblings.push(panel.id);
 		});
 
 		panelWrapper.getAllNext('.panelWrapper').each(function(sibling){
 			var panel = sibling.getElement('.panel');
-			if (!panel) return;
-			var p_id = panel.getAttributeNode('id');
-			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI.collapse: no panel.id for panel ", panel, p_id);
+			if (typeof panel == 'undefined' || !panel.id) {
+				console.warn("MUI.collapse: no panel.id for panel ", panel, (typeof panel == 'undefined' ? '???' : panel.getAttributeNode('id')));
+				return;
+			}
 			var instance = MUI.get(panel.id);
 			if (typeof instance == 'undefined' || !instance || !panel.id)
 				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
-			if (!MUI.get(panel.id).isCollapsed)
+			if (!instance.isCollapsed)
 				expandedSiblings.push(panel.id);
 		});
 
@@ -314,7 +314,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 			if (expandedSiblings.length == 0 && parent.options.placement != 'main'){
 				if (0)
 				{
-				parent.collapse();  // [i_a] more aptly named than .toggle()
+					parent.collapse();  // [i_a] more aptly named than .toggle()
 				}
 				if (parent.options.keep_one_panel_expanded)
 					return;

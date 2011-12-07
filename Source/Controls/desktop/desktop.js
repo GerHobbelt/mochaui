@@ -415,9 +415,8 @@ MUI.append({
 
 		// Set panel resize partners
 		panels.each(function(panel){
-			var p_id = panel.getAttributeNode('id');
 			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI.panelHeight2: no panel.id for panel ", panel, p_id);
+				console.warn("MUI.panelHeight2: no panel.id for panel ", panel, (typeof panel == 'undefined' ? '???' : panel.getAttributeNode('id')));
 			var instance = MUI.get(panel.id);
 			if (typeof instance == 'undefined' || !instance || !panel.id)
 				console.warn("MUI.panelHeight2: no instance / panel.id for panel ", panel);
