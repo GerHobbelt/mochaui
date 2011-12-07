@@ -95,12 +95,12 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 		var div = options.element ? options.element : $(options.id + '_wrapper');
 		if (!div) div = new Element('div', {'id': options.id + '_wrapper'}).inject(container);
-		div.empty().addClass('panelWrapper expanded');
+		div.empty().addClass('mui-panelWrapper mui-expanded');
 		this.el.element = div;
 
 		this.el.panel = new Element('div', {
 			'id': options.id,
-			'class': 'panel',
+			'class': 'mui-panel',
 			'styles': {
 				'height': options.height
 			}
@@ -157,7 +157,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		if (options.header){
 			this.el.header = new Element('div', {
 				'id': options.id + '_header',
-				'class': 'panel-header',
+				'class': 'mui-panel-header',
 				'styles': { 'display': options.header ? 'block' : 'none' }
 			}).inject(this.el.panel, 'before');
 
@@ -179,7 +179,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				container: this.el.panel,
 				element: this.el.header,
 				id: options.id + '_header',
-				cssClass: 'panel-header',
+				cssClass: 'mui-panel-header',
 				docked:headerItems
 			});
 		}
@@ -187,7 +187,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		if (options.footer){
 			this.el.footer = new Element('div', {
 				'id': options.id + '_footer',
-				'class': 'panel-footer',
+				'class': 'mui-panel-footer',
 				'styles': { 'display': options.footer ? 'block' : 'none' }
 			}).inject(this.el.panel, 'after');
 
@@ -195,13 +195,13 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				control: 'MUI.Dock',
 				container: this.el.element,
 				id: options.id + '_footer',
-				cssClass: 'panel-footer',
+				cssClass: 'mui-panel-footer',
 				docked: footerItems
 			});
 		}
 
-		if (parent && parent.options.sortable){
-			parent.options.container.retrieve('sortables').addItems(this.el.element);
+		if (parent && parent.options.sortable && parent.container){
+			parent.container.retrieve('sortables').addItems(this.el.element);
 			if (this.el.header){
 				this.el.header.setStyle('cursor', 'move');
 				this.el.header.addEvent('mousedown', function(e){
@@ -214,7 +214,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 		this.el.handle = new Element('div', {
 			'id': options.id + '_handle',
-			'class': 'horizontalHandle',
+			'class': 'mui-horizontalHandle',
 			'styles': {
 				'display': this.showHandle ? 'block' : 'none'
 			}
@@ -222,7 +222,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 		this.el.handleIcon = new Element('div', {
 			'id': options.id + '_handle_icon',
-			'class': 'handleIcon'
+			'class': 'mui-handleIcon'
 		}).inject(this.el.handle);
 
 		this._addResizeBottom();
@@ -238,7 +238,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 		// Do this when creating and removing panels
 		if (!container) return;
-		container.getChildren('.panelWrapper').removeClass('bottomPanel').getLast().addClass('bottomPanel');
+		container.getChildren('.mui-panelWrapper').removeClass('mui-bottomPanel').getLast().addClass('mui-bottomPanel');
 		MUI.panelHeight(container, this.el.panel, 'new');
 
 		Object.each(this.el, (function(ele){
@@ -257,8 +257,8 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		this.isClosing = true;
 
 		var parent = MUI.get(container);
-		if (parent.options.sortable)
-			parent.options.container.retrieve('sortables').removeItems(this.el.element);
+		if (parent.options.sortable && parent.container)
+			parent.container.retrieve('sortables').removeItems(this.el.element);
 
 		MUI.erase(this.el.element);
 		this.el.element.destroy();
@@ -266,9 +266,9 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		if (MUI.desktop) MUI.desktop.resizePanels();
 
 		// Do this when creating and removing panels
-		var panels = $(container).getElements('.panelWrapper');
-		panels.removeClass('bottomPanel');
-		if (panels.length > 0) panels.getLast().addClass('bottomPanel');
+		var panels = $(container).getElements('.mui-panelWrapper');
+		panels.removeClass('mui-bottomPanel');
+		if (panels.length > 0) panels.getLast().addClass('mui-bottomPanel');
 
 		this.fireEvent('close', [this]);
 		return this;
@@ -283,43 +283,39 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		// Then collapse the column.
 		var expandedSiblings = [];
 
-		panelWrapper.getAllPrevious('.panelWrapper').each(function(sibling){
-			var panel = sibling.getElement('.panel');
-			if (!panel) return;
-			var p_id = panel.getAttributeNode('id');
-			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI.collapse: no panel.id for panel ", panel, p_id);
+		panelWrapper.getAllPrevious('.mui-panelWrapper').each(function(sibling){
+			var panel = sibling.getElement('.mui-panel');
+			if (typeof panel == 'undefined' || !panel.id) {
+				console.warn("MUI.collapse: no panel.id for panel ", panel, (typeof panel == 'undefined' ? '???' : panel.getAttributeNode('id')));
+				return;
+			}
 			var instance = MUI.get(panel.id);
-			if (typeof instance == 'undefined' || !instance || !panel.id)
+			if (typeof instance == 'undefined' || !instance)
 				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
-			if (!MUI.get(panel.id).isCollapsed)
+			if (!instance.isCollapsed)
 				expandedSiblings.push(panel.id);
 		});
 
-		panelWrapper.getAllNext('.panelWrapper').each(function(sibling){
-			var panel = sibling.getElement('.panel');
-			if (!panel) return;
-			var p_id = panel.getAttributeNode('id');
-			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI.collapse: no panel.id for panel ", panel, p_id);
+		panelWrapper.getAllNext('.mui-panelWrapper').each(function(sibling){
+			var panel = sibling.getElement('.mui-panel');
+			if (typeof panel == 'undefined' || !panel.id) {
+				console.warn("MUI.collapse: no panel.id for panel ", panel, (typeof panel == 'undefined' ? '???' : panel.getAttributeNode('id')));
+				return;
+			}
 			var instance = MUI.get(panel.id);
-			if (typeof instance == 'undefined' || !instance || !panel.id)
-				console.warn("MUI.collapse: no instance / panel.id for panel ", panel);
-			if (!MUI.get(panel.id).isCollapsed)
+			if (typeof instance == 'undefined' || !instance)
+				console.warn("MUI.collapse: no instance for panel ", panel, panel.id);
+			if (!instance.isCollapsed)
 				expandedSiblings.push(panel.id);
 		});
 
 		var parent = MUI.get($(options.container));
 		if (parent.isTypeOf('MUI.Column')){
 			if (expandedSiblings.length == 0 && parent.options.placement != 'main'){
-				if (0)
-				{
-				parent.collapse();  // [i_a] more aptly named than .toggle()
-				}
-				if (parent.options.keep_one_panel_expanded)
+				if (!parent.options.keep1PanelOpen) parent.collapse();
 					return;
 			} else if (expandedSiblings.length == 0 && parent.options.placement == 'main'){
-				if (parent.options.keep_one_panel_expanded)
+				if (parent.options.keep1PanelOpen)
 					return;
 			}
 		}
@@ -335,20 +331,20 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 		// Collapse Panel
 		this.oldHeight = this.el.panel.getStyle('height').toInt();
-		if(this.el.footer) {
+		if (this.el.footer){
 			this.oldFooterHeight = this.el.footer.getStyle('height').toInt();
-			if(options.collapseFooter) this.el.footer.hide().setStyle('height', 0);
+			if (options.collapseFooter) this.el.footer.hide().setStyle('height', 0);
 		}
 		if (this.oldHeight < 10) this.oldHeight = 20;
 		this.el.content.setStyle('position', 'absolute'); // This is so IE6 and IE7 will collapse the panel all the way
 		this.el.panel.hide().setStyle('height', 0);
 		this.isCollapsed = true;
-		panelWrapper.addClass('collapsed')
-				.removeClass('expanded');
+		panelWrapper.addClass('mui-collapsed')
+				.removeClass('mui-expanded');
 		MUI.panelHeight(options.container, this.el.panel, 'collapsing');
 		MUI.panelHeight(); // Run this a second time for panels within panels
-		this.el.collapseToggle.removeClass('panel-collapsed')
-				.addClass('panel-expand')
+		this.el.collapseToggle.removeClass('mui-panel-collapsed')
+				.addClass('mui-panel-expand')
 				.setProperty('title', 'Expand Panel');
 		if (fireevent) this.fireEvent('collapse', [this]);
 
@@ -362,14 +358,14 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		// Expand Panel
 		this.el.content.setStyle('position', null); // This is so IE6 and IE7 will collapse the panel all the way
 		this.el.panel.setStyle('height', this.oldHeight).show();
-		if(this.el.footer && this.options.collapseFooter) this.el.footer.setStyle('height', this.oldFooterHeight).show();
+		if (this.el.footer && this.options.collapseFooter) this.el.footer.setStyle('height', this.oldFooterHeight).show();
 		this.isCollapsed = false;
-		this.el.element.addClass('expanded')
-				.removeClass('collapsed');
+		this.el.element.addClass('mui-expanded')
+				.removeClass('mui-collapsed');
 		MUI.panelHeight(this.options.container, this.el.panel, 'expanding');
 		MUI.panelHeight(); // Run this a second time for panels within panels
-		this.el.collapseToggle.removeClass('panel-expand')
-				.addClass('panel-collapsed')
+		this.el.collapseToggle.removeClass('mui-panel-expand')
+				.addClass('mui-panel-collapsed')
 				.setProperty('title', 'Collapse Panel');
 		this.fireEvent('expand', [this]);
 
@@ -387,15 +383,19 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 	_collapseToggleInit: function(){
 		this.el.collapseToggle = new Element('div', {
 			'id': this.options.id + '_collapseToggle',
-			'class': 'panel-collapse icon16',
+			'class': 'mui-panel-collapse mui-icon16',
 			'styles': {
 				'width': 16,
 				'height': 16
 			},
 			'title': 'Collapse Panel'
-		}).addEvent('click', function(){
+		}).addEvent('click', function(e){
+			e.stop();
 			this.toggle();
-		}.bind(this));
+		}.bind(this)).addEvent('mousedown', function(e){
+			e = e.stop();
+			e.target.focus();
+		});
 	},
 
 	_addResizeBottom: function(){
@@ -450,10 +450,10 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				partner.setStyle('height', partnerHeight);
 				MUI.resizeChildren(element, element.getStyle('height').toInt());
 				MUI.resizeChildren(partner, partnerHeight);
-				element.getChildren('.column').each(function(column){
+				element.getChildren('.mui-column').each(function(column){
 					MUI.panelHeight(column);
 				});
-				partner.getChildren('.column').each(function(column){
+				partner.getChildren('.mui-column').each(function(column){
 					MUI.panelHeight(column);
 				});
 			}.bind(this),
@@ -464,10 +464,10 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				partner.setStyle('height', partnerHeight);
 				MUI.resizeChildren(element, element.getStyle('height').toInt());
 				MUI.resizeChildren(partner, partnerHeight);
-				element.getChildren('.column').each(function(column){
+				element.getChildren('.mui-column').each(function(column){
 					MUI.panelHeight(column);
 				});
-				partner.getChildren('.column').each(function(column){
+				partner.getChildren('.mui-column').each(function(column){
 					MUI.panelHeight(column);
 				});
 				if (instance.el.iframe){
@@ -478,7 +478,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 						// when only the vertical dimension is changed.
 						var width = instance.el.iframe.getStyle('width').toInt();
 						instance.el.iframe.setStyle('width', width - 1);
-						MUI.rWidth();
+						MUI.rWidth(instance.options.container);
 						instance.el.iframe.setStyle('width', width);
 					} else {
 						instance.el.iframe.setStyle('visibility', 'visible');

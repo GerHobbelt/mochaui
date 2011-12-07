@@ -43,7 +43,7 @@ MUI.Themes = {
 		this.newTheme = newTheme.toLowerCase();
 		if (!this.newTheme || this.newTheme == null || this.newTheme == MUI.options.theme.toLowerCase()) return false;
 
-		if ($('spinner')) $('spinner').show();
+		if ($('mui-spinner')) $('mui-spinner').show();
 
 		this.oldURIs = [];
 		this.oldSheets = [];
@@ -51,14 +51,14 @@ MUI.Themes = {
 
 		$$('link').each(function(link){
 			var href = link.get('href');
-			if (href.contains(themesPath + MUI.options.theme)){
+			if (href.contains(MUI.options.theme)){
 				this.oldURIs.push(href);
 				this.oldSheets.push(link);
 			}
 		}.bind(this));
 
 		Object.each(MUI.files, function(value, key){
-			if (key.contains(themesPath + MUI.options.theme)){
+			if (key.contains(themesPath + MUI.options.theme) && this.oldURIs.indexOf(key) < 0){
 				this.oldURIs.push(key);
 			}
 		}.bind(this));
@@ -88,7 +88,7 @@ MUI.Themes = {
 				}.bind(this),
 				onFailure: function(){
 					this.themeLoadSuccess = false;
-					if ($('spinner')) $('spinner').hide();
+					if ($('mui-spinner')) $('mui-spinner').hide();
 					MUI.notification('Stylesheets did not load.');
 				},
 				onSuccess: function(){
@@ -113,8 +113,7 @@ MUI.Themes = {
 		});
 
 		this.newSheets.each(function(sheet){
-			console.log("MUI.updateThemeStyleSheets: marking:  ", sheet.get('href'));
-			MUI.files[sheet.get('href')] = 'loaded';		// [i_a]
+			MUI.files[sheet.get('href')] = 'loaded';
 			sheet.inject(document.head);
 		});
 
@@ -132,7 +131,7 @@ MUI.Themes = {
 		$$('.replaced').removeClass('replaced');
 
 		// Redraw open windows
-		$$('.mocha').each(function(element){
+		$$('.mui-window').each(function(element){
 			var instance = element.retrieve('instance');
 
 			// Convert CSS colors to Canvas colors.
@@ -154,7 +153,7 @@ MUI.Themes = {
 			}).periodical(50);
 		}
 
-		if ($('spinner')) $('spinner').hide();
+		if ($('mui-spinner')) $('mui-spinner').hide();
 		MUI.options.theme = this.newTheme;
 	}
 };

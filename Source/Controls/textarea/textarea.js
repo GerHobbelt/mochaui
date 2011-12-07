@@ -40,7 +40,7 @@ MUI.TextArea = new NamedClass('MUI.TextArea', {
 		//id:				null,	// id of the primary element, and id os control that is registered with mocha
 		//container:		null,	// the parent control in the document to add the control to
 		drawOnInit:			true,	// true to add textbox to container when control is initialized
-		cssClass:			'form',	// the primary css tag
+		cssClass:			'mui-form',	// the primary css tag
 
 		//hasDynamicSize:	false,	// true if this textarea can automatically resize
 		//width:			false,	// width of the textarea control
@@ -220,6 +220,21 @@ MUI.TextArea = new NamedClass('MUI.TextArea', {
 		var cssHeight = tempHeight - this._padding;
 		var scrollHeight = tempHeight + this._offset;
 		if (scrollHeight != el.offsetHeight) el.setStyle('height', scrollHeight);
+	},
+
+	fromHTML: function(inp){
+		var self = this,o = this.options;
+
+		if (!inp) inp = $(o.id);
+		if (!inp) return self;
+		self.element = inp;
+
+		if (inp.get('type')) o.type = inp.get('type');
+		o.value = inp.get('defaultValue');
+		if (inp.get('class')) o.cssClass = inp.get('class');
+
+		self.draw();
+		return self;
 	}
 
 });

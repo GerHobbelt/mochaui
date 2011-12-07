@@ -35,8 +35,8 @@ MUI.SelectList = new NamedClass('MUI.SelectList', {
 		//container:		null,			// the parent control in the document to add the control to
 		//clearContainer:	false,			// should the control clear its parent container before it appends itself
 		drawOnInit:			true,			// true to add tree to container when control is initialized
-		cssClass:			'form',			// the form element/title css tag
-		cssSelectList:		'slb',			// the select list css tag
+		cssClass:			'mui-form',			// the form element/title css tag
+		cssSelectList:		'mui-slb',		// the select list css tag
 
 		//content:			false,			// used to load content
 		items:				[],				// the array list of nodes
@@ -47,7 +47,7 @@ MUI.SelectList = new NamedClass('MUI.SelectList', {
 		isSelectedField:	'selected',		// the name of the field that has the item's isSelected state
 
 		isDropList:			true,			// show this control as a drop list
-		dropCssClass:		'dslb',			// the class to use when displaying the drop list parent control
+		dropCssClass:		'mui-dslb',			// the class to use when displaying the drop list parent control
 		dropText:			'{$} Selected',	// the text to show on the drop list when items are selected
 
 		//alternateRows:	false,			// show the items with alternating background color
@@ -302,6 +302,55 @@ MUI.SelectList = new NamedClass('MUI.SelectList', {
 	updateEnd: function(content){
 		this.options.items = MUI.Content.getRecords(content);
 		if (this.options.items) this.draw();
+	},
+
+	fromHTML: function(el){
+		var self = this;
+		var o = self.options;
+		el = $(el);
+		if (el){
+			var nItems = new Array();
+
+			o.cssClass = el.get('class');
+			var list = el.getElement('table');
+			if (list){
+				var rows = list.getElements('TR');
+				for (var i = 0; i < rows.length; i++){
+					self._itemFromHTML(rows[i]);
+				}
+			}
+
+			o.items = nItems;
+			el.style.visibility = 'visible';
+		}
+		return this;
+	},
+
+	_itemFromHTML: function(rw){
+		var item = new Hash;
+		rw = $(rw);
+		item._element = rw;
+
+		var inp = rw.getElement('input');
+		if (inp){
+			item.id = inp.id;
+			item.name = inp.name;
+			item.value = inp.value;
+			item.isSelected = inp.checked;
+			item._checkBox = inp;
+		}
+
+		if (rw.getElement('hr')) item.isBar = true;
+		else {
+			var c = rw.getElements('TD');
+			if (c.length > 1){
+				item.text = c[1].innerText;
+			} else {
+				item.text = c[0].innerText;
+			}
+		}
+
+		this.options.items.push(item);
 	}
 
 });

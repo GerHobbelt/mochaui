@@ -36,7 +36,7 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		container:			null,		// the parent control in the document to add the control to
 		clearContainer:		true,		// should the control clear its parent container before it appends itself
 		drawOnInit:			true,		// true to add accordion to container when control is initialized
-		cssClass:			'accordion',// the primary css tag
+		cssClass:			'mui-accordion',// the primary css tag
 
 		panels:				[],			// the list of accordion panels
 
@@ -83,7 +83,7 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		else if (self.fromHTML){
 			window.addEvent('domready', function(){
 				var el = $(id);
-				if (el != null) self.fromHTML();
+				if (el != null) self.fromHTML(self.content);
 			});
 		}
 	},
@@ -104,7 +104,7 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		this.el.element = div.store('instance', this);		// assign instance to element
 
 		// create main panel container
-		this._panelsElement = new Element('div', {'class':'panels'}).inject(div);
+		this._panelsElement = new Element('div', {'class':'mui-panels'}).inject(div);
 
 		// if no tab selected, then select first tab for them
 		if (o.panels.length > 0 && (o.value == null || o.value == '')) o.value = MUI.getData(o.panels[0], o.valueField);
@@ -112,9 +112,9 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		// build all panels
 		this._togglers = [];
 		this._panels = [];
-		o.panels.each(function(panel){
-			this._buildPanel(panel, this._panelsElement);
-		}, this);
+		for (var i = 0; i < o.panels.length; i++){
+			this._buildPanel(o.panels[i], this._panelsElement, i);
+		}
 		if (this._panels.length > 1){
 			this._togglers[0].addClass('first');
 			this._togglers[this._panels.length - 1].addClass('last');
@@ -124,35 +124,34 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		var addToContainer = function(){
 			if (typeOf(container) == 'string') container = $(container);
 			if (o.clearContainer) container.empty();
+			if (!container) container = div.getParent();
 			if (div.getParent() == null) div.inject(container);
 
+			container.setStyle('overflow', 'hidden');
+			container.setStyle('padding', 0);
+			var parentHeight = this._getParentHeight(container);
+
 			var instance = MUI.get(o.container);
-			if (!instance || !instance.dynamicResize){
-				var parentHeight = container.getSize().y;
-				if (!o.height){
-					o.height = parentHeight;
-					this._togglers.each(function(toggler){
-						o.height -= toggler.getSize().y
-					});
-				}
-				this._panelsElement.setStyle('height', parentHeight + 'px');
-				container.setStyle('overflow', 'hidden');
-				container.setStyle('padding',0);
-			}
+			if (instance != null) instance.addEvent('resize', this._onParentResize.bind(this));
 
 			this._accordion = new Fx.Accordion(this._togglers, this._panels, {
 				'height':o.heightFx
 				,'width':o.widthFx
+				,'display':this._index
 				,'opacity':o.opacity
-				,'fixedHeight':o.height
+				,'fixedHeight':o._height
 				,'fixedWidth':o.width
 				,'alwaysHide':o.alwaysHide
 				,'initialDisplayFx':o.initialDisplayFx
-				,onActive: function(toggler,element){
+				,onActive: (function(toggler, element){
+					this.options.value = toggler.get('id');
+					this._index = parseInt(toggler.get('index'));
+					this._getParentHeight(container); // forces recalc of _height
+					element.fullHeight = this.options._height;
 					toggler.addClass('open');
 					element.setStyle('overflow', 'auto');
-				},
-				onBackground: function(toggler,element){
+				}).bind(this),
+				onBackground: function(toggler, element){
 					toggler.removeClass('open');
 					element.setStyle('overflow', 'hidden');
 				},
@@ -176,7 +175,42 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		return this;
 	},
 
-	_buildPanel: function(panel, div){
+	_onParentResize:function(){
+		var o = this.options;
+		var div = o.element ? o.element : $(o.id);
+		if (!div) return;
+		var h = this._getParentHeight(div.getParent());
+		this._panelsElement.setStyle('height', h + 'px');
+		this._accordion.previous = -1;
+		this._accordion.display(this._index);
+	},
+
+	_getParentHeight: function(e){
+		var o = this.options;
+		var h = this._getElementHeight(e);
+		if (e.hasClass('pad')) h = this._getElementHeight(e.getParent());
+
+		if (!o.height){
+			o._height = h;
+			this._togglers.each(function(toggler){
+				o._height -= toggler.getSize().y
+			});
+		} else o._height = o.height;
+		this._panelsElement.setStyle('height', h + 'px');
+
+		return h;
+	},
+
+	_getElementHeight:function(e){
+		var h = e.getSize().y;
+		h -= parseInt(e.getStyle('border-bottom-width'));
+		h -= parseInt(e.getStyle('border-top-width'));
+		h -= parseInt(e.getStyle('padding-bottom'));
+		h -= parseInt(e.getStyle('padding-top'));
+		return h;
+	},
+
+	_buildPanel: function(panel, div, idx){
 		var self = this;
 		var o = self.options;
 
@@ -186,8 +220,10 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		var title = MUI.getData(panel, o.titleField);
 		var html = MUI.getData(panel, o.contentField);
 
-		panel._togglerEl = new Element('h3', {'id':value,'class':'toggler','text':text,'title':title}).inject(div);
-		panel._element = new Element('div', {'id':value + '_panel','class':'element'}).inject(div);
+		if (o.value == value || (!o.value && idx == 0)) this._index = idx;
+
+		panel._togglerEl = new Element('h3', {'id':value,'class':'toggler','text':text,'title':title, 'index':idx}).inject(div);
+		panel._element = new Element('div', {'id':value + '_panel','class':'element', 'index':idx}).inject(div);
 		panel._contentEl = new Element('div', {'class':'content'}).inject(panel._element);
 
 		if (o.insertTitle){
@@ -197,6 +233,43 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 
 		self._togglers.push(panel._togglerEl);
 		self._panels.push(panel._element);
+	},
+
+	fromHTML: function(el){
+		var self = this;
+		var o = self.options;
+		if (!el) el = $(o.id);
+		else el = $(el);
+		if (!el) return;
+
+		o.cssClass = el.get('class');
+
+		var panels = [];
+		var togglerEls = el.getElements('h3.toggler');
+		var panelEls = el.getElements('div.element');
+
+		for (var i = 0; i < togglerEls.length; i++){
+			var togglerEl = togglerEls[i];
+			if (i >= panelEls.length) break;
+
+			var toggler = {};
+
+			var value = togglerEl.get('id');
+			var text = togglerEl.get('text');
+			if (!value) value = text;
+			if (togglerEl.hasClass('open')) o.value = value;
+
+			var title = togglerEl.get('title');
+			if (title) toggler[o.titleField] = title;
+
+			toggler[o.valueField] = value;
+			toggler[o.textField] = text;
+			toggler[o.contentField] = panelEls[i].get('html');
+			panels.push(toggler);
+		}
+
+		o.panels = panels;
+		self.draw();
 	}
 
 });

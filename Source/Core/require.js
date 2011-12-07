@@ -97,7 +97,7 @@ MUI.Require = new Class({
 		console.log("MUI.getAsset: checking  ", source);
 		if (MUI.files[source] == 'loaded'){
 			if (typeof onload == 'function'){
-				onload(source);				// [i_a] pass loaded item as arg to onLoad handler so it can know what has been loaded.
+				onload(source);
 			}
 			return true;
 		}
@@ -111,14 +111,14 @@ MUI.Require = new Class({
 				if (MUI.files[source] == 'loading' && tries < 100) return;
 				clearInterval(checker);
 				if (typeof onload == 'function'){
-					onload(source);				// [i_a] pass loaded item as arg to onLoad handler so it can know what has been loaded.
+					onload(source);
 				}
 			}).periodical(50);
 		} else {  // If the asset is not yet loaded or loading, start loading the asset.
 			console.log("MUI.getAsset: loading:  ", source);
 			MUI.files[source] = 'loading';
 
-			properties = {
+			var properties = {
 				'onload': onload != 'undefined' ? onload : null
 			};
 
@@ -127,7 +127,7 @@ MUI.Require = new Class({
 			properties.onload = function(/* source */){
 				MUI.files[source] = 'loaded';
 				if (typeof oldonload == 'function') {
-					oldonload(source);				// [i_a] pass loaded item as arg to onLoad handler so it can know what has been loaded.
+					oldonload(source);
 				}
 			}.bind(this);
 
@@ -170,10 +170,7 @@ Object.append(Asset, {
 					'type': 'text/css',
 					'href': source
 				}).inject(document.head);
-// Partikule
-				if (typeOf(properties.onload) == 'function')
-					properties.onload();
-// /Partikule
+				if (typeOf(properties.onload) == 'function') properties.onload();
 			}.bind(this),
 			onFailure: function(){
 			},

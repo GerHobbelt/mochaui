@@ -34,10 +34,10 @@ Demo.initializeDesktop = function(){
 	MUI.create({
 		'control':'MUI.Desktop',
 		'id':'desktop',
-		'taskbar':true,
+		/* 'taskbar':true, */
 		'content':[
 			{name:'header',url:'pages/titlebar.html'},
-			{name:'nav',control:'MUI.Dock',cssClass:'desktopNav',docked:[
+			{name:'nav',control:'MUI.Dock',cssClass:'mui-desktopNav',docked:[
 				{name: 'menu', position: 'header', control: 'MUI.Menu',
 					items:[
 						{text:'File',items:[
@@ -53,13 +53,14 @@ Demo.initializeDesktop = function(){
 								{text:'Close Panel',id:'closePanelCheck',registered:'Demo.closePanelTest' },
 								{text:'Close Column',id:'closeColumnCheck',registered:'Demo.closeColumnTest' }
 							]},
+							{type:'divider'},
 							{text:'Starters',items:[
-								{text:'Virtual Desktop',url:'{demo}demo-virtual-desktop.html'},
-								{text:'Fixed Width',url:'{demo}demo-fixed-width.html'},
-								{text:'Fixed Width 2',url:'{demo}demo-taskbar-only.html'},
-								{text:'No Toolbars',url:'{demo}demo-no-toolbars.html'},
-								{text:'No Desktop',url:'{demo}demo-no-desktop.html'},
-								{text:'Modal Only',url:'{demo}demo-modal-only.html'}
+								{text:'Virtual Desktop',url:'{demo}demo-virtual-desktop.html',target:"_blank"},
+								{text:'Fixed Width',url:'{demo}demo-fixed-width.html',target:"_blank"},
+								{text:'Fixed Width 2',url:'{demo}demo-taskbar-only.html',target:"_blank"},
+								{text:'Fixed No Desktop',url:'{demo}demo-fixed-no-desktop.html',target:"_blank"},
+								{text:'No Desktop',url:'{demo}demo-no-desktop.html',target:"_blank"},
+								{text:'Modal Only',url:'{demo}demo-modal-only.html',target:"_blank"}
 							]}
 						]},
 						{text:'View',items:[
@@ -106,7 +107,8 @@ Demo.initializeDesktop = function(){
 								container: 'files-panel',
 								partner: 'mainPanel',
 								content: {url: 'data/file-tree.json', recordsField: false},
-								idField: 'value'
+								idField: 'value',
+								depth: 3
 							}
 						},
 						{
@@ -233,9 +235,10 @@ Demo.initializeDesktop = function(){
 									position: 'header',
 									loadMethod: 'json',
 									control: 'MUI.Tabs',
+									value:'Overview',
 									tabs: [
-										{'text': 'Overview', 'url': 'pages/overview.html', 'title': 'Overview'},
-										{'text': 'Download', 'url': 'pages/download.html', 'title': 'Download'}
+										{'text': 'Overview', 'value': 'Overview', 'url': 'pages/overview.html', 'title': 'Overview'},
+										{'text': 'Download', 'value': 'Download', 'url': 'pages/download.html', 'title': 'Download'}
 									]
 								}
 							]
@@ -278,12 +281,22 @@ Demo.initializeDesktop = function(){
 						}
 					]}
 			]},
-			{name:'footer',content:'<div class="copyright">&copy; 2011 <a target="_blank" href="scripts/AUTHORS.txt" id="authorsLink">Various Contributors</a> - <a target="_blank" href="license.html" id="licenseLink">MIT License</a></div>',cssClass:'desktopFooter'}
+			{name:'footer',content:'<div class="mui-copyright">&copy; 2011 <a target="_blank" href="scripts/AUTHORS.txt" id="authorsLink">Various Contributors</a> - <a target="_blank" href="license.html" id="licenseLink">MIT License</a></div>',cssClass:'mui-desktopFooter'}
 		],
 		'onDrawEnd':function(){
 			if (typeof Parametrics !== 'object' && window.console && window.console.warn)
 				window.console.warn('MUI.demo::onDrawEnd: Parametrics is undefined (not loaded yet!)');
-			Parametrics.createwindow();
+			if(Parametrics){ Parametrics.createwindow(); }
+
+			$('authorsLink').addEvent('click', function(e){
+				e.stop();
+				Demo.authorsWindow();
+			});
+
+			$('licenseLink').addEvent('click', function(e){
+				e.stop();
+				Demo.licenseWindow();
+			});
 		}
 	});
 };

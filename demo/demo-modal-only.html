@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -22,24 +22,19 @@
 	<script type="text/javascript" src="../Source/Core/canvas.js"></script>
 	<script type="text/javascript" src="../Source/Core/content.js"></script>
 	
-	<script type="text/javascript" src="../Source/Controls/dock/dock.js"></script>
-	<script type="text/javascript" src="../Source/Controls/toolbar/toolbar.js"></script>
-	<script type="text/javascript" src="../Source/Controls/taskbar/taskbar.js"></script>
-	<script type="text/javascript" src="../Source/Controls/window/window.js"></script>
-	<script type="text/javascript" src="../Source/Controls/window/modal.js"></script>
 	<!--MOCHAUI-->
 
 	<script type="text/javascript">
 
 		function makeModal() {
-			new MUI.Modal({
+			MUI.create({control:'MUI.Modal',
 				id: 'modalDemo',
 				title: 'A Modal Window 2',
 				content: 'Your modal window content',
 				width: 400,
 				height: 250
 			});
-			new MUI.Modal({
+			MUI.create({control:'MUI.Modal',
 				id: 'modalDemo2',
 				title: 'A Modal Window 1',
 				content: 'Your modal window content',

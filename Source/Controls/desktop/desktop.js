@@ -32,7 +32,7 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 		id:				'',				// id of the primary element, and id os control that is registered with mocha
 		container:		null,			// the parent control in the document to add the control to
 		drawOnInit:		true,			// true to add tree to container when control is initialized
-		cssClass:		'desktop',		// additional css tag
+		cssClass:		'mui-desktop',	// additional css tag
 		orientation:	'left',			// toolbars are listed from left to right or right to left
 
 		partner:		false,			// default partner panel to pass docked controls
@@ -99,16 +99,25 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 						column.element = new Element('div', {'id':column.id}).inject(this.el.content);
 						column.control = 'MUI.Column';
 
-						if (section.columns.length > 1) column.element.setStyle('float', 'left');
-
 						// last column we want it to call the this.setDesktopSize
 						MUI.create(column);
 					}
 				}
+				if (section.content && typeof(section.content) == 'string') this.el.content.set('html', section.content);
 			} else {
 				if (section.name == 'taskbar'){
 					this.el[section.name] = new Element('div', {'id':section.id + 'Wrapper'}).inject(this.el.element);
 					this.taskbar = MUI.create({control:'MUI.Taskbar',id:section.id,drawOnInit:false,container:this.el.element,desktop:this,element:this.el[section.name]});
+				}
+				else if (section.name == 'nav'){
+				    // Partikule: added 'nav' section code block here
+					console.log('MUI.Desktop.draw: nav section: ', section);
+					// create section element
+					var e = section.element = this.el[section.name] = new Element('div', {'id':section.id}).inject(this.el['header'], 'after');
+					if (section.cssClass) e.addClass(section.cssClass);
+
+					section.container = this.el['header'];
+					MUI.Content.update(section);
 				} else {
 					// create section element
 					var e = section.element = this.el[section.name] = new Element('div', {'id':section.id}).inject(this.el.element);
@@ -127,7 +136,7 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 			if (div.getParent() == null) div.inject(container);
 
 			if (this.taskbar) this.taskbar.draw();
-			this.setDesktopSize.delay(100, this);	// resize the desktop
+			this._onBrowserResize.delay(400, this);	// resize the desktop
 
 			window.addEvent('resize', function(){	// capture browser resize events
 				this._onBrowserResize();
@@ -212,6 +221,43 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 		MUI.panelHeight(null, null, 'all');
 		MUI.rWidth(this.el.content);
 		return this;
+	},
+
+	fromHTML: function(div){
+		var self = this,o = this.options;
+
+		if (!div) div = $(o.id);
+		if (!div) return self;
+		self.element = div;
+		if (div.get('class')) o.cssClass = div.get('class');
+
+		var content = [];
+		div.getChildren().each(function(child){
+			if (child.get('id') == 'desktopNav' || child.hasClass('mui-desktopNav')){
+				var nav = {name:'nav',control:'MUI.Dock',cssClass:'mui-desktopNav',docked:[]};
+				if (child.hasClass('mui-menu') || child.getChildren('ul').length > 0){
+					nav.docked.push({name: 'menu', position: 'header', control: 'MUI.Menu', fromHTML:true, content:child});
+				}
+				content.push(nav);
+			} else
+			if (child.get('id') == 'desktopContent' || child.hasClass('mui-desktopContent')){
+				content.push({name:'content',content:child.get('html')});
+			} else if (child.get('id') == 'desktopTaskbarWrapper' || child.hasClass('mui-taskbarWrapper')){
+				content.push({name:'taskbar'});
+			} else
+			if (child.get('id') == 'desktopHeader' || child.hasClass('mui-desktopHeader')){
+				content.push({name:'header',content:child.get('html')});
+			} else
+			if (child.get('id') == 'desktopFooter' || child.hasClass('mui-desktopFooter')){
+				content.push({name:'footer',content:child.get('html')});
+			} else {
+				content.push({name:child.get('id'),content:child.get('html')});
+			}
+		});
+
+		self.options.content = content;
+		self.draw();
+		return self;
 	}
 
 });
@@ -346,7 +392,7 @@ MUI.append({
 		if (column != null){
 			MUI.panelHeight2($(column), changing, action);
 		} else {
-			$$('.column').each(function(column){
+			$$('.mui-column').each(function(column){
 				MUI.panelHeight2(column, null, action);
 			}.bind(this));
 		}
@@ -362,21 +408,14 @@ MUI.append({
 
 		// Get column panels
 		var panels = [];
-		column.getChildren('.panelWrapper').each(function(panelWrapper){
-			var panel = panelWrapper.getElement('.panel');
-			var p_id = panel.getAttributeNode('id');
-			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI: no panel.id for panel ", panel, p_id);
-			var instance = MUI.get(panel.id);
-			if (typeof instance == 'undefined' || !instance || !panel.id)
-				console.warn("MUI: no instance / panel.id for panel ", panel);
-			panels.push(panel);
+		column.getChildren('.mui-panelWrapper').each(function(panelWrapper){
+			panels.push(panelWrapper.getElement('.mui-panel'));
 		}.bind(this));
 
 		// Get expanded column panels
 		var panelsExpanded = [];
-		column.getChildren('.expanded').each(function(panelWrapper){
-			panelsExpanded.push(panelWrapper.getElement('.panel'));
+		column.getChildren('.mui-expanded').each(function(panelWrapper){
+			panelsExpanded.push(panelWrapper.getElement('.mui-panel'));
 		}.bind(this));
 
 		if (0)  // this logic already exists in panel.js: .collapse() method, ~ line 315
@@ -405,17 +444,17 @@ MUI.append({
 
 		// Set panel resize partners
 		panels.each(function(panel){
-			var p_id = panel.getAttributeNode('id');
-			if (typeof panel == 'undefined' || !panel.id)
-				console.warn("MUI.panelHeight2: no panel.id for panel ", panel, p_id);
+			if (typeof panel == 'undefined' || !panel.id) {
+				console.warn("MUI.panelHeight2: no panel.id for panel ", panel, (typeof panel == 'undefined' ? '???' : panel.getAttributeNode('id')));
+				return;
+			}
 			var instance = MUI.get(panel.id);
-			if (typeof instance == 'undefined' || !instance || !panel.id)
-				console.warn("MUI.panelHeight2: no instance / panel.id for panel ", panel);
-			if (!instance && window.console && window.console.warn)
-				window.console.warn('MUI.panelHeight2::panel.id unknown: ', panel.id, ', panel: ', panel, ' --> ', MUI.get(panel.id));
-
-			if (panel.getParent().hasClass('expanded') && panel.getParent().getNext('.expanded')){
-				instance.partner = panel.getParent().getNext('.expanded').getElement('.panel');
+			if (typeof instance == 'undefined' || !instance) {
+				console.warn("MUI.panelHeight2: no instance for panel.id: ', panel.id, ', panel: ', panel, ' --> ', instance);
+				return;
+			}
+			if (panel.getParent().hasClass('mui-expanded') && panel.getParent().getNext('.mui-expanded')){
+				instance.partner = panel.getParent().getNext('.mui-expanded').getElement('.mui-panel');
 				instance.resize.attach();
 				instance.el.handle.setStyles({
 					'display': 'block',
@@ -429,7 +468,7 @@ MUI.append({
 					'cursor': null
 				}).addClass('detached');
 			}
-			if (panel.getParent().getNext('.panelWrapper') == null){
+			if (panel.getParent().getNext('.mui-panelWrapper') == null){
 				instance.el.handle.hide();
 			}
 		}.bind(this));
@@ -441,14 +480,14 @@ MUI.append({
 
 			panelWrapper.getChildren().each(function(el){
 
-				if (el.hasClass('panel')){
+				if (el.hasClass('mui-panel')){
 					var instance = MUI.get(el.id);
 
 					// Are any next siblings Expanded?
 					var anyNextSiblingsExpanded = function(el){
 						var test;
-						el.getParent().getAllNext('.panelWrapper').each(function(sibling){
-							var siblingInstance = MUI.get(sibling.getElement('.panel').id);
+						el.getParent().getAllNext('.mui-panelWrapper').each(function(sibling){
+							var siblingInstance = MUI.get(sibling.getElement('.mui-panel').id);
 							if (!siblingInstance.isCollapsed){
 								test = true;
 							}
@@ -459,8 +498,8 @@ MUI.append({
 					// If a next sibling is expanding, are any of the nexts siblings of the expanding sibling Expanded?
 					var anyExpandingNextSiblingsExpanded = function(){
 						var test;
-						changing.getParent().getAllNext('.panelWrapper').each(function(sibling){
-							var siblingInstance = MUI.get(sibling.getElement('.panel').id);
+						changing.getParent().getAllNext('.mui-panelWrapper').each(function(sibling){
+							var siblingInstance = MUI.get(sibling.getElement('.mui-panel').id);
 							if (!siblingInstance.isCollapsed){
 								test = true;
 							}
@@ -471,23 +510,23 @@ MUI.append({
 					// Is the panel that is collapsing, expanding, or new located after this panel?
 					var anyNextContainsChanging = function(el){
 						var allNext = [];
-						el.getParent().getAllNext('.panelWrapper').each(function(panelWrapper){
-							allNext.push(panelWrapper.getElement('.panel'));
+						el.getParent().getAllNext('.mui-panelWrapper').each(function(panelWrapper){
+							allNext.push(panelWrapper.getElement('.mui-panel'));
 						}.bind(this));
 						return allNext.contains(changing);
 					}.bind(this);
 
 					var nextExpandedChanging = function(el){
 						var test;
-						if (el.getParent().getNext('.expanded')){
-							if (el.getParent().getNext('.expanded').getElement('.panel') == changing) test = true;
+						if (el.getParent().getNext('.mui-expanded')){
+							if (el.getParent().getNext('.mui-expanded').getElement('.mui-panel') == changing) test = true;
 						}
 						return test;
 					};
 
 					// NEW PANEL
 					// Resize panels that are "new" or not collapsed
-					if (action == 'new'){
+					if (action == 'new' || action == 'all'){
 						if (!instance.isCollapsed && el != changing){
 							panelsToResize.push(el);
 							this.panelsTotalHeight += el.offsetHeight.toInt();
@@ -532,16 +571,12 @@ MUI.append({
 		}.bind(this));
 
 		// Get the remaining height
-		var remainingHeight = column.offsetHeight.toInt() - this.height;
-
 		this.height = 0;
-
 		// Get height of all the column's children
 		column.getChildren().each(function(el){
 			this.height += el.offsetHeight.toInt();
 		}.bind(this));
-
-		remainingHeight = column.offsetHeight.toInt() - this.height;
+		var remainingHeight = column.offsetHeight.toInt() - this.height;
 
 		panelsToResize.each(function(panel){
 			var ratio = this.panelsTotalHeight / panel.offsetHeight.toInt();
@@ -561,7 +596,7 @@ MUI.append({
 		column.getChildren().each(function(panelWrapper){
 			panelWrapper.getChildren().each(function(el){
 				this.height += el.offsetHeight.toInt();
-				if (el.hasClass('panel') && el.getStyle('height').toInt() > tallestPanelHeight){
+				if (el.hasClass('mui-panel') && el.getStyle('height').toInt() > tallestPanelHeight){
 					tallestPanel = el;
 					tallestPanelHeight = el.getStyle('height').toInt();
 				}
@@ -569,8 +604,9 @@ MUI.append({
 		}.bind(this));
 
 		remainingHeight = column.offsetHeight.toInt() - this.height;
+		if (remainingHeight < 0) remainingHeight = 10;
 
-		if (remainingHeight != 0 && tallestPanelHeight > 0){
+		if (remainingHeight > 0 && tallestPanelHeight > 0){
 // Partikule height correction
 			var newHeight = tallestPanel.getStyle('height').toInt() + remainingHeight;
 			if (newHeight > 0)
@@ -584,7 +620,7 @@ MUI.append({
 // /Partikule
 		}
 
-		parent.getChildren('.columnHandle').each(function(handle){
+		parent.getChildren('.mui-columnHandle').each(function(handle){
 			var parent = handle.getParent();
 			if (parent.getStyle('height').toInt() < 1) return; // Keeps IE7 and 8 from throwing an error when collapsing a panel within a panel
 			var handleHeight = parent.getStyle('height').toInt() - handle.getStyle('border-top').toInt() - handle.getStyle('border-bottom').toInt();
@@ -600,6 +636,12 @@ MUI.append({
 	},
 
 	resizeChildren: function(panel){ // May rename this resizeIframeEl()
+
+// Partikule Plaster
+// if (panel.id)
+//
+if (panel.id)
+{
 		var instance = MUI.get(panel.id);
 		var contentWrapper = instance.el.contentWrapper;
 
@@ -617,6 +659,7 @@ MUI.append({
 				});
 			}
 		}
+}
 	},
 
 	rWidth: function(container){ // Remaining Width
@@ -634,7 +677,7 @@ MUI.append({
 
 			// Get the total width of all the parent element's children
 			parent.getChildren().each(function(el){
-				if (el.hasClass('mocha') != true){
+				if (el.hasClass('mui-window') != true){
 					this.width += el.offsetWidth.toInt();
 				}
 			}.bind(this));
@@ -651,13 +694,18 @@ MUI.append({
 				panel.fireEvent('resize', [panel]);
 			}, this);
 
-			column.getElements('.panel').each(function(panel){
-				//panel.setStyle('width', newWidth - panel.getStyle('border-left').toInt() - panel.getStyle('border-right').toInt());
+			column.getElements('.mui-panel').each(function(panel){
 				MUI.resizeChildren(panel);
 			}.bind(this));
 		});
-	}
 
+		if (container.hasClass('mui-panel')){
+			container.getElements('.mui-column').each(function(column){
+				if (MUI.get(column).options.placement === "main")
+					column.setStyle('float', 'none');
+			});
+		}
+	}
 });
 
 MUI.Windows = Object.append((MUI.Windows || {}), {
@@ -685,7 +733,7 @@ MUI.Windows = Object.append((MUI.Windows || {}), {
 
 		var x = viewportLeftOffset;
 		var y = viewportTopOffset;
-		$$('.mocha').each(function(windowEl){
+		$$('.mui-window').each(function(windowEl){
 			var instance = windowEl.retrieve('instance');
 			if (!instance.isMinimized && !instance.isMaximized && instance.options.draggable){
 				instance.focus();

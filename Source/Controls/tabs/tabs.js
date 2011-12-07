@@ -34,9 +34,9 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 		id:				'',				// id of the primary element, and id os control that is registered with mocha
 		container:		null,			// the parent control in the document to add the control to
 		drawOnInit:		true,			// true to add tree to container when control is initialized
-		cssClass:		'tabs',			// the primary css tag
+		cssClass:		'mui-tabs',		// the primary css tag
 
-		tabs:			[],			 // the list of tabs
+		tabs:			[],			 	// the list of tabs
 
 		textField:		'text',			// the name of the field that has the tab's text
 		valueField:		'value',		// the name of the field that has the tab's value
@@ -62,12 +62,14 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 		this.id = this.options.id = this.options.id || 'tabs' + (++MUI.idCount);
 		MUI.set(this.id, this);
 
-		if(this.options.drawOnInit && this.options.tabs.length > 0) this.draw();
+		if (this.options.drawOnInit && this.options.tabs.length > 0) this.draw();
 	},
 
 	draw: function(container){
 		var o = this.options;
 		if (!container) container = o.container;
+
+		this.fireEvent('drawBegin', [this]);
 
 		var isNew = false;
 		var div = o.element ? o.element : $(o.id);
@@ -95,13 +97,13 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 		o.tabs.each(function(tab){
 			this._buildTab(tab, ul);
 			if (MUI.getData(tab, o.valueField) == o.value) o.selectedTab = tab;
-		},this);
+		}, this);
 
 		// add a formatting div
 		new Element('div', {'class': 'clear'}).inject(ul);
 
 		if (!isNew){
-			div.removeClass('toolbar');
+			div.removeClass('mui-toolbar');
 			if (o.selectedTab) o.selectedTab.element.fireEvent('click');
 			return this;
 		}
@@ -112,7 +114,8 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 			if (div.getParent() == null) div.inject(container);
 
 			// select current tab
-			if (o.selectedTab) o.selectedTab.fireEvent('click');
+			if (o.selectedTab && $(o.selectedTab)) $(o.selectedTab).fireEvent('click');
+			this.fireEvent('drawEnd', [this]);
 		}.bind(this);
 		if (!isNew || typeOf(container) == 'element') addToContainer();
 		else window.addEvent('domready', addToContainer);
@@ -183,6 +186,34 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 		} else {
 			this.fireEvent('tabSelected', [tab, value, this, e]);
 		}
+	},
+
+	fromHTML: function(el){
+		var self = this;
+		var o = self.options;
+		if (!el) el = $(o.id);
+		else el = $(el);
+		if (!el) return;
+
+		var tabs = [];
+		el.getElements('li').each(function(li){
+			var tab = {};
+
+			var value = li.get('id');
+			if (!value) value = 'tab' + (++MUI.idCount);
+
+			var a = li.getElement('a');
+			var title = a.get('title');
+
+			tab[o.valueField] = value;
+			tab[o.textField] = a.get('text');
+			tab[o.urlField] = a.get('href');
+			if (title) tab[o.titleField] = title;
+
+			tabs.push(tab);
+		});
+		o.tabs = tabs;
+		self.draw();
 	}
 
 });

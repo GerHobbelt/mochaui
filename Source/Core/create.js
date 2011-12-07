@@ -30,8 +30,7 @@ MUI.append({
 			console.log("MUI.loadPluginGroups: checking for  ", '{' + name + '}mui-' + name + '.js', '-->', MUI.files['{' + name + '}mui-' + name + '.js']);
 			if (MUI.files['{' + name + '}mui-' + name + '.js'] != 'loaded'){
 				MUI[name] = [];
-				console.log("MUI.loadPluginGroups: queueing  ", '{' + name + '}mui-' + name + '.js');
-				js = js.append(['{' + name + '}mui-' + name + '.js']);			// [i_a] Object.append() applied to an ARRAY is utter FAIL: 'key' [0] will be continuously overwritten with each append, thus REPLACING instead of APPENDING.
+				js = js.append(['{' + name + '}mui-' + name + '.js']);
 			}
 		});
 		if (js.length > 0) new MUI.Require({'js':js, 'onload':onload });
@@ -47,6 +46,9 @@ MUI.append({
 			for (var j = 0; j < options.length; j++)
 				controls.push({control:options[j]});
 			options = {controls:controls, onload:(arguments.length > 1) ? arguments[1] : null, loadOnly:true};
+		}
+		if (typeOf(options) == 'object'){
+			options.loadOnly = true;
 		}
 		MUI.create(options);
 	},
@@ -110,6 +112,13 @@ MUI.append({
 		return {js:js,css:css,config:config};
 	},
 
+	areLoaded: function(listToCheck){
+		for (var i = 0; i < listToCheck.length; i++){
+			if (MUI.files[listToCheck[i]] != 'loaded') return false;
+		}
+		return true;
+	},
+
 	create:function(options){
 		// convert none hash parameters to hash
 		if (typeOf(options) == 'string') options = {control:options,onload:(arguments.length > 1) ? arguments[1] : null};
@@ -124,17 +133,18 @@ MUI.append({
 		if (!controls) controls = [];
 		if (typeOf(options) == 'array'){
 			for (var j = 0; j < options.length; j++)
-				controls.push({control:options[j]});
+				controls.push(options[j]);
 			options = {controls:controls,onload:options.onload};
 		}
 
 		if (controls.length == 0) controls = [options]; // make sure we have an array for list of controls to load
 
-		// gather all of the assests for the requested controls/plugins
+		// gather all of the assets for the requested controls/plugins
 		var r = {js:[],css:[],traversed:(MUI.traversed ? MUI.traversed : [])};
 		var config;
 		for (var i = 0; i < controls.length; i++){
 			if (!controls[i].control) return;
+			if (controls[i].fromHTML && controls[i].drawOnInit === undefined) controls[i].drawOnInit = false;
 			config = MUI.getControlAssets(controls[i], r.js, r.css, r.traversed).config;
 			console.log("MUI.create: gathered assets so far:  ", controls[i], i, controls[i].control, r);
 		}
@@ -146,18 +156,21 @@ MUI.append({
 		}
 
 		// if only one control was requested and it is loaded then return it
-		if (controls.length == 1 && r.js.length > 0 && MUI.files[r.js[0]] == 'loaded'){
-			if ((config && config.loadOnly) || options.loadOnly) return null;
+		if (controls.length == 1 && r.js.length > 0 && this.areLoaded[r.js]){
+			if ((config && config.loadOnly) || options.loadOnly){
+				if (config.onload) config.onload(config);
+				return null;
+			}
 			var name = controls[0].control.replace(/(^MUI\.)/i, '');
 			var klass = MUI[name];
 			var obj = new klass(options);
 			if (options.onNew) options.onNew(obj);
-			if (options.fromHTML && obj.fromHTML) obj.fromHTML();
+			if (options.fromHTML && obj.fromHTML) obj.fromHTML(options.content);
 			new MUI.Require(r);
 			return obj;
 		}
 
-		// build a callback function for the assests requested
+		// build a callback function for the assets requested
 		r.onload = function(){
 			MUI.traversed = (MUI.traversed ? MUI.traversed : []).combine(r.traversed);
 			if (this.onload) this.onload(this);
@@ -173,7 +186,7 @@ MUI.append({
 				else {
 					var obj = new klass(control);
 					if (control.onNew) control.onNew(obj);
-					if (control.fromHTML && obj.fromHTML) obj.fromHTML();
+					if (control.fromHTML && obj.fromHTML) obj.fromHTML(options.content);
 				}
 			}.bind(this));
 

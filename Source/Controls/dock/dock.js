@@ -47,12 +47,14 @@ MUI.Dock = new NamedClass('MUI.Dock', {
 		this.id = this.options.id = this.options.id || 'dock' + (++MUI.idCount);
 		MUI.set(this.id, this);
 
-		if(this.options.drawOnInit) this.draw();
+		if (this.options.drawOnInit) this.draw();
 	},
 
 	draw: function(container){
 		var o = this.options;
 		if (!container) container = o.container;
+
+		this.fireEvent('drawBegin', [this]);
 
 		// determine element for this control
 		var isNew = false;
@@ -63,7 +65,7 @@ MUI.Dock = new NamedClass('MUI.Dock', {
 		}
 
 		// add styling to element
-		div.addClass('toolbardock');
+		div.addClass('mui-toolbardock');
 		if (o.cssClass) div.addClass(o.cssClass);
 
 		this.el.element = div.store('instance', this);		// assign instance to element
@@ -75,6 +77,9 @@ MUI.Dock = new NamedClass('MUI.Dock', {
 
 			// add docked controls
 			Object.each(this.options.docked, this._createToolbar, this);
+
+			this.fireEvent('drawEnd', [this]);
+
 		}.bind(this);
 		if (!isNew || typeOf(container) == 'element') addToContainer();
 		else window.addEvent('domready', addToContainer);
@@ -90,12 +95,13 @@ MUI.Dock = new NamedClass('MUI.Dock', {
 		}
 		toolbar.container = this.el.element;
 		toolbar.inDock = true; // let the control know it is inside a dock control
-		toolbar.element = new Element('div', {'id':toolbar.id,'class':'toolbar'}).inject(this.el.element);
+		toolbar.element = new Element('div', {'id':toolbar.id,'class':'mui-toolbar'}).inject(this.el.element);
 		if (!toolbar.partner) toolbar.partner = this.options.partner;
 		this.options.docked[idx] = toolbar;
 		var content = {};
+		if (toolbar.content) content = toolbar.content;
 		Object.each(toolbar, function(val, key){
-			if (['loadmethod', 'method', 'url', 'content', 'onloaded'].indexOf(key) > -1)
+			if (['loadmethod', 'method', 'url', 'content', 'onloaded', 'ondrawbegin', 'ondrawend', 'content'].indexOf(key.toLowerCase()) > -1)
 				content[key] = val;
 		});
 		toolbar.content = content;

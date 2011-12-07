@@ -65,14 +65,14 @@ MUI.Spinner = new NamedClass('MUI.Spinner', {
 
 		// process dock options
 		if (o.inDock){
-			if (o.divider) div.addClass('divider');
+			if (o.divider) div.addClass('mui-divider');
 			if (o.orientation) div.addClass(o.orientation);
-			div.addClass('toolbar');
+			div.addClass('mui-toolbar');
 		}
 		if (o.cssClass) div.addClass(o.cssClass);
 
-		this.el.spinnerWrapper = new Element('div', {'id':o.id + 'spinnerWrapper','class':'spinnerWrapper'}).inject(div);
-		this.el.spinner = new Element('div', {'id':o.id + '_spinner','class':'spinner'}).inject(this.el.spinnerWrapper);
+		this.el.spinnerWrapper = new Element('div', {'id':o.id + 'spinnerWrapper','class':'mui-spinnerWrapper'}).inject(div);
+		this.el.spinner = new Element('div', {'id':o.id + '_spinner','class':'mui-spinner'}).inject(this.el.spinnerWrapper);
 
 		// add to container
 		var addToContainer = function(){
@@ -88,7 +88,7 @@ MUI.Spinner = new NamedClass('MUI.Spinner', {
 
 	hide: function(){
 		if (this.el.spinner) this.el.spinner.hide();
-		if (this.el.element) this.el.removeClass('spinnerOverlay');
+		if (this.el.element) this.el.removeClass('mui-spinnerOverlay');
 		return this;
 	},
 
@@ -100,7 +100,7 @@ MUI.Spinner = new NamedClass('MUI.Spinner', {
 			var sz = container.getScrollSize();
 			var x = parseInt((sz.x / 2) - 16);
 			var y = parseInt((sz.y / 2) - 16);
-			this.el.element.addClass('spinnerOverlay').setStyles({width:sz.x,height:sz.y});
+			this.el.element.addClass('mui-spinnerOverlay').setStyles({width:sz.x,height:sz.y});
 			this.el.spinnerWrapper.setStyles({'position':'absolute','left':x,'top':y,'zIndex':1000});
 		}
 		return this;

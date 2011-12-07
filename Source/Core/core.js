@@ -125,6 +125,8 @@ MUI.append({
 
 	getID: function(el){
 		var type = typeOf(el);
+		if(type == 'null') return null;
+		if(type == 'function'){ return el; }
 		if (type == 'string') return el;
 		if (type == 'element') return el.id;
 		else if (type == 'object' && el.id) return el.id;
@@ -192,7 +194,6 @@ MUI.append({
 	},
 
 	notification: function(message, options){
-		// [i_a] augment the notification window to carry larger messages
 		options = Object.append({
 			control: 'MUI.Window',
 			loadMethod: 'html',
@@ -241,13 +242,13 @@ MUI.append({
 
 	hideSpinner: function(instance){
 		if (instance == null) instance = MUI.get(this.id);
-		var spinner = $$('.spinner');
-		if (instance && instance.el && instance.el.spinner) spinner = instance.el.spinner;
+		var spinner = $$('.mui-spinner');
+		if (instance && instance.el && instance.el.mui-spinner) spinner = instance.el.mui-spinner;
 		if ((instance == null || (instance && instance.showSpinner == null)) && spinner){
 			var t = (typeof spinner);
 			if (t == 'array' || t == 'object') spinner = spinner[0];
 			if (spinner) MUI.each(function(instance){
-				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.spinner;
+				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.mui-spinner;
 			});
 			if (!spinner) return;
 			(function(){
@@ -262,13 +263,13 @@ MUI.append({
 
 	showSpinner: function(instance){
 		if (instance == null) instance = MUI.get(this.id);
-		var spinner = $$('.spinner');
-		if (instance && instance.el && instance.el.spinner) spinner = instance.el.spinner;
+		var spinner = $$('.mui-spinner');
+		if (instance && instance.el && instance.el.mui-spinner) spinner = instance.el.mui-spinner;
 		if ((instance == null || (instance && instance.showSpinner == null)) && spinner){
 			var t = (typeof spinner);
 			if (t == 'array' || t == 'object') spinner = spinner[0];
 			if (spinner) MUI.each(function(instance){
-				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.spinner;
+				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.mui-spinner;
 			});
 			if (!spinner) return;
 			var count = spinner.retrieve("count");
@@ -405,28 +406,6 @@ Element.implement({
 		return this;
 	},
 
-	hide: function(){
-		var instance = MUI.get(this.id);
-		if (instance != null && instance.hide != null){
-			instance.hide();
-			return this;
-		}
-
-		this.setStyle('display', 'none');
-		return this;
-	},
-
-	show: function(){
-		var instance = MUI.get(this.id);
-		if (instance != null && instance.show != null){
-			instance.show();
-			return this;
-		}
-
-		this.setStyle('display', 'block');
-		return this;
-	},
-
 	close: function(){
 		var instance = MUI.get(this.id);
 		if (instance == null || instance.isClosing || instance.close == null) return;
@@ -443,7 +422,7 @@ Element.implement({
 	},
 
 	empty: function() {
-		MUI.erase(this)
+		MUI.erase(this);
 		Array.from(this.childNodes).each(Element.dispose);
 		return this;
 	}
