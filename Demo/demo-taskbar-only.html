@@ -15,6 +15,7 @@
 	
 		#desktop {
 			visibility: visible;
+			overflow: hidden;
 		}
 		
 		#pageWrapper {
@@ -104,8 +105,90 @@
 		};
 		
 		window.addEvent('load', function(){
+			var desktop_el = document.id('desktop');
+			
 			MUI.Windows.options.container = 'pageWrapper';
-			MUI.Desktop.initialize();
+
+			// Get content and destroy the element
+			//desktop_el.destroy();
+
+			if (01)
+			{
+				this.taskbar = MUI.create({
+					control:'MUI.Taskbar',
+					id: 'taskbar',
+					//drawOnInit:false,
+					container: $('desktop'),
+					//desktop:this,
+					element: $('taskbarWrapper')
+				});
+			}
+			else
+			{
+				MUI.create({
+					'control':'MUI.Desktop',
+					'id':'desktop',
+					'taskbar':true,
+					'content':[
+						{
+							name:'header',
+							content: $('header').innerHTML
+						},
+						{name:'nav',control:'MUI.Dock',cssClass:'desktopNav',docked:[
+							{name: 'menu', position: 'header', control: 'MUI.Menu',
+								items:[
+									{text:'File',items:[
+										{text:'Open',items:[]},
+										{text:'Starters',items:[
+											{text:'Virtual Desktop',url:'{demo}demo-virtual-desktop.html'},
+											{text:'Fixed Width',url:'{demo}demo-fixed-width.html'},
+											{text:'Fixed Width 2',url:'{demo}demo-taskbar-only.html'},
+											{text:'No Toolbars',url:'{demo}demo-no-toolbars.html'},
+											{text:'No Desktop',url:'{demo}demo-no-desktop.html'},
+											{text:'Modal Only',url:'{demo}demo-modal-only.html'}
+										]}
+									]},
+									{text:'Help',items:[
+										{text:'Features',id:'featuresLinkCheck',url:'{demo}pages/features.html',registered:'Demo.featuresWindow'},
+										{type:'divider'},
+										{text:'Documentation',id:'loadWorkspaceLink',target:'_blank',url:'http://mochaui.org/doc/'},
+										{type:'divider'},
+										{text:'About',id:'aboutLink',url:'{demo}pages/about.html',registered:'Demo.aboutWindow'}
+									]}
+								]
+							}
+						]},
+						{name:'taskbar'},
+						{name:'content',columns:[
+							{id: 'mainColumn',	placement: 'main', resizeLimit: [100, 300],
+								panels:[
+									{
+										id: 'mainPanel',
+										title: 'Lorem Ipsum',
+										collapsible: false,
+										content: [
+											{ 
+												content: $('content').innerHTML
+											}
+										]
+									}
+								]
+							}]
+						},
+						{
+							name:'footer',
+							content: $('footer').innerHTML,
+							cssClass:'desktopFooter'
+						}
+					],
+					//container: desktop_el,
+					//element: this.el.header,
+					'onDrawEnd':function(){
+						window.console.warn('MUI.demo::onDrawEnd');
+					}
+				});
+			}
+
 			MUI.Windows.newFromHTML();
 			
 			$('aboutLink').addEvent('click', function(e){
