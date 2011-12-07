@@ -1144,6 +1144,7 @@ MUI.Window.implement({
 
 		switch (typeOf(options.content)){
 			case 'string':
+			case 'element':                 // <-- Partikule edit?
 				// was passed html, so make sure it is added
 				this.sections.push({
 					loadMethod:'html',
@@ -1480,6 +1481,7 @@ MUI.Window.implement({
 				panel.setStyle('overflow', panel.retrieve('oldOverflow')); // Fix for a rendering bug in FF
 			});
 		}
+		this.fireEvent('resizeOnDrag', [this]);			// <-- Partikule edit?
 	},
 
 	_resizeOnComplete: function(){
@@ -1583,7 +1585,7 @@ MUI.Window.implement({
 			if (!instance.isTypeOf('MUI.Window')) return;
 
 			// helps release memory in chrome
-			if (instance.el.canvas){
+			if (/* Browser.chrome == true && */ instance.el.canvas){
 				instance.el.canvas.height = 0;
 				instance.el.canvas.width = 0;
 			}
