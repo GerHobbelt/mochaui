@@ -109,6 +109,16 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 				if (section.name == 'taskbar'){
 					this.el[section.name] = new Element('div', {'id':section.id + 'Wrapper'}).inject(this.el.element);
 					this.taskbar = MUI.create({control:'MUI.Taskbar',id:section.id,drawOnInit:false,container:this.el.element,desktop:this,element:this.el[section.name]});
+				}
+				else if (section.name == 'nav'){
+				    // Partikule: added 'nav' section code block here
+					console.log('MUI.Desktop.draw: nav section: ', section);
+					// create section element
+					var e = section.element = this.el[section.name] = new Element('div', {'id':section.id}).inject(this.el['header'], 'after');
+					if (section.cssClass) e.addClass(section.cssClass);
+
+					section.container = this.el['header'];
+					MUI.Content.update(section);
 				} else {
 					// create section element
 					var e = section.element = this.el[section.name] = new Element('div', {'id':section.id}).inject(this.el.element);
@@ -413,7 +423,10 @@ MUI.append({
 				console.warn("MUI.panelHeight2: no instance / panel.id for panel ", panel);
 			if (!instance && window.console && window.console.warn)
 				window.console.warn('MUI.panelHeight2::panel.id unknown: ', panel.id, ', panel: ', panel, ' --> ', MUI.get(panel.id));
-
+// Partikule Plaster
+// [i_a] moved down a little so I can still see the console.log lines about the erroneaous panels (due to cloned sortables)
+if (panel.id)
+{
 			if (panel.getParent().hasClass('expanded') && panel.getParent().getNext('.expanded')){
 				instance.partner = panel.getParent().getNext('.expanded').getElement('.panel');
 				instance.resize.attach();
@@ -432,6 +445,7 @@ MUI.append({
 			if (panel.getParent().getNext('.panelWrapper') == null){
 				instance.el.handle.hide();
 			}
+}
 		}.bind(this));
 
 		// Add panels to panelsToResize
@@ -600,6 +614,12 @@ MUI.append({
 	},
 
 	resizeChildren: function(panel){ // May rename this resizeIframeEl()
+
+// Partikule Plaster
+// if (panel.id)
+//
+if (panel.id)
+{
 		var instance = MUI.get(panel.id);
 		var contentWrapper = instance.el.contentWrapper;
 
@@ -617,6 +637,7 @@ MUI.append({
 				});
 			}
 		}
+}
 	},
 
 	rWidth: function(container){ // Remaining Width
