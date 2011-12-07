@@ -15,7 +15,7 @@
  */
 
 /* menu */
-.mui-menu { position: absolute; top: 0; left: 0; z-index: 999999; padding: 4px 0 4px 0; border: 1px solid #000; font-size: 12px;
+.mui-menu { position: absolute; top: 0; left: 0; background: #FFF; z-index: 999999; padding: 4px 0 4px 0; border: 1px solid #000; font-size: 12px;
 	background: #333;
     background: rgba(50, 50, 50, 0.95);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(40, 40, 40, 0.95)), to(rgba(60, 60, 60, 0.95)));

@@ -49,7 +49,7 @@ MUI.append({
 			'plugins':{path:'{root}Source/Plugins/',singularName:'plugin'}
 		},
 
-		themes: ['Default','Charcoal'],
+		themes: ['Default','Charcoal','Ionize'],
 
 		css:	 ['{theme}css/core.css'],				// default list of css files to load, added to requirements of every control and plugin loaded
 
