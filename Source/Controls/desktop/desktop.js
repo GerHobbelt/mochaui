@@ -656,6 +656,7 @@ MUI.append({
 		if (container == null){
 			container = MUI.desktop.el.element;
 			// container = MUI.Desktop.desktop;
+		}
 		if (container == null)
 			return;
 		container.getElements('.rWidth').each(function(column){
