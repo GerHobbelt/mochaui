@@ -448,7 +448,7 @@ MUI.append({
 			}
 			var instance = MUI.get(panel.id);
 			if (typeof instance == 'undefined' || !instance) {
-				console.warn("MUI.panelHeight2: no instance for panel.id: ', panel.id, ', panel: ', panel, ' --> ', instance);
+				console.warn("MUI.panelHeight2: no instance for panel.id: ", panel.id, ', panel: ', panel, ' --> ', instance);
 				return;
 			}
 			if (panel.getParent().hasClass('mui-expanded') && panel.getParent().getNext('.mui-expanded')){
