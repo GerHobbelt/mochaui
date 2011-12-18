@@ -76,14 +76,25 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		this.id = this.options.id = this.options.id || 'panel' + (++MUI.idCount);
 		MUI.set(this.id, this);
 
+		// when no container has been specified, assume the parent element of this panel is the container:
+		if (!options.container)
+		{
+			console.log('MUI.panel container has not been set; auto-deriving it now...');
+			options.container = MUI.getContainer(this);
+		}
+
 		if (this.options.drawOnInit) this.draw();
 	},
 
 	draw: function(container){
 		var options = this.options;
 		if (!container) container = options.container;
+		if (!options.container)
+		{
+			console.log('MUI.panel container is unknown');
+		}
 		var parent = MUI.get(options.container);
-		if (!container) container = parent.el.element;
+		if (!container && parent && parent.el) container = parent.el.element;
 		if (typeOf(container) == 'string') container = $(container);
 		if (typeOf(container) != 'element') return;
 
@@ -257,7 +268,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		this.isClosing = true;
 
 		var parent = MUI.get(container);
-		if (parent.options.sortable && parent.container)
+		if (parent && parent.options.sortable && parent.container)
 			parent.container.retrieve('sortables').removeItems(this.el.element);
 
 		MUI.erase(this.el.element);
@@ -314,7 +325,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		});
 
 		var parent = MUI.get($(options.container));
-		if (parent.isTypeOf('MUI.Column')){
+		if (parent && parent.isTypeOf('MUI.Column')){
 			if (expandedSiblings.length == 0 && parent.options.placement != 'main'){
 				if (!parent.options.keep1PanelOpen) parent.collapse();
 					return;

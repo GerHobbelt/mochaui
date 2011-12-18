@@ -89,6 +89,13 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 			this.draw();
 			this.reset();
 		}
+
+		// when no container has been specified, assume the parent element of this grid is the container:
+		if (!options.container)
+		{
+			console.log('MUI.grid container has not been set; auto-deriving it now...');
+			options.container = MUI.getContainer(this);
+		}
 	},
 
 	// API
@@ -829,6 +836,10 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 	draw: function(container){
 		var o = this.options;
 		if (!container) container = o.container;
+		if (!o.container)
+		{
+			console.log('MUI.grid container is unknown');
+		}
 
 		this.removeAll(); // reset variables and only empty ulBody
 

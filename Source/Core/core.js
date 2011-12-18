@@ -134,6 +134,36 @@ MUI.append({
 		return el;
 	},
 
+	getContainer: function(el, container_id) {
+		if (typeof(container_id) == 'string')
+			return $(container_id);
+		if (container_id)
+			return container_id;
+
+		if (el && el.options && el.options.container)
+		{
+			container_id = el.options.container;
+			if (typeof(container_id) == 'string')
+				return $(container_id);
+			if (container_id)
+				return container_id;
+		}
+
+		// when no container has been specified, assume the parent element of this ID is the container:
+		console.log('MUI: container has not been set; auto-deriving it now...');
+		var id = this.getID(el);
+		if (id)
+		{
+			var dom_el = $(id);
+			if (dom_el)
+			{
+				return dom_el.getParent();
+			}
+		}
+		console.log('MUI: container has not been set; failed to derive one instead...');
+		return null;
+	},
+
 	get: function(el){
 		var id = this.getID(el);
 		el = $(id);
