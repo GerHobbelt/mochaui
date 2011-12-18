@@ -270,7 +270,7 @@ MUI.Content = Object.append((MUI.Content || {}), {
 		if (max <= 0) return this;
 		paging.pageSize = max;
 		paging.page = 1;
-		paging.pageMax = parseInt(paging.total / paging.pageSize);
+		paging.pageMax = parseInt((paging.total + paging.pageSize - 1) / paging.pageSize); // round UP the number of data pages you can see or you'll miss the last partial page!
 		if (content.instance && content.instance.updateStart) content.instance.updateStart(content);
 		MUI.Content.Providers[content.loadMethod].doRequest(content);
 		return this;
@@ -284,9 +284,9 @@ MUI.Content = Object.append((MUI.Content || {}), {
 		if (!paging || !paging.recordsField || !content.content[paging.recordsField]) records = content.content;
 		else records = content.content[paging.recordsField];
 
-		['total','page','pageMax','pageSize','page','last','first'].each(function(options, name){
-			options.paging[name] = MUI.getData(options.content, options.paging[name + 'Field'], 0);
-		}.bind(this, content));
+		Array.each(['total','page','pageMax','pageSize','last','first'], function(name, idx, arr){
+			content.paging[name] = MUI.getData(content.content, content.paging[name + 'Field'], 0);
+		}, this);
 		delete content.content;
 
 		if (!content.fireLoaded || !paging || paging.pageSize <= 0)

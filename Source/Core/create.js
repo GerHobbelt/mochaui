@@ -11,6 +11,7 @@
 
  requires:
  - MochaUI/MUI
+ - MochaUI/MUI.Require
 
  provides: [MUI.create, MUI.load, MUI.addPluginGroup, MUI.loadPluginGroups]
 
