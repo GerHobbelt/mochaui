@@ -337,7 +337,14 @@ MUI.append({
 
 	getRegistered: function(bind, name, args){
 		return function(ev){
-			MUI.registered[name].apply(bind, [ev].append(args));
+			if (typeof MUI.registered[name] != "undefined")
+			{
+				MUI.registered[name].apply(bind, [ev].append(args));
+			}
+			else
+			{
+				console.log('MUI has not registered name: ', name, MUI.registered);
+			}
 		};
 	},
 
