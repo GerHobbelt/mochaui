@@ -1,7 +1,31 @@
-var initializeWindows = function(){
+var initializeDesktop = function(){
 
 	// change default setting - keep window within inside the main area.
 	MUI.Windows.options.container = 'pageWrapper';
+
+	//MUI.register('Demo', Demo);
+	MUI.register('MUI.Windows', MUI.Windows);
+
+	MUI.create({
+		'control':'MUI.Desktop',
+		'id':'desktop',
+		'fromHTML':true,
+		'onDrawEnd':function() {
+			// This is just for the demo. Running it onload gives pngFix time to replace the pngs in IE6.
+			$$('.desktopIcon').addEvent('click', function(){
+				MUI.notification('Do Something');
+			});
+		}
+	});
+
+	// Build windows onLoad
+	MUI.myChain.callChain();
+};
+
+var initializeWindows = function(){
+
+	// change default setting - keep window within inside the main area.
+	//MUI.Windows.options.container = 'pageWrapper';
 
 	// Build windows onLoad
 	MUI.myChain.callChain();
@@ -217,15 +241,20 @@ var doUpdateStatuses = function(nodes) {
 	});
 };
 
-// Initialize MochaUI options
-MUI.initialize();
-
 // Initialize MochaUI when the DOM is ready
 window.addEvent('load', function(){ //using load instead of domready for IE8
 	MUI.myChain = new Chain();
 	MUI.myChain.chain(
 			function(){
-				MUI.Desktop.initialize({'createTaskbar':false});
+				//MUI.Desktop.initialize({'createTaskbar':false});
+
+				// Initialize MochaUI options
+				MUI.initialize({path:{demo:''}});
+				MUI.load(['MUI.Window','MUI.Desktop','Parametrics','famfamfam','CoolClock','WindowForm'], function(load_options) {
+					if (window.console && window.console.log)
+						window.console.log('MUI.load event: ', load_options, ', arguments (', arguments.length, '): ', arguments);
+					initializeDesktop();
+				});
 			},
 			function(){
 				initializeColumns();
