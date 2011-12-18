@@ -21,6 +21,7 @@
  - Core/Events
  - MUI
  - MUI.Core
+ - MUI.Content
 
  provides: [MUI.Accordion]
 
@@ -79,10 +80,11 @@ MUI.Accordion = new NamedClass('MUI.Accordian', {
 		}
 
 		// create sub items if available
-		if (this.options.drawOnInit && this.options.panels.length > 0) self.draw();
-		else if (self.fromHTML){
+		if (this.options.drawOnInit && this.options.panels.length > 0) this.draw();
+		else if (this.fromHTML){
+			var self = this;
 			window.addEvent('domready', function(){
-				var el = $(id);
+				var el = $(self.id);
 				if (el != null) self.fromHTML(self.content);
 			});
 		}
