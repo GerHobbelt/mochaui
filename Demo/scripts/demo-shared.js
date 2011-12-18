@@ -745,21 +745,36 @@ Object.append(Demo, {
 	},
 
 	// Effects
-	toggleStandardEffects: function(check){
-		MUI.toggleStandardEffects(check);
+	toggleStandardEffects: function(check_event){
+		// pass check *element* to MUI
+		MUI.toggleStandardEffects(check_event ? check_event.target : null);
 	},
 
-	toggleAdvancedEffects: function(check){
-		MUI.toggleAdvancedEffects(check);
+	toggleAdvancedEffects: function(check_event){
+		MUI.toggleAdvancedEffects(check_event ? check_event.target : null);
 	},
 
 	// Workspaces
 	saveWorkspace: function(){
-		MUI.desktop.saveWorkspace();
+		if (typeof MUI.desktop.saveWorkspace != "undefined")
+		{
+			MUI.desktop.saveWorkspace();
+		}
+		else
+		{
+			console.log("'MUI.desktop.saveWorkspace' is not a defined function");
+		}
 	},
 
 	loadWorkspace: function(){
-		MUI.desktop.loadWorkspace();
+		if (typeof MUI.desktop.loadWorkspace != "undefined")
+		{
+			MUI.desktop.loadWorkspace();
+		}
+		else
+		{
+			console.log("'MUI.desktop.loadWorkspace' is not a defined function");
+		}
 	},
 
 	featuresWindow: function(){
