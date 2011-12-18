@@ -170,9 +170,22 @@ MUI.append({
 		if (el && el.retrieve('instance')) {
 			return el.retrieve('instance');
 		}
-		if (el && el.getParent() && el.getParent().retrieve('instance')) {
-			return el.getParent().retrieve('instance');
+		/*
+		panels and other mochaUI elements may be placed in a hierarchy which can differ from the
+		straight <div> hierarchy chain where each <div> is bound to a mochaUI element, hence
+		we 'bubble up' and don't stop until we've hit the first available mochaUI parent node
+		here:
+		*/
+		while (el && el.getParent())
+		{
+			var p = el.getParent();
+			if (p.retrieve('instance'))
+			{
+				return p.retrieve('instance');
+			}
+			el = p;
 		}
+
 		return this.instances[id];
 	},
 
