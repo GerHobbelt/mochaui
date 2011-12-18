@@ -96,7 +96,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		var parent = MUI.get(options.container);
 		if (!container && parent && parent.el) container = parent.el.element;
 		if (typeOf(container) == 'string') container = $(container);
-		if (typeOf(container) != 'element') return;
+		if (typeOf(container) != 'element') return this;
 
 		// Check if panel already exists
 		if (this.el.panel) return this;
