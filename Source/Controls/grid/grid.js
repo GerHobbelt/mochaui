@@ -492,8 +492,12 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 
 	showSpinner: function(){
 		if (this.spinner || !this.el.element) return;
-		this.spinner = new MUI.Spinner({'id':this.id + '_spinner',container:this.el.element.getParent()});
-		this.spinner.show();
+		this.spinner = null;
+		if (MUI.Spinner)	// [i_a] only show the spinner when it's actually been loaded too!
+		{
+			this.spinner = new MUI.Spinner({'id':this.id + '_spinner',container:this.el.element.getParent()});
+			this.spinner.show();
+		}
 	},
 
 	hideSpinner: function(){
