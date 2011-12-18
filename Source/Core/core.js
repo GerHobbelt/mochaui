@@ -61,8 +61,8 @@ MUI.append({
 MUI.append({
 	version: '1.0.0',
 	initialized: false,
-	instances: new Hash(),
-	registered: new Hash(),
+	instances: {},
+	registered: {},
 	idCount: 0,
 	ieSupport: 'excanvas',					// Makes it easier to switch between Excanvas and Moocanvas for testing
 	path: MUI.options.path,					// depreciated, will be removed
@@ -178,7 +178,8 @@ MUI.append({
 
 	set: function(el, instance){
 		el = this.getID(el);
-		this.instances.set(el, instance);
+		//this.instances.set(el, instance);
+		this.instances[el] = instance;
 		return instance;
 	},
 
@@ -196,14 +197,17 @@ MUI.append({
 				el=$(el);
 				if(el.getChildren) {
 					if(!instance) instance=MUI.instances[MUI.getID(el)];
-					MUI.instances.erase(MUI.getID(el));
+					//MUI.instances.erase(MUI.getID(el));
+					delete MUI.instances[MUI.getID(el)];
 					MUI.erase($(el).getChildren());
 				}
 				break;
 			default:
 				el=MUI.getID(el);
 				instance = MUI.instances[el];
-				MUI.instances.erase(el);
+				//MUI.instances.erase(el);
+				delete MUI.instances[el];
+				break;
 		}
 		if(instance && instance.dispose) {
 			instance.dispose();
