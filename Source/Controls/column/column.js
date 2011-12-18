@@ -228,7 +228,10 @@ MUI.Column = new NamedClass('MUI.Column', {
 
 		this.oldWidth = column.getStyle('width').toInt();
 
-		this.resize.detach();
+		if (this.resize)
+		{
+			this.resize.detach();
+		}
 		this.el.handle.removeEvents('dblclick');
 		this.el.handle.addEvent('click', function(){
 			this.expand();
@@ -257,7 +260,10 @@ MUI.Column = new NamedClass('MUI.Column', {
 		this.el.handle.addEvent('dblclick', function(){
 			this.collapse();
 		}.bind(this));
-		this.resize.attach();
+		if (this.resize)
+		{
+			this.resize.attach();
+		}
 		this.el.handle.setStyle('cursor', Browser.webkit ? 'col-resize' : 'e-resize').addClass('attached');
 
 		MUI.rWidth(this.container);
