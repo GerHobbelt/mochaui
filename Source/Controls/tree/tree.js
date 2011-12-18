@@ -31,7 +31,7 @@ MUI.Tree = new NamedClass('MUI.Tree', {
 	Implements: [Events, Options],
 
 	options: {
-		id:					'',				// id of the primary element, and id os control that is registered with mocha
+		id:					'',				// id of the primary element, and id of control that is registered with mocha
 		container:			null,			// the parent control in the document to add the control to
 		clearContainer:		true,			// should the control clear its parent container before it appends itself
 		drawOnInit:			true,			// true to add tree to container when control is initialized
@@ -49,9 +49,9 @@ MUI.Tree = new NamedClass('MUI.Tree', {
 		imageOpenField:		'imageOpen',	// the name of the field that has the node's open image
 		imageClosedField:	'imageClosed',	// the name of the field that has the node's closed image
 
-		partner:			 false,			// default partner element to send content to
-		partnerMethod:		 'xhr',			// default loadMethod when sending content to partner
-		cssClass:			'tree',			// the primary css tag
+		partner:			false,			// default partner element to send content to
+		partnerMethod:		'xhr',			// default loadMethod when sending content to partner
+		cssClass:			'mui-tree',			// the primary css tag
 		showIcon:			true,
 		showCheckBox:		false,			// true to show checkBoxes
 		canSelect:			true,			// can the user select a node by clicking it
@@ -209,7 +209,7 @@ MUI.Tree = new NamedClass('MUI.Tree', {
 		a = node._a = new Element('a', {'id': id}).inject(li);
 		if (node.target) a.setAttribute('target', node.target); 									// add anchor target
 		span = node._span = new Element('span', {'text': text, 'id': id + '_tle'}).inject(a);		// add node text
-		if (o.showIcon) node._icon = new Element('span', {'class': 'treeIcon'}).inject(a, 'top');	// add node image
+		if (o.showIcon) node._icon = new Element('span', {'class': 'mui-treeIcon'}).inject(a, 'top');	// add node image
 
 		node._element = li;
 		var title = MUI.getData(node, o.titleField);
@@ -250,7 +250,7 @@ MUI.Tree = new NamedClass('MUI.Tree', {
 			node._ul = ul;
 
 			for (var i = 0; i < node.nodes.length; i++){
-				this.buildNode(node.nodes[i], node, ul, depth + 1);
+				this.buildNode(node.nodes[i], node, depth + 1);
 			}
 			ul.childNodes[ul.childNodes.length - 1].addClass('last');
 		} else li.addClass('nochild');

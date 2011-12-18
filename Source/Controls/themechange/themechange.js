@@ -28,7 +28,7 @@ MUI.ThemeChange = new NamedClass('MUI.ThemeChange', {
 	Implements: [Events, Options],
 
 	options: {
-		id:				'',				// id of the primary element, and id os control that is registered with mocha
+		id:				'',				// id of the primary element, and id of control that is registered with mocha
 		container:		null,			// the parent control in the document to add the control to
 		drawOnInit:		true,			// true to add tree to container when control is initialized
 		cssClass:		false,			// css tag to add to control
@@ -62,9 +62,9 @@ MUI.ThemeChange = new NamedClass('MUI.ThemeChange', {
 			isNew = true;
 		}
 
-		div.empty().addClass('toolbar');
+		div.empty().addClass('mui-toolbar');
 		if(o.cssClass) div.addClass(o.cssClass);
-		if(o.divider) div.addClass('divider');
+		if(o.divider) div.addClass('mui-divider');
 
 		this.el.element = div.store('instance', this);
 

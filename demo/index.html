@@ -1,13 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
 	<title>MochaUI - A Web Applications User Interface Library</title>
-	<meta name="description" content="A web applications user interface library built on the Mootools JavaScript framework"/>
+	<meta name="description"
+		  content="A web applications user interface library built on the Mootools JavaScript framework"/>
 
-	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/core.css"/>
+	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/window.css"/>
+	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/desktop.css"/>
+	<link rel="stylesheet" type="text/css" href="Themes/default/css/demo.css"/>
 
 	<!--[if IE]>
 	<script type="text/javascript" src="../Demo/scripts/excanvas.js"></script>
@@ -23,64 +26,19 @@
 	<script type="text/javascript" src="../Source/Core/content.js"></script>
 	<script type="text/javascript" src="../Source/Core/persist.js"></script>
 	<script type="text/javascript" src="../Source/Core/themes.js"></script>
-	<!--MOCHAUI-->
 
-	<!-- 
-	     MOCHAUI lazyloader override: since the lazyloader in mochaUI is crappy, we force the load of these scripts here: no more 'undefined' classes in mochaUI;
-         we also load modal.js as part of the demo needs that one, while otherwise it wouldn't get loaded AT ALL! ('Modal Window' item  in left pane)
-		 
-require.js:113MUI.getAsset: loading:   scripts/demo-shared.js
-create.js:32MUI.loadPluginGroups: queueing   {controls}mui-controls.js
-create.js:32MUI.loadPluginGroups: queueing   {plugins}mui-plugins.js
-require.js:113MUI.getAsset: loading:   {controls}mui-controls.js
-require.js:113MUI.getAsset: loading:   {plugins}mui-plugins.js
-require.js:113MUI.getAsset: loading:   {controls}menu/menu.js
-require.js:113MUI.getAsset: loading:   {controls}spinner/spinner.js
-require.js:113MUI.getAsset: loading:   {controls}themechange/themechange.js
-require.js:113MUI.getAsset: loading:   {controls}dockhtml/dockhtml.js
-require.js:113MUI.getAsset: loading:   {controls}dock/dock.js
-require.js:113MUI.getAsset: loading:   {controls}panel/panel.js
-require.js:113MUI.getAsset: loading:   {controls}column/column.js
-require.js:113MUI.getAsset: loading:   {controls}toolbar/toolbar.js
-require.js:113MUI.getAsset: loading:   {controls}tabs/tabs.js
-require.js:113MUI.getAsset: loading:   {controls}taskbar/taskbar.js
-require.js:113MUI.getAsset: loading:   {controls}desktop/desktop.js
-require.js:113MUI.getAsset: loading:   {controls}tree/tree.js
-require.js:113MUI.getAsset: loading:   {controls}window/window.js
-require.js:113MUI.getAsset: loading:   {controls}imagebutton/imagebutton.js
-require.js:113MUI.getAsset: loading:   {controls}accordion/accordion.js
-require.js:113MUI.getAsset: loading:   {controls}list/list.js
-require.js:113MUI.getAsset: loading:   {controls}calendar/calendar.js
-require.js:113MUI.getAsset: loading:   {controls}checkboxgrid/checkboxgrid.js
-require.js:113MUI.getAsset: loading:   {controls}grid/grid.js
-require.js:113MUI.getAsset: loading:   {controls}selectlist/selectlist.js
-require.js:113MUI.getAsset: loading:   {controls}stepper/stepper.js
-require.js:113MUI.getAsset: loading:   {controls}textarea/textarea.js
-require.js:113MUI.getAsset: loading:   {controls}textbox/textbox.js
-require.js:113MUI.getAsset: loading:   {controls}textbox/mask.js
-require.js:113MUI.getAsset: loading:   {controls}textbox/passshark.js
-require.js:113MUI.getAsset: loading:   {controls}textbox/mask.reverse.js
-require.js:113MUI.getAsset: loading:   {controls}textbox/mask.regexp.js
-require.js:113MUI.getAsset: loading:   {controls}textbox/mask.fixed.js
-    -->
-	<script type="text/javascript" src="../Source/Controls/mui-controls.js"></script>
-	<script type="text/javascript" src="../Source/Plugins/mui-plugins.js"></script>
-	
-	<script type="text/javascript" src="../Source/Controls/dock/dock.js"></script>
-	<script type="text/javascript" src="../Source/Controls/panel/panel.js"></script>
-	<script type="text/javascript" src="../Source/Controls/column/column.js"></script>
-	<script type="text/javascript" src="../Source/Controls/toolbar/toolbar.js"></script>
-	<script type="text/javascript" src="../Source/Controls/tabs/tabs.js"></script>
-	<script type="text/javascript" src="../Source/Controls/taskbar/taskbar.js"></script>
 	<script type="text/javascript" src="../Source/Controls/desktop/desktop.js"></script>
 	<script type="text/javascript" src="../Source/Controls/window/window.js"></script>
-	<script type="text/javascript" src="../Source/Controls/window/modal.js"></script>
+	<!--MOCHAUI-->
 
-	<script type="text/javascript" src="../Source/Plugins/coolclock/coolclock.js"></script>
-	<script type="text/javascript" src="../Source/Plugins/coolclock/moreskins.js"></script>
-	<script type="text/javascript" src="../Source/Plugins/coolclock/muiclock.js"></script>
-
-	<script type="text/javascript" src="../Source/Plugins/parametrics/parametrics.js"></script>
+	<script type="text/javascript">
+		MUI.files.extend({
+			'{controls}window/window.js':'loaded',
+			'{controls}desktop/desktop.js':'loaded',
+			'{theme}css/window.css':'loaded',
+			'{theme}css/desktop.css':'loaded'
+		});
+	</script>
 
 	<script type="text/javascript" src="scripts/demo-application.js"></script>
 </head>
@@ -88,6 +46,5 @@ require.js:113MUI.getAsset: loading:   {controls}textbox/mask.fixed.js
 
 <div id="desktop">
 </div>
-
 </body>
 </html>

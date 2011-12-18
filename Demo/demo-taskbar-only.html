@@ -1,66 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	
 	<title>Mootools MochaUI - Fixed Width with Taskbar</title>
-	
+	<meta name="description"
+		  content="A web applications user interface library built on the Mootools javascript framework"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
 	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/core.css"/>
-	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/desktop.css"/>
-	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/taskbar.css"/>
-	<link rel="stylesheet" type="text/css" href="../Source/Themes/default/css/window.css"/>
-	
-	<style type="text/css">
-	
-		#desktop {
-			visibility: visible;
-			overflow: hidden;
-		}
-		
-		#pageWrapper {
-			overflow: auto;
-			background: #7c9dbf;
-			border: 0;
-		}
-		
-		#page {
-			margin: 0 auto 0;
-			width: 800px;
-			background: #fff;
-		}
-		
-		#header {
-			background: #f0f0f0;
-			padding: 20px;
-		}
-		
-		#navigation {
-			background: #f5f5f5;
-			padding: 5px 20px;
-		}
-		
-		#content {
-			padding: 20px;
-		}
-		
-		#footer {
-			background: #f0f0f0;
-			padding: 10px 20px;
-		}
-		
-		#taskbarWrapper {
-			border-top: 1px solid #999;
-			border-bottom: 0;
-		}
-		
-		#taskbarWrapper.top {
-			border-top: 0;
-			border-bottom: 1px solid #999;
-		}
-	
-	</style>
-	
 	<!--[if IE]>
 	<script type="text/javascript" src="../Demo/scripts/excanvas.js"></script>
 	<![endif]-->
@@ -73,30 +22,25 @@
 	<script type="text/javascript" src="../Source/Core/require.js"></script>
 	<script type="text/javascript" src="../Source/Core/canvas.js"></script>
 	<script type="text/javascript" src="../Source/Core/content.js"></script>
-	<script type="text/javascript" src="../Source/Controls/dock/dock.js"></script>
-	<script type="text/javascript" src="../Source/Controls/toolbar/toolbar.js"></script>
-	<script type="text/javascript" src="../Source/Controls/column/column.js"></script>
-	<script type="text/javascript" src="../Source/Controls/panel/panel.js"></script>
-	<script type="text/javascript" src="../Source/Controls/taskbar/taskbar.js"></script>
-	<script type="text/javascript" src="../Source/Controls/window/window.js"></script>
-	<script type="text/javascript" src="../Source/Controls/window/modal.js"></script>
-	<script type="text/javascript" src="../Source/Plugins/windowform/windowform.js"></script>
+	<script type="text/javascript" src="../Source/Core/persist.js"></script>
+	<script type="text/javascript" src="../Source/Core/themes.js"></script>
 	<!--MOCHAUI-->
 	
 	<script type="text/javascript">
-		// Initialize MochaUI options
-		MUI.initialize();
 
-		MUI.aboutWindow = function(){
-			new MUI.Modal({
+		var Demo = {};
+
+		Demo.aboutWindow = function(){
+			MUI.create({
+				control:"MUI.Modal",
 				id: 'about',
 				title: 'MochaUI',
 				type: 'modal2',
 				width: 350,
 				height: 195,
-				// contentBgColor: '#e5e5e5 url(images/logo2.gif) left 3px no-repeat',
+				contentBgColor: '#e5e5e5 url(images/logo2.gif) left 3px no-repeat',
 				padding: { top: 43, right: 12, bottom: 10, left: 12 },
-				scrollbars: false,
+				scrollbars:  false,
 				content: {
 					loadMethod: 'xhr',
 					url: 'pages/about.html'
@@ -195,25 +139,13 @@
 				e.stop();
 				MUI.aboutWindow();
 			});
-			
 		});
 	</script>
 
 </head>
 <body>
 
-<div id="desktop">
-
-	<div id="taskbarWrapper">
-		<div id="taskbar">
-			<div id="taskbarPlacement"></div>
-			<div id="taskbarAutoHide"></div>
-			<div id="taskbarSort">
-				<div id="taskbarClear" class="clear"></div>
-			</div>
-		</div>
-	</div>
-	
+<div id="desktop" class="mui-desktop">
 	<div id="pageWrapper">
 		<div id="page">
 		

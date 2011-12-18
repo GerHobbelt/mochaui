@@ -10,11 +10,8 @@
 	<script type="text/javascript" src="../../Core/core.js"></script>
 	<script type="text/javascript" src="../../Core/create.js"></script>
 	<script type="text/javascript" src="../../Core/require.js"></script>
-	<script type="text/javascript" src="../../Core/canvas.js"></script>
 	<script type="text/javascript" src="../../Core/content.js"></script>
-	<script type="text/javascript" src="../../Core/persist.js"></script>
-	<script type="text/javascript" src="../../Core/themes.js"></script>
-	
+	<script type="text/javascript" src="../../Core/canvas.js"></script>
 	<script type="text/javascript" src="../desktop/desktop.js"></script>
 	<script type="text/javascript" src="../column/column.js"></script>
 	<script type="text/javascript" src="../panel/panel.js"></script>
@@ -27,9 +24,8 @@
 			MUI.options.path.demo = '{root}Demo/';
 			new MUI.Panel({
 				id:'panel1',
-				column:'place1',
+				container:'place1',
 				footer: true,
-				container: document.body,
 				content: [
 					{url: '{demo}pages/blank.html'},
 					{name: 'menu', position: 'header', control: 'MUI.Menu',items:[
@@ -50,7 +46,7 @@
 							{text:'Starters',items:[
 								{text:'Virtual Desktop',url:'{demo}demo-virtual-desktop.html'},
 								{text:'Fixed Width',url:'{demo}demo-fixed-width.html'},
-								{text:'Fixed Width 2',url:'{demo}demo-taskbar-only.html'},
+								{text:'Only Taskbar',url:'{demo}demo-taskbar-only.html'},
 								{text:'No Toolbars',url:'{demo}demo-no-toolbars.html'},
 								{text:'No Desktop',url:'{demo}demo-no-desktop.html'},
 								{text:'Modal Only',url:'{demo}demo-modal-only.html'}

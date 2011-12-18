@@ -7,7 +7,8 @@
 	<script type="text/javascript" src="../../../Demo/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="../../../Demo/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="../../Core/core.js"></script>
-	<script type="text/javascript" src="../../Core/desktop.js"></script>
+	<script type="text/javascript" src="../../Core/content.js"></script> <!-- MUI.getData -->
+	<script type="text/javascript" src="../desktop/desktop.js"></script>
 	<script type="text/javascript" src="../column/column.js"></script>
 	<script type="text/javascript" src="../panel/panel.js"></script>
 	<script type="text/javascript" src="../taskbar/taskbar.js"></script>
@@ -37,10 +38,10 @@
 			id:'cbg1',
 			items:items,
 			onItemClick: function(checked, inp, self, e) {
-				alert('receieved onItemClick command on item ' + inp.value);
+				alert('received onItemClick command on item ' + inp.value);
 			},
 			onValueChanged: function(value, self, e) {
-				alert('receieved onValueChanged command, value = ' + self.options.value);
+				alert('received onValueChanged command, value = ' + self.options.value);
 			}
 		});
 

@@ -270,7 +270,7 @@ MUI.Content = Object.append((MUI.Content || {}), {
 		if (max <= 0) return this;
 		paging.pageSize = max;
 		paging.page = 1;
-		paging.pageMax = parseInt(paging.total / paging.pageSize);
+		paging.pageMax = parseInt((paging.total + paging.pageSize - 1) / paging.pageSize); // round UP the number of data pages you can see or you'll miss the last partial page!
 		if (content.instance && content.instance.updateStart) content.instance.updateStart(content);
 		MUI.Content.Providers[content.loadMethod].doRequest(content);
 		return this;
@@ -284,9 +284,9 @@ MUI.Content = Object.append((MUI.Content || {}), {
 		if (!paging || !paging.recordsField || !content.content[paging.recordsField]) records = content.content;
 		else records = content.content[paging.recordsField];
 
-		['total','page','pageMax','pageSize','page','last','first'].each(function(options, name){
-			options.paging[name] = MUI.getData(options.content, options.paging[name + 'Field'], 0);
-		}.bind(this, content));
+		Array.each(['total','page','pageMax','pageSize','last','first'], function(name, idx, arr){
+			content.paging[name] = MUI.getData(content.content, content.paging[name + 'Field'], 0);
+		}, this);
 		delete content.content;
 
 		if (!content.fireLoaded || !paging || paging.pageSize <= 0)
@@ -555,7 +555,7 @@ MUI.Content.Providers.iframe = {
 			var iframeEl = new Element('iframe', {
 				id: element.id + '_iframe',
 				name: element.id + '_iframe',
-				'class': 'mochaIframe',
+				'class': '.mui-IFrame',
 				src: content.doPrepUrl(content),
 				marginwidth: 0,
 				marginheight: 0,
@@ -606,9 +606,6 @@ MUI.Content.Providers.control = {
 	canPage:		false,
 
 	doRequest: function(content){
-		//var options2 = content.options;
-		// remove unneeded items that cause recursion
-		// delete content.options;
 		delete content.instance;
 		MUI.create(content);
 	}
@@ -645,15 +642,27 @@ MUI.append({
 		/// intercepts workflow from MUI.Content.update
 		updateClear: function(options){
 			if (options.position == 'content'){
-				this.el.content.show().empty();
-				var iframes = this.el.contentWrapper.getElements('.mochaIframe');
-				if (iframes) iframes.destroy();
 
-				// Panels are not loaded into the padding div, so we remove them separately.
-				this.el.contentWrapper.getElements('.column').destroy();
-				this.el.contentWrapper.getElements('.columnHandle').destroy();
+				this.el.content.show();
+
+				var iframes = this.el.contentWrapper.getElements('iframe');
+				if (iframes.length > 0){
+					iframes.destroy();
+				}
+
+				this.el.contentWrapper.getElements('.mui-column').each(function(column_el){
+					column_el.getElements('.mui-panel').each(function(panel_el){
+						panel_el.retrieve('instance').close();
+						MUI.erase(panel_el);
+					});
+					column_el.retrieve('instance').close();
+					MUI.erase(column_el);
+				});
+
+				MUI.WindowPanelShared.empty.apply(this);
 
 				if (this.el.content.getParent() == null) this.el.content.inject(this.el.element);
+
 
 				return false;
 			}
@@ -663,10 +672,10 @@ MUI.append({
 		/// intercepts workflow from MUI.Content.update
 		updateSetContent: function(options){
 			if (options.position == 'content'){
-				if (options.loadMethod == 'html') this.el.content.addClass('pad');
+				if (options.loadMethod == 'html'){
+					this.el.content.show();
+				}
 				if (options.loadMethod == 'iframe'){
-					this.el.content.removeClass('pad');
-					this.el.content.setStyle('padding', '0px');
 					this.el.content.hide();
 					options.element = this.el.contentWrapper;
 				}

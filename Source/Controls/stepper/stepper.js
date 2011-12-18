@@ -31,11 +31,11 @@ MUI.Stepper = new NamedClass('MUI.Stepper', {
 	Implements: [Events, Options],
 
 	options: {
-		//id:				'',		 	// id of the primary element, and id os control that is registered with mocha
+		//id:				'',		 	// id of the primary element, and id of control that is registered with mocha
 		//container:		null,	   	// the parent control in the document to add the control to
 		//clearContainer:	false,	  	// should the control clear its parent container before it appends itself
 		drawOnInit:		  	true,	   	// true to add textbox to container when control is initialized
-		cssClass:			'stepper',  // the primary css tag
+		cssClass:			'mui-stepper',  // the primary css tag
 		//width:			40,			// stepper width in px
 
 		//iterator:		  	null,
@@ -64,11 +64,9 @@ MUI.Stepper = new NamedClass('MUI.Stepper', {
 		MUI.set(this.id, this);
 
 		// defaults to numeric stepper iterator
-		if (!options.iterator)
-			options.iterator = 'numeric';
+		if (!options.iterator) options.iterator = 'numeric';
 
-		if (options.drawOnInit)
-			this.draw();
+		if (options.drawOnInit)	this.draw();
 	},
 
 	draw: function(container){

@@ -41,7 +41,7 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 	Implements: [Events,Options],
 
 	options: {
-		id:					'',			// id of the primary element, and id os control that is registered with mocha
+		id:					'',			// id of the primary element, and id of control that is registered with mocha
 		clearContainer:		true,		// should the control clear its parent container before it appends itself
 		container:			null,		// the parent control in the document to add the control to
 		drawOnInit:			true,		// true to add tree to container when control is initialized
@@ -88,6 +88,13 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 			// create sub data if available
 			this.draw();
 			this.reset();
+		}
+
+		// when no container has been specified, assume the parent element of this grid is the container:
+		if (!options.container)
+		{
+			console.log('MUI.grid container has not been set; auto-deriving it now...');
+			options.container = MUI.getContainer(this);
 		}
 	},
 
@@ -492,8 +499,12 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 
 	showSpinner: function(){
 		if (this.spinner || !this.el.element) return;
-		this.spinner = new MUI.Spinner({'id':this.id + '_spinner',container:this.el.element.getParent()});
-		this.spinner.show();
+		this.spinner = null;
+		if (MUI.Spinner)	// [i_a] only show the spinner when it's actually been loaded too!
+		{
+			this.spinner = new MUI.Spinner({'id':this.id + '_spinner',container:this.el.element.getParent()});
+			this.spinner.show();
+		}
 	},
 
 	hideSpinner: function(){
@@ -825,6 +836,10 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 	draw: function(container){
 		var o = this.options;
 		if (!container) container = o.container;
+		if (!o.container)
+		{
+			console.log('MUI.grid container is unknown');
+		}
 
 		this.removeAll(); // reset variables and only empty ulBody
 

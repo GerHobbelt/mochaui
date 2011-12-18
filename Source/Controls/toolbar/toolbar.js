@@ -28,10 +28,10 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 	Implements: [Events, Options],
 
 	options: {
-		id:				'',				// id of the primary element, and id os control that is registered with mocha
+		id:				'',				// id of the primary element, and id of control that is registered with mocha
 		container:		null,			// the parent toolbar doc
 		drawOnInit:		true,			// true to add tree to container when control is initialized
-		cssClass:		false,			// css tag to add to control
+	cssClass:		'mui-toolbar',  // css tag to add to control
 
 		content:		false,			// used to load content
 		divider:		true,			// true if this toolbar has a divider
@@ -83,6 +83,8 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 		var o = this.options;
 		if (!container) container = o.container;
 
+		this.fireEvent('drawBegin', [this]);
+
 		// determine element for this control
 		var isNew = false;
 		var div = o.element ? o.element : $(o.id);
@@ -91,9 +93,9 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 			isNew = true;
 		}
 
-		div.addClass('toolbar');
+		div.addClass('mui-toolbar');
 		if (o.cssClass) div.addClass(o.cssClass);
-		if (o.divider) div.addClass('divider');
+		if (o.divider) div.addClass('mui-divider');
 
 		this.el.element = div.store('instance', this);
 
@@ -104,6 +106,7 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 		var addToContainer = function(){
 			if (typeOf(container) == 'string') container = $(container);
 			if (div.getParent() == null) div.inject(container);
+			this.fireEvent('drawEnd', [this]);
 		}.bind(this);
 		if (!isNew || typeOf(container) == 'element') addToContainer();
 		else window.addEvent('domready', addToContainer);
@@ -189,8 +192,8 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 				MUI.create(options);
 				break;
 			default:
-				if (!css) css = 'icon';
-				else css = 'icon ' + css;
+				if (!css) css = 'mui-icon';
+				else css = 'mui-icon ' + css;
 				this.el[button.id] = new Element('span', {id:button.id,'class':css,html:'&nbsp;',title:button.title}).inject(div, where).addEvent('click', onclick).store('instance', this);
 				if (button.image) this.el[button.id].setStyle('backgroundImage', "url('" + MUI.replacePaths(button.image) + "')");
 		}

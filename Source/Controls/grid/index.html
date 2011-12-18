@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="../../Core/core.js"></script>
 	<script type="text/javascript" src="../../Core/persist.js"></script>
 	<script type="text/javascript" src="../../Core/content.js"></script>
-	<script type="text/javascript" src="../../Core/desktop.js"></script>
+	<script type="text/javascript" src="../desktop/desktop.js"></script>
 	<script type="text/javascript" src="../column/column.js"></script>
 	<script type="text/javascript" src="../panel/panel.js"></script>
 	<script type="text/javascript" src="../taskbar/taskbar.js"></script>
@@ -112,11 +112,11 @@
 				autoSectionToggle:false,
 
 				content:{
-					url:"/mochaui-grails/person/list?page={page}&max={pageSize}&order={dir}&sort={sort}",
+					url:"../../../Tests/data/person/list.php?page={page}&max={pageSize}&order={dir}&sort={sort}",
 					persist:true,
 					paging: {
-						pageSize:10,
-						page:1
+						pageSize: 10,
+						page: 1
 					}
 				},
 

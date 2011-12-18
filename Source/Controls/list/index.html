@@ -7,7 +7,10 @@
 	<script type="text/javascript" src="../../../Demo/scripts/mootools-core.js"></script>
 	<script type="text/javascript" src="../../../Demo/scripts/mootools-more.js"></script>
 	<script type="text/javascript" src="../../Core/core.js"></script>
-	<script type="text/javascript" src="../../Core/desktop.js"></script>
+	<script type="text/javascript" src="../../Core/create.js"></script><!-- addPluginGroup -->
+	<script type="text/javascript" src="../../Core/require.js"></script>
+	<script type="text/javascript" src="../../Core/content.js"></script><!-- getData() -->
+	<script type="text/javascript" src="../desktop/desktop.js"></script>
 	<script type="text/javascript" src="../column/column.js"></script>
 	<script type="text/javascript" src="../panel/panel.js"></script>
 	<script type="text/javascript" src="../taskbar/taskbar.js"></script>
@@ -47,13 +50,13 @@
 				{'text':'Cancel','name':'Cancel','image':'../../Themes/default/images/cancel.png'}
 			],
 			onItemCommand: function(item, self, cmd, img) {
-				alert('receieved ' + cmd.name + ' command on item ' + item.value)
+				alert('received ' + cmd.name + ' command on item ' + item.value);
 			},
 			onItemChecked: function(item, self, cmd, img) {
-				alert('receieved onItemChecked command on item ' + item.value)
+				alert('received onItemChecked command on item ' + item.value);
 			},
 			onItemSelected: function(item, self, cmd, img) {
-				alert('receieved onItemSelected command on item ' + item.value)
+				alert('received onItemSelected command on item ' + item.value);
 			},
 			onItemColumnBound: function(item, self, col, td) {
 			}
@@ -75,10 +78,10 @@
 				{'text':'Cancel','name':'Cancel','image':'../../Themes/default/images/cancel.png'}
 			],
 			onItemCommand: function(item, self, cmd, img) {
-				alert('receieved ' + cmd.name + ' command on item ' + item.value)
+				alert('received ' + cmd.name + ' command on item ' + item.value);
 			},
 			onItemSelected: function(item, self, cmd, img) {
-				alert('receieved onItemSelected command on item ' + item.value)
+				alert('received onItemSelected command on item ' + item.value);
 			},
 			onItemColumnBound: function(item, self, col, td) {
 			}

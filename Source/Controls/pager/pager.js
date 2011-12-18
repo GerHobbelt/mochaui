@@ -27,11 +27,11 @@ MUI.Pager = new NamedClass('MUI.Pager', {
 	Implements: [Events, Options],
 
 	options: {
-		//id:			'',				// id of the primary element, and id os control that is registered with mocha
+		//id:			'',				// id of the primary element, and id of control that is registered with mocha
 		//container:	null,			// the parent control in the document to add the control to
 		drawOnInit:		true,			// true to add tree to container when control is initialized
 
-		cssClass:		'pager',		// primary css tag
+		cssClass:		'mui-pager',	// primary css tag
 		divider:		true,			// true if this toolbar has a divider
 
 		showPageSize:	true,			// true to show pagesize drop down
@@ -87,7 +87,7 @@ MUI.Pager = new NamedClass('MUI.Pager', {
 			isNew = true;
 		}
 		this.el.element = div.store('instance', this).addClass(o.cssClass).empty();
-		if (o.divider) div.addClass('divider');
+		if (o.divider) div.addClass('mui-divider');
 
 		this.el.pageSizeGroup = new Element('div', {id:o.id + '_pageSizeGroup','class':'Group'}).inject(this.el.element);
 		this.el.pageSize = new Element('select', {id:o.id + '_pageSize','class':'pageSize'}).inject(this.el.pageSizeGroup);

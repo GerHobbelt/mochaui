@@ -61,8 +61,8 @@ MUI.append({
 MUI.append({
 	version: '1.0.0',
 	initialized: false,
-	instances: new Hash(),
-	registered: new Hash(),
+	instances: {},
+	registered: {},
 	idCount: 0,
 	ieSupport: 'excanvas',					// Makes it easier to switch between Excanvas and Moocanvas for testing
 	path: MUI.options.path,					// depreciated, will be removed
@@ -79,7 +79,7 @@ MUI.append({
 // Partikule
 		if(Browser.ie9)
 		{
-			this.ieSupport = '';
+//			this.ieSupport = '';
 		}
 // / Partikule
 	},
@@ -125,11 +125,43 @@ MUI.append({
 
 	getID: function(el){
 		var type = typeOf(el);
+		if(type == 'null') return null;
+		if(type == 'function'){ return el; }
 		if (type == 'string') return el;
 		if (type == 'element') return el.id;
 		else if (type == 'object' && el.id) return el.id;
 		else if (type == 'object' && el.options && el.options.id) return el.options.id;
 		return el;
+	},
+
+	getContainer: function(el, container_id) {
+		if (typeof(container_id) == 'string')
+			return $(container_id);
+		if (container_id)
+			return container_id;
+
+		if (el && el.options && el.options.container)
+		{
+			container_id = el.options.container;
+			if (typeof(container_id) == 'string')
+				return $(container_id);
+			if (container_id)
+				return container_id;
+		}
+
+		// when no container has been specified, assume the parent element of this ID is the container:
+		console.log('MUI: container has not been set; auto-deriving it now...');
+		var id = this.getID(el);
+		if (id)
+		{
+			var dom_el = $(id);
+			if (dom_el)
+			{
+				return dom_el.getParent();
+			}
+		}
+		console.log('MUI: container has not been set; failed to derive one instead...');
+		return null;
 	},
 
 	get: function(el){
@@ -138,15 +170,29 @@ MUI.append({
 		if (el && el.retrieve('instance')) {
 			return el.retrieve('instance');
 		}
-		if (el && el.getParent() && el.getParent().retrieve('instance')) {
-			return el.getParent().retrieve('instance');
+		/*
+		panels and other mochaUI elements may be placed in a hierarchy which can differ from the
+		straight <div> hierarchy chain where each <div> is bound to a mochaUI element, hence
+		we 'bubble up' and don't stop until we've hit the first available mochaUI parent node
+		here:
+		*/
+		while (el && el.getParent())
+		{
+			var p = el.getParent();
+			if (p.retrieve('instance'))
+			{
+				return p.retrieve('instance');
+			}
+			el = p;
 		}
+
 		return this.instances[id];
 	},
 
 	set: function(el, instance){
 		el = this.getID(el);
-		this.instances.set(el, instance);
+		//this.instances.set(el, instance);
+		this.instances[el] = instance;
 		return instance;
 	},
 
@@ -164,14 +210,17 @@ MUI.append({
 				el=$(el);
 				if(el.getChildren) {
 					if(!instance) instance=MUI.instances[MUI.getID(el)];
-					MUI.instances.erase(MUI.getID(el));
+					//MUI.instances.erase(MUI.getID(el));
+					delete MUI.instances[MUI.getID(el)];
 					MUI.erase($(el).getChildren());
 				}
 				break;
 			default:
 				el=MUI.getID(el);
 				instance = MUI.instances[el];
-				MUI.instances.erase(el);
+				//MUI.instances.erase(el);
+				delete MUI.instances[el];
+				break;
 		}
 		if(instance && instance.dispose) {
 			instance.dispose();
@@ -192,7 +241,6 @@ MUI.append({
 	},
 
 	notification: function(message, options){
-		// [i_a] augment the notification window to carry larger messages
 		options = Object.append({
 			control: 'MUI.Window',
 			loadMethod: 'html',
@@ -241,13 +289,13 @@ MUI.append({
 
 	hideSpinner: function(instance){
 		if (instance == null) instance = MUI.get(this.id);
-		var spinner = $$('.spinner');
-		if (instance && instance.el && instance.el.spinner) spinner = instance.el.spinner;
+		var spinner = $$('.mui-spinner');
+		if (instance && instance.el && instance.el.mui-spinner) spinner = instance.el.mui-spinner;
 		if ((instance == null || (instance && instance.showSpinner == null)) && spinner){
 			var t = (typeof spinner);
 			if (t == 'array' || t == 'object') spinner = spinner[0];
 			if (spinner) MUI.each(function(instance){
-				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.spinner;
+				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.mui-spinner;
 			});
 			if (!spinner) return;
 			(function(){
@@ -262,13 +310,13 @@ MUI.append({
 
 	showSpinner: function(instance){
 		if (instance == null) instance = MUI.get(this.id);
-		var spinner = $$('.spinner');
-		if (instance && instance.el && instance.el.spinner) spinner = instance.el.spinner;
+		var spinner = $$('.mui-spinner');
+		if (instance && instance.el && instance.el.mui-spinner) spinner = instance.el.mui-spinner;
 		if ((instance == null || (instance && instance.showSpinner == null)) && spinner){
 			var t = (typeof spinner);
 			if (t == 'array' || t == 'object') spinner = spinner[0];
 			if (spinner) MUI.each(function(instance){
-				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.spinner;
+				if (instance.isTypeOf && instance.isTypeOf('MUI.Spinner')) spinner = instance.el.mui-spinner;
 			});
 			if (!spinner) return;
 			var count = spinner.retrieve("count");
@@ -302,7 +350,14 @@ MUI.append({
 
 	getRegistered: function(bind, name, args){
 		return function(ev){
-			MUI.registered[name].apply(bind, [ev].append(args));
+			if (typeof MUI.registered[name] != "undefined")
+			{
+				MUI.registered[name].apply(bind, [ev].append(args));
+			}
+			else
+			{
+				console.log('MUI has not registered name: ', name, MUI.registered);
+			}
 		};
 	},
 
@@ -405,28 +460,6 @@ Element.implement({
 		return this;
 	},
 
-	hide: function(){
-		var instance = MUI.get(this.id);
-		if (instance != null && instance.hide != null){
-			instance.hide();
-			return this;
-		}
-
-		this.setStyle('display', 'none');
-		return this;
-	},
-
-	show: function(){
-		var instance = MUI.get(this.id);
-		if (instance != null && instance.show != null){
-			instance.show();
-			return this;
-		}
-
-		this.setStyle('display', 'block');
-		return this;
-	},
-
 	close: function(){
 		var instance = MUI.get(this.id);
 		if (instance == null || instance.isClosing || instance.close == null) return;
@@ -443,7 +476,7 @@ Element.implement({
 	},
 
 	empty: function() {
-		MUI.erase(this)
+		MUI.erase(this);
 		Array.from(this.childNodes).each(Element.dispose);
 		return this;
 	}
