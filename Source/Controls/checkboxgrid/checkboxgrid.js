@@ -32,7 +32,7 @@ MUI.CheckBoxGrid = new NamedClass('MUI.CheckBoxGrid', {
 	Implements: [Events, Options],
 
 	options: {
-		id:					'',			// id of the primary element, and id os control that is registered with mocha
+		id:					'',			// id of the primary element, and id of control that is registered with mocha
 		container:			null,		// the parent control in the document to add the control to
 		clearContainer:		false,		// should the control clear its parent container before it appends itself
 		drawOnInit:			true,		// true to add tree to container when control is initialized

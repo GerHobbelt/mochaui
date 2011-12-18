@@ -37,7 +37,7 @@ MUI.TextArea = new NamedClass('MUI.TextArea', {
 	Implements: [Events, Options],
 
 	options: {
-		//id:				null,	// id of the primary element, and id os control that is registered with mocha
+		//id:				null,	// id of the primary element, and id of control that is registered with mocha
 		//container:		null,	// the parent control in the document to add the control to
 		drawOnInit:			true,	// true to add textbox to container when control is initialized
 		cssClass:			'mui-form',	// the primary css tag

@@ -32,7 +32,7 @@ MUI.ImageButton = new NamedClass('MUI.ImageButton', {
 	Implements: [Events, Options],
 
 	options: {
-		id:				'',			// id of the primary element, and id os control that is registered with mocha
+		id:				'',			// id of the primary element, and id of control that is registered with mocha
 		container:		null,		// the parent control in the document to add the control to
 		section:		false,		// name of section in panel/window to add this control
 		drawOnInit:		true,		// true to add tree to container when control is initialized

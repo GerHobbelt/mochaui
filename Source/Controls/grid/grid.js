@@ -41,7 +41,7 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 	Implements: [Events,Options],
 
 	options: {
-		id:					'',			// id of the primary element, and id os control that is registered with mocha
+		id:					'',			// id of the primary element, and id of control that is registered with mocha
 		clearContainer:		true,		// should the control clear its parent container before it appends itself
 		container:			null,		// the parent control in the document to add the control to
 		drawOnInit:			true,		// true to add tree to container when control is initialized

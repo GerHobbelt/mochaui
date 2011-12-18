@@ -429,13 +429,13 @@ Object.append(Demo, {
 			id: node.value + 'tree1',
 			content: {url: '{demo}data/tree-testdata.json'},
 			onNodeExpanded: function(node, isExpanded, self){
-				Demo.writeConsole(self.options.id + ' receieved onNodeExpanded command on node ' + node.value + ', isExpanded=' + isExpanded);
+				Demo.writeConsole(self.options.id + ' received onNodeExpanded command on node ' + node.value + ', isExpanded=' + isExpanded);
 			},
 			onNodeChecked: function(node, checked, self){
-				Demo.writeConsole(self.options.id + ' receieved onNodeChecked command on node ' + node.value + ', checked=' + checked);
+				Demo.writeConsole(self.options.id + ' received onNodeChecked command on node ' + node.value + ', checked=' + checked);
 			},
 			onNodeSelected: function(node, self){
-				Demo.writeConsole(self.options.id + ' receieved onNodeSelected command on node ' + node.value);
+				Demo.writeConsole(self.options.id + ' received onNodeSelected command on node ' + node.value);
 			}
 		});
 	},

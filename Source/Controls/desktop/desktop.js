@@ -29,7 +29,7 @@ MUI.Desktop = new NamedClass('MUI.Desktop', {
 	Implements: [Events, Options],
 
 	options: {
-		id:				'',				// id of the primary element, and id os control that is registered with mocha
+		id:				'',				// id of the primary element, and id of control that is registered with mocha
 		container:		null,			// the parent control in the document to add the control to
 		drawOnInit:		true,			// true to add tree to container when control is initialized
 		cssClass:		'mui-desktop',	// additional css tag
